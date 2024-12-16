@@ -1,6 +1,6 @@
 use cosmwasm_std::{
-    coin, coins, ensure_eq, to_json_binary, Binary, Decimal, Deps, DepsMut, Env, MessageInfo,
-    Response, StdError,
+    coin, ensure_eq, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env,
+    MessageInfo, Response, StdError,
 };
 use cw_paginate::paginate_map;
 use cw_storage_plus::Bound;
@@ -58,16 +58,16 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> P
             message_hash,
             receiver,
         } => {
-            let price = coins(
+            let price = coin(
                 config.current_price.to_uint_floor().u128(),
                 config.paiement_denom.clone(),
             );
             ensure_eq!(
                 info.funds,
-                price,
+                vec![price.clone()],
                 PaiementError::PaiementDidntMatch {
                     received: info.funds,
-                    expected: price
+                    expected: vec![price]
                 }
             );
 
@@ -75,7 +75,7 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> P
                 deps.storage,
                 0,
                 &crate::msg::MessageState {
-                    price_paid: info.funds[0].clone(),
+                    price_paid: price.clone(),
                     user: receiver
                         .map(|address| deps.api.addr_validate(&address))
                         .transpose()?
@@ -85,13 +85,28 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> P
                 },
             )?;
 
+            // We send the funds to the different addresses
+            let messages = config.shares.iter().flat_map(|(addr, share)| {
+                let this_amount = price.amount.mul_floor(*share);
+                if !this_amount.is_zero() {
+                    Some(BankMsg::Send {
+                        to_address: addr.to_string(),
+                        amount: vec![Coin {
+                            denom: price.denom.clone(),
+                            amount: this_amount,
+                        }],
+                    })
+                } else {
+                    None
+                }
+            });
+
             config.current_price *= config.multiplier; // We update the price
             config.next_payment_key += 1;
             CONFIG.save(deps.storage, &config)?;
+            Ok(Response::new().add_messages(messages))
         }
     }
-
-    Ok(Response::new())
 }
 
 #[cfg_attr(not(feature = "library"), cosmwasm_std::entry_point)]
