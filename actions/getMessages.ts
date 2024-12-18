@@ -40,6 +40,6 @@ export async function getRecentMessages(userAddress: string | undefined, max?: n
     }
 
     return messages.map(parseDbMessageToTMessage).filter((m) => {
-        return m.userWallet != null || m.role == "assistant"
+        return m.userWallet != null || m.role == "assistant" || m.role == "system"
     })
 }
