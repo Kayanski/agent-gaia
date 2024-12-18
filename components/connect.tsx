@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 
 import { WalletModal } from "./wallet";
 import Modal from 'react-modal';
+import { useAccount, useDisconnect } from "graz";
 
 Modal.setAppElement('#body');
 
@@ -21,19 +22,25 @@ const customStyles = {
 export function CosmosWallet() {
   const [modalIsOpen, setIsOpen] = useState(false);
 
+  const { disconnect } = useDisconnect();
 
   function openModal() {
-    setIsOpen(true);
+    if (account?.bech32Address) {
+      disconnect()
+    } else {
+      setIsOpen(true);
+    }
   }
-
   function closeModal() {
     setIsOpen(false);
   }
 
+  const { data: account } = useAccount();
+  console.log(account)
   return (
     <>
       <Button onClick={openModal} variant={"full"} color="blue">
-        Connect Wallet
+        {account?.bech32Address ? "Wallet Connected" : "Connect Wallet"}
       </Button>
       <Modal
         isOpen={modalIsOpen}
