@@ -28,7 +28,6 @@ export async function getMessagesByPaiementId(paiementId: number): Promise<TMess
 export async function getMessageByPaiementId(paiementId: number): Promise<TMessage> {
 
     const messages = await getMessagesByPaiementId(paiementId);
-    console.log(messages, paiementId);
 
     if (!messages || messages.length == 0) {
         throw `No message with this paiement id was found ${paiementId}`

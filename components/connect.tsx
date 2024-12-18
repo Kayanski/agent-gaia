@@ -36,7 +36,6 @@ export function CosmosWallet() {
   }
 
   const { data: account } = useAccount();
-  console.log(account)
   return (
     <>
       <Button onClick={openModal} variant={"full"} color="blue">

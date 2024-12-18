@@ -21,9 +21,6 @@ export const ChatMessage = ({
 }: ChatMessageProps) => {
   const isUser = message.role === "user";
   const isSystem = message.role === "system";
-
-  console.log("is user ? ", isUser, isSystem, message.role)
-
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div className={`flex ${isUser ? "flex-row-reverse" : "flex-row"}`}>

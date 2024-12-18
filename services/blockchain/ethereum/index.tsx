@@ -25,8 +25,6 @@ async function checkTransactionEthereum(
       return null;
     }
 
-    // Get current block number to calculate confirmations
-    const currentBlock = await provider.getBlockNumber();
 
     return {
       confirmed: true,
