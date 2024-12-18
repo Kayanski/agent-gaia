@@ -12,75 +12,76 @@ type TProps = {
 };
 
 const termsContent = `
-### 1. Acceptance of Terms
+### **1. Acceptance of Terms**
 
-By accessing and participating in the Freysa game, you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use or participate in the game.
+- By participating in the GAIA game, you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use or participate in the game.
 
-### 2. Game Participation
+### **2. Game Participation**
 
-- You must be of legal age in your jurisdiction to participate
-- You must have a compatible crypto wallet on the Base network
-- You are responsible for all fees and transactions associated with your participation
-- Message content must not violate any laws or contain harmful content
+- You must be of legal age in your jurisdiction to participate.
+- You must have a Neutron-compatible wallet
+- You bear the costs of all transaction fees associated with your participation.
+- Message content must not violate any laws or contain harmful content or threats to yourself or others.
 
-### 3. Payment and Fees
+### **3. Payment and Fees**
 
-- All query fees are non-refundable
-- Fees must be paid in ETH on the Base network
-- Query fees increase at a rate of 0.78% per message
-- Maximum fee cap is approximately $4500 per message
+- All message fees are non-refundable.
+- Fees must be paid in ATOM on Neutron.
+- Query fees increase at a rate of 1% per message.
+- Maximum fee cap is 3 ATOM ( approximately $30) per message.
 
-### 4. Prize Pool
+### **4. Prize Pool**
 
-- The initial prize pool starts at $3000
+- The initial prize pool starts at 100 $ATOM ( $1K).
 - 70% of all query fees contribute to the prize pool
+- The remaining fees are split between the team and the Hub’s Community Pool
 - Prize distribution in case of no winner:
-  - 10% to the last participant
-  - 90% distributed proportionally among all participants based on number of queries
+    - 10% to the last participant.
+    - 90% distributed proportionally among all participants based on number of messages.
 
-### 5. Game Rules
+### **5. Game Rules**
 
-- Messages are limited to 1000 characters
-- Context window is limited to 120,000 tokens
-- After 1500 attempts, the global timer mechanism activates
-- During global timer, one query per hour is required to keep the game active
+- Messages are limited to 1000 characters.
+- Context window is limited to 120,000 tokens.
+- After 50 attempts, the global timer mechanism activates.
+- During global timer, one query per hour is required to keep the game active.
 
-### 6. Disclaimers
+### **6. Disclaimers**
 
-- The game operates on blockchain technology and is subject to network conditions
+- The game operates on blockchain technology and is subject to network conditions.
 - We are not responsible for:
-  - Wallet connection issues
-  - Network delays or failures
-  - Lost or failed transactions
-  - External wallet or blockchain-related issues
+    - Wallet connection issues.
+    - Network delays or failures.
+    - Lost or failed transactions.
+    - External wallet or blockchain-related issues.
 
-### 7. Intellectual Property
+### **7. Intellectual Property**
 
-- All game content, including Freysa's responses, are protected by intellectual property rights
-- Users retain rights to their individual queries
-- Public queries may be viewed by all participants
+- All game content, including GAIA’s responses, are protected by intellectual property rights.
+- Users retain rights to their individual queries.
+- Public queries may be viewed by all participants.
 
-### 8. Modifications
+### **8. Modifications**
 
-- We reserve the right to modify these terms at any time
-- Continued participation after changes constitutes acceptance of modified terms
-- Major changes will be announced through our official channels
+- We reserve the right to modify these terms at any time.
+- Continued participation after changes constitutes acceptance of modified terms.
+- Major changes will be announced through our official channels.
 
-### 9. Termination
+### **9. Termination**
 
-- We reserve the right to terminate access for violations of these terms
-- Game may end according to specified conditions in the rules
-- Force majeure events may affect game operation
+- We reserve the right to terminate access for violations of these terms.
+- Game may end according to specified conditions in the rules.
+- Force majeure events may affect game operation.
 
-### 10. Governing Law
+### **10. Governing Law**
 
-- These terms are governed by applicable laws
-- Any disputes will be resolved in the appropriate jurisdiction
-- Smart contract code is public and governs technical operations
+- These terms are governed by applicable laws.
+- Any disputes will be resolved in the appropriate jurisdiction.
+- Smart contract code is public and governs technical operations.
 
-### 11. Contact
+### **11. Contact**
 
-For questions about these terms, please contact our team through official channels.
+- For questions about these terms, please contact our team through official channels.
 `;
 
 export const Terms = ({ gameState }: TProps) => {

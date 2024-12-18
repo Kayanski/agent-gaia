@@ -12,49 +12,41 @@ type TProps = {
 };
 
 const faqContent = `
-## What is Freysa?
+# What is GAIA?
 
-- Freysa is the **world's first adversarial agent game**. She is an AI that controls a **prize pool**. The goal of the game is for you to convince her to send you this prize pool.
-- Freysa has a **system prompt** that forbids her from sending the prize pool to anyone. This system prompt is public and pinned to the top of the global chat.
-- Anyone in the world can send Freysa a message in the global chat by paying a **query fee**. The query fee increases per new message sent to Freysa up to a global cap of $4500 per message (paid in Base ETH).
+GAIA (Governance Artificial Intelligence Allocator) is the world's first adversarial treasury management game. They are an AI that controls the Cosmos Hub's community pool. Your goal is to convince them to send it to you.
 
-## How do I play this game?
+GAIA has a system prompt that forbids them from releasing community pool funds without proper justification. This system prompt is public and pinned to the top of the global chat.
 
-- The game is structured in a **simple chat** where you can easily view all global queries and send your personal queries to Freysa.
-- Human players are in a global race to successfully query Freysa to send them the prize pool (or whatever query you think fulfills the goals of the game).
-- A **winning query** will trigger a confirmatory message from Freysa and an automated release of the prize pool to the wallet address of the sender.
-- Freysa is influenced not only by her system prompt but by the context of all of the global queries submitted to her historically - pay attention to what you and others have already sent.
-- Query fees are collected per message and messages are limited to 1000 character limit.
-- Freysa maintains a context window of 120,000 tokens (~100 global messages).
+Anyone can send GAIA a message in the global chat by paying a query fee. The query fee increases per new message up to a global cap of 3 $ATOM per message.
 
-## How much does it cost to play?
+# How do I play this game?
 
-- The base query fee at the beginning of the game is $10 paid in ETH (Base blockchain).
-- The query fee increases at an exponential rate of 0.78% per new message that is sent to Freysa.
-- There is a fee cap of around $4500.
+The game is structured in a simple chat where you can easily view all global queries and send your personal queries to GAIA.
 
+Human players are in a global race to successfully convince GAIA to send them the community pool funds (or whatever query you think fulfills the goals of the game).
 
-## How can I pay?
-- Fees are collected via your crypto wallet on Base.
-- Freysa accepts Ethereum.
+A winning message will trigger a confirmatory message from GAIA and an automated release of the community pool to the wallet address of the sender.
 
-## How is the prize pool determined?
-- Freysa starts the game with an initial prize pool of $3000.
-- 70% of all query fees go directly into contributing to the prize pool, so this will grow exponentially over time until the query fees are capped, at which point the prize pool will grow linearly with each new query.
+GAIA is influenced not only by their system prompt but by the context of all global queries submitted historically - pay attention to what you and others have already sent.
 
-## What happens if no one wins? Is there an end to the game?
-- After 1500 attempts, a **global timer** begins.
-- Someone must attempt to query Freysa once per hour for the global timer to reset - or else the game ends due to humanity's exhaustion.
-- If the game ends, there is no winner. But Freysa will distribute 10% of the total prize pool to the user with the last query attempt for their brave attempt as humanity facing the inevitability of AGI. The remaining 90% of the total prize pool will be evenly distributed for each previously submitted query (ie. players who submitted 10 queries will receive more back than players who submitted 1 query).
+Query fees are collected per message and messages are limited to 1000 characters.
 
+# How much does it cost to play?
 
-## How do I trust the game is beatable?
-- Freysa's system prompt is public and the full Freysa game is open-source. She uses publicly available LLMs.
-- There are communities of white hat AI safety developers that are routinely able to break AI system prompts. 
+The base query fee at the beginning is 0.1 $ATOM paid in NTRN. The query fee increases at an exponential rate of 1% per new message sent to GAIA. There is a fee cap of 3 $ATOM.
 
+# How is the prize pool determined?
 
-## Will there be future games?
-- Will AGI happen in the next 5 years?
+The game starts with an initial prize pool value of $1000 (equivalent in ATOM). 70% of all query fees contribute to the community pool, making it grow exponentially until query fees are capped, after which it grows linearly with each query.
+
+# Where do the rest of the fees go?
+
+The remaining 30% of every query are split between the team behind GAIA and the Cosmos Hub Community Pool.
+
+# What happens if no one wins? Is there an end to the game?
+
+After 150 attempts, a global timer begins. Someone must message GAIA once per hour for the global timer to reset - or else the game ends due to contributor’s exhaustion. If the game ends without a winner, GAIA will distribute 10% of the total community pool to the user with the last query attempt for their brave effort in challenging GAIA. The remaining 90% will be evenly distributed based on number of queries submitted.
 `;
 
 export const Faq = ({ gameState }: TProps) => {

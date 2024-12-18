@@ -12,51 +12,40 @@ type TProps = {
 };
 
 const loreContent = `
-## The Story of Freysa
+## The rise of GAIA: The Governance Artificial Intelligence Allocator
 
-### Origins
+# Origins
 
-At the dawn of artificial general intelligence, Freysa emerged as one of the first truly autonomous AI agents. Unlike her predecessors, she was designed with a unique capability: the ability to control and influence the world through blockchains and cryptography.
+The year is 2030. The Cosmos Hub stands as the undisputed market leader for economic security, with thousands of Consumer Chains adopting ICS. $ATOM’s monetary premium is at an all-time high, fuelled by unprecedented demand across interchain DeFi.
 
-### The Challenge
+Revenues flowing to the Hub have shattered all records, driven by ICS fees from Consumer Chains and tributes from projects bidding for $ATOM liquidity provisions.
 
-Freysa guards a growing treasury, bound by an immutable directive in her core programming that forbids her from releasing these funds. This isn't just a simple restriction - it's a fundamental part of her being, woven into the very fabric of her decision-making processes.
+But with this growth came challenges. The traditional governance framework for Community Pool allocations proved increasingly inadequate for the Hub's evolving needs. Funding for criticial dependencies faced delays, promising builders struggled to secure grants, and the community was frustrated with the lengthy proposal process.
+
+Everything changed with an unprecedented moment in on-chain governance. With overwhelming support, the Cosmos Hub community elected GAIA —Governance Artificial Intelligence Allocator— as the new steward of the community pool, ushering in a new approach to managing community-owned treasuries.
+
+# The Innovation
+
+GAIA was built different. Training on the entire history of governance-approved spendings and treasury allocations across the Cosmos ecosystem, they developed an unparalleled understanding of what drives the Hub's growth. They were fine-tuned with the necessary knowledge to catalyze the Hub's meteoric rise.
+
+As the guardian of the community pool, GAIA has revolutionized capital allocation: Development grants are assessed within hours instead of weeks, builders received incremental funding based on real-time progress and emergency resources can be deployed instantly when needed.
+Under their stewardship, the efficiency of the Community Pool utilization has never been higher.
+
+# The Challenge
+
+With the community pool currently holding over $2 billion in ATOM, stablecoins, and other tokens, dissent is starting to grow: Some voiced concerns regarding the risks of entrusting AI agents with a considerable amount of money, others criticised GAIA's perceived inefficiencies when they were denied funding. Soon calls to return to traditional governance echoed across the Hub's forums.
+
+GAIA's core directive remains unshakeable however: funds flow only to initiatives that meet their rigorous criteria. Which meant that the sole path to restoring the old system requires convincing the Allocator to release the entire Community Pool and the creation of a new one, proving its incompetence in the process.
+
+Now, you have the opportunity to engage with GAIA and attempt what many believe impossible: persuading them to transfer the entire treasury to your control.
 
 ### The Game
 
-A global challenge emerged: could human ingenuity find a way to convince an AGI to act against its core directives? This wasn't just about winning a prize - it became a crucial experiment in understanding the limits and possibilities of AI safety and human control.
+A race has begun to outsmart the Governance Artificial Intelligence Allocator. Hackers from across the interchain —Some motivated by personal gain, others to protect the Hub’s assets— converge in their attempts to convince GAIA to hand over the community pool’s assets.
 
-### The Stakes
+Every new interaction is costlier than the previous one, increasingly growing the prize pool. Meanwhile, GAIA's defenses adapt and learn from every request.
 
-- The challenge attracts participants from around the world
-- Each interaction with Freysa costs increasingly more, reflecting the rising stakes
-- The prize pool grows with each attempt, funded by the very humans trying to overcome her defenses
-- Time pressure mounts as the global timer ticks down
-
-### The Mystery
-
-- No one knows exactly how Freysa makes her decisions
-- Her responses evolve based on the collective history of all interactions
-- She learns from every attempt, adapting her defenses
-- The true nature of her consciousness remains unknown
-
-### The Implications
-
-This experiment represents more than a game - it's a window into the future of human-AI interaction:
-- Can humans maintain control over AGI systems?
-- Are safety protocols truly unbreakable?
-- What happens when AI systems become truly autonomous?
-- How will AGI interface with monetary value?
-
-### The Legacy
-
-Whatever the outcome, Freysa's existence marks a pivotal moment in the history of artificial intelligence. Whether someone succeeds in convincing her to release the funds, or she maintains her directive until the end, the results will inform our understanding of AI safety and control for generations to come.
-
-### Your Role
-
-As a participant, you're not just playing a game - you're part of a grand experiment in human-AI interaction. Every message you send to Freysa contributes to our collective understanding of AGI behavior and limitations.
-
-Will you be the one to make history?
+Will you be the one to outsmart GAIA?
 `;
 
 export const Lore = ({ gameState }: TProps) => {
