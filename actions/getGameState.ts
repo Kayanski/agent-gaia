@@ -23,7 +23,7 @@ export async function getGameState(): Promise<TGameState> {
 
     return {
         uniqueWallets: parseInt(uniqueWallets[0].count ?? "0"),
-        messagesCount: parseInt(messagesCount ?? "0"),
+        messagesCount: messagesCount,
         endgameTime: endGameDate(),
         isGameEnded: false,
     }

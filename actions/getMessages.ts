@@ -30,8 +30,6 @@ export interface DbMessage {
 
 
 export async function getRecentMessages(userAddress: string | undefined, max?: number): Promise<TMessage[]> {
-
-
     const sql = neon(process.env.DATABASE_URL || "");
 
     const messages: DbMessage[] = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts LIMIT $1 `, [max ?? 100]) as unknown as DbMessage[];
@@ -39,5 +37,4 @@ export async function getRecentMessages(userAddress: string | undefined, max?: n
     return messages.map(parseDbMessageToTMessage).filter((m) => {
         return m.userWallet != null || m.role == "system"
     })
-
 }
