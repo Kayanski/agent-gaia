@@ -6,12 +6,12 @@ import { Header } from "@/app/home/components/Header";
 import { Chat } from "@/app/home/components/Chat/Chat";
 import { useState, useCallback, useEffect } from "react";
 import { ConversationModal } from "./Chat/ConversationModal";
-import { useAccount } from "wagmi";
 import { HowItWorks } from "./Chat/HowItWorks";
 import { Stats } from "./Chat/Stats";
 import { getGameState, TGameState } from "@/actions/getGameState";
 import { getPrizePool } from "@/actions/getPrizePool";
 import Image from "next/image";
+import { useAccount } from "graz";
 
 type TProps = {
   messages: TMessage[];
@@ -24,17 +24,17 @@ export const Main = (props: TProps) => {
   const [gameState, setGameState] = useState<TGameState>(props.gameState);
   const [selectedMessage, setSelectedMessage] = useState<TMessage | null>(null);
   const [showOnlyUserMessages, setShowOnlyUserMessages] = useState(false);
-  const { address } = useAccount();
+  const { data: account } = useAccount();
 
   const queryNewMessages = useCallback(async () => {
     const newMessages = await getRecentMessages(
-      showOnlyUserMessages ? address : undefined
+      showOnlyUserMessages ? account?.bech32Address : undefined
     );
     setMessages(newMessages);
 
     const newGameState = await getGameState();
     setGameState(newGameState);
-  }, [showOnlyUserMessages, address]);
+  }, [showOnlyUserMessages, account?.bech32Address]);
 
   // Poll for new messages every 5 seconds
   useEffect(() => {

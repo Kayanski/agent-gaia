@@ -7,7 +7,8 @@ import { neon } from '@neondatabase/serverless';
 export async function createDatabase() {
     const sql = neon(process.env.DATABASE_URL || "");
 
-    // await sql`CREATE TYPE role AS ENUM ('user', 'system')`;
+    await sql`DROP TYPE role`;
+    await sql`CREATE TYPE role AS ENUM ('user', 'system', 'assistant')`;
     await sql`
         CREATE TABLE IF NOT EXISTS prompts (
             id BIGSERIAL PRIMARY KEY, 
@@ -56,7 +57,7 @@ export async function insertSystemMessage(answer: StructuredMessage) {
         price_paid,
         paiement_id,
         poster_role
-    ) VALUES (default, NULL, $1, true, $2, NULL, NULL, 'system')`, [answer.explanation, new Date()]);
+    ) VALUES (default, NULL, $1, true, $2, NULL, NULL, 'assistant')`, [answer.explanation, new Date()]);
 }
 
 

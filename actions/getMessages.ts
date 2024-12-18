@@ -32,9 +32,14 @@ export interface DbMessage {
 export async function getRecentMessages(userAddress: string | undefined, max?: number): Promise<TMessage[]> {
     const sql = neon(process.env.DATABASE_URL || "");
 
-    const messages: DbMessage[] = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts LIMIT $1 `, [max ?? 100]) as unknown as DbMessage[];
+    let messages: DbMessage[];
+    if (userAddress) {
+        messages = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts WHERE address=$2 OR poster_role='assistant' LIMIT $1 `, [max ?? 100, userAddress]) as unknown as DbMessage[];
+    } else {
+        messages = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts LIMIT $1 `, [max ?? 100]) as unknown as DbMessage[];
+    }
 
     return messages.map(parseDbMessageToTMessage).filter((m) => {
-        return m.userWallet != null || m.role == "system"
+        return m.userWallet != null || m.role == "assistant"
     })
 }
