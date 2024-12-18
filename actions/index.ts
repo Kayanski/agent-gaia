@@ -1,10 +1,35 @@
 "use server"
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate"
 import { ACTIVE_NETWORK } from "./gaia/constants";
-import { insertMessage } from "./gaia/createDb";
-import { getMessagesByPaiementId } from "./getMessageById";
+import { insertSystemMessage, insertUserMessage } from "./gaia/createDb";
+import { getMessageByPaiementId, getMessagesByPaiementId } from "./getMessageById";
+import { sendMessage } from "@/services/llm/claude";
 
 export async function verifyAndExecuteLLMPublic(paiementId: number) {
+
+    // We load the data from the database
+    const savedMessage = await getMessageByPaiementId(paiementId)
+
+    if (savedMessage.is_submitted) {
+        return {
+            success: true,
+            error: undefined
+        }
+    }
+
+    // If it's not submitted, we send the message to the AI
+    const aiResponse = await sendMessage({
+        messages: [{
+            role: "user",
+            content: savedMessage.content,
+        }
+        ]
+    });
+
+    await insertSystemMessage(aiResponse);
+
+    // With this aiResponse, we save the message in memory
+
     return {
         success: true,
         error: undefined
@@ -39,10 +64,12 @@ export async function submitPrompt(messageId: number) {
     })
 
     // We save it locally
-    await insertMessage({
+    await insertUserMessage({
         address: message.user,
         prompt: message.msg,
-        time: message.time
+        time: message.time,
+        pricePaid: message.price_paid.amount,
+        paiementId: messageId
     })
 
 }

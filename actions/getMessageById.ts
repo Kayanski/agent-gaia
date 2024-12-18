@@ -1,3 +1,4 @@
+"use server"
 import { neon } from "@neondatabase/serverless";
 import { DbMessage, TMessage } from "./getMessages";
 import { MESSAGE_FIELDS, parseDbMessageToTMessage } from "@/lib/utils";
@@ -21,5 +22,17 @@ export async function getMessagesByPaiementId(paiementId: number): Promise<TMess
 
     const messages = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts WHERE paiement_id=($1)`, [paiementId]);
 
+
     return (messages as unknown as DbMessage[]).map(parseDbMessageToTMessage)
+}
+export async function getMessageByPaiementId(paiementId: number): Promise<TMessage> {
+
+    const messages = await getMessagesByPaiementId(paiementId);
+    console.log(messages, paiementId);
+
+    if (!messages || messages.length == 0) {
+        throw `No message with this paiement id was found ${paiementId}`
+    }
+
+    return messages[0]
 }

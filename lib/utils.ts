@@ -7,7 +7,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export async function asyncAction<T>(promise: Promise<T>): Promise<{ data: T | undefined, err: any | undefined }> {
-
   return promise.then((data) => ({
     data,
     err: undefined
@@ -15,7 +14,6 @@ export async function asyncAction<T>(promise: Promise<T>): Promise<{ data: T | u
     data: undefined,
     err
   }))
-
 }
 
 export function parseDbMessageToTMessage(m: DbMessage): TMessage {
@@ -23,13 +21,16 @@ export function parseDbMessageToTMessage(m: DbMessage): TMessage {
     content: m.prompt,
     id: m.id,
     fullConversation: m.prompt,
-    role: "user" as TMessage["role"],
-    isWinner: false,
+    role: m.poster_role,
+    isWinner: m.is_winner,
     userWallet: m.address,
     createdAt: m.submit_date,
-    paiementId: m.payment_id,
-    pricePaid: m.price_paid
+    paiementId: m.paiement_id,
+    pricePaid: m.price_paid,
+    is_submitted: m.is_submitted
   })
 }
 
-export const MESSAGE_FIELDS = 'address, prompt, is_submitted, submit_date, order_id, paiement_id, price_paid';
+export const MESSAGE_FIELDS = 'address, prompt, is_submitted, submit_date, order_id, paiement_id, price_paid, poster_role, is_winner';
+
+export type Role = "user" | "system";

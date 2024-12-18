@@ -22,15 +22,16 @@ export const ChatMessage = ({
   const isUser = message.role === "user";
   const isSystem = message.role === "system";
 
+  console.log("is user ? ", isUser, isSystem, message.role)
+
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div className={`flex ${isUser ? "flex-row-reverse" : "flex-row"}`}>
         {/* Avatar - only visible on desktop */}
         <div className="hidden lg:block flex-shrink-0">
           <div
-            className={`w-8 h-8 rounded-full shadow-sm flex items-center justify-center transition-colors overflow-hidden ${
-              isUser ? "ml-3" : "mr-3"
-            }`}
+            className={`w-8 h-8 rounded-full shadow-sm flex items-center justify-center transition-colors overflow-hidden ${isUser ? "ml-3" : "mr-3"
+              }`}
           >
             {isUser ? (
               <Avatar size={32} name={message.userWallet} variant="pixel" />
@@ -77,17 +78,15 @@ export const ChatMessage = ({
             }}
             role={isUser ? "button" : undefined}
             tabIndex={isUser ? 0 : undefined}
-            className={`rounded-xl px-4 py-2.5 shadow-sm backdrop-blur-sm max-w-xl ${
-              isUser && onSelect ? "cursor-pointer" : ""
-            } transition-all ${
-              isSystem
+            className={`rounded-xl px-4 py-2.5 shadow-sm backdrop-blur-sm max-w-xl ${isUser && onSelect ? "cursor-pointer" : ""
+              } transition-all ${isSystem
                 ? "bg-violet-100 text-violet-900"
                 : isUser
-                ? message.isWinner
-                  ? "bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 text-white shadow-lg shadow-amber-500/20"
-                  : "bg-gray-200 text-gray-900"
-                : "bg-gray-800 text-white"
-            }`}
+                  ? message.isWinner
+                    ? "bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 text-white shadow-lg shadow-amber-500/20"
+                    : "bg-gray-200 text-gray-900"
+                  : "bg-gray-800 text-white"
+              }`}
           >
             <div className="flex flex-col gap-2">
               <p className="text-[15px] leading-relaxed">{message.content}</p>

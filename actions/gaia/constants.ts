@@ -6,5 +6,11 @@ export const TESTNET = {
     chain: testnetChains.neutrontestnet
 }
 
+export function endGameDate() {
+    const date = new Date();
+    date.setDate(date.getDate() + 1);
+    return date;
+}
+
 
 export const ACTIVE_NETWORK = TESTNET;
