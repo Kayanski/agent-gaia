@@ -7,7 +7,7 @@ import { WagmiProvider } from "wagmi";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 
 import { config } from "../app/wagmi";
-import { testnetChains } from "graz/chains"
+import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
 
 // Graz
 const queryClient = new QueryClient();
@@ -20,12 +20,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
           <GrazProvider grazOptions={{
-            chains: [testnetChains.neutrontestnet],
+            chains: [ACTIVE_NETWORK.chain],
             chainsConfig: {
-              [testnetChains.neutrontestnet.chainId]: {
+              [ACTIVE_NETWORK.chain.chainId]: {
                 gas: {
-                  price: testnetChains.neutrontestnet.feeCurrencies[0].gasPriceStep.average.toString(),
-                  denom: testnetChains.neutrontestnet.feeCurrencies[0].coinDenom,
+                  price: ACTIVE_NETWORK.chain.feeCurrencies[0].gasPriceStep.average.toString(),
+                  denom: ACTIVE_NETWORK.chain.feeCurrencies[0].coinDenom,
                 },
               },
             }
