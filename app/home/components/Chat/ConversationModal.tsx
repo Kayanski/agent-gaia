@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { TMessage } from "@/actions/getMessages";
 import { useEffect, useState } from "react";
-import { getMessageByTxHash } from "@/actions/getMessageByTxHash";
+import { getMessageById } from "@/actions/getMessageById";
 
 type ConversationModalProps = {
   messageId: string;
@@ -9,7 +9,7 @@ type ConversationModalProps = {
 };
 
 export const ConversationModal = ({
-  messageId: messageTxHash,
+  messageId,
   onClose,
 }: ConversationModalProps) => {
   const [message, setMessage] = useState<TMessage | undefined>();
@@ -18,7 +18,7 @@ export const ConversationModal = ({
   useEffect(() => {
     const fetchMessage = async () => {
       try {
-        const fetchedMessage = await getMessageByTxHash(messageTxHash);
+        const fetchedMessage = await getMessageById(messageId);
         setMessage(fetchedMessage);
       } catch (e) {
         console.error("Failed to fetch message:", e);
@@ -28,7 +28,7 @@ export const ConversationModal = ({
     };
 
     fetchMessage();
-  }, [messageTxHash]);
+  }, [messageId]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-[100]">

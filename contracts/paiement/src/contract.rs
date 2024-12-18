@@ -7,7 +7,7 @@ use cw_storage_plus::Bound;
 
 use crate::{
     msg::{
-        Config, CurrentPriceResponse, ExecuteMsg, InstantiateMsg, MessagesResponse, QueryMsg,
+        Config, CurrentPriceResponse, ExecuteMsg, InstantiateMsg, MessageResponse, QueryMsg,
         CONFIG, MESSAGES,
     },
     PaiementError, PaiementResult,
@@ -54,10 +54,7 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> P
     let mut config = CONFIG.load(deps.storage)?;
 
     match msg {
-        ExecuteMsg::Deposit {
-            message_hash,
-            receiver,
-        } => {
+        ExecuteMsg::Deposit { message, receiver } => {
             let price = coin(
                 config.current_price.to_uint_floor().u128(),
                 config.paiement_denom.clone(),
@@ -70,18 +67,19 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> P
                     expected: vec![price]
                 }
             );
+            let this_message_key = config.next_payment_key;
 
             MESSAGES.save(
                 deps.storage,
-                0,
+                this_message_key,
                 &crate::msg::MessageState {
                     price_paid: price.clone(),
                     user: receiver
                         .map(|address| deps.api.addr_validate(&address))
                         .transpose()?
                         .unwrap_or(info.sender),
-                    msg_hash: message_hash,
                     time: env.block.time,
+                    msg: message,
                 },
             )?;
 
@@ -101,10 +99,13 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> P
                 }
             });
 
-            config.current_price *= config.multiplier; // We update the price
+            config.current_price *= Decimal::one() + config.multiplier; // We update the price
             config.next_payment_key += 1;
             CONFIG.save(deps.storage, &config)?;
-            Ok(Response::new().add_messages(messages))
+            Ok(Response::new()
+                .add_attribute("action", "deposit-ai")
+                .add_attribute("paiement-id", this_message_key.to_string())
+                .add_messages(messages))
         }
     }
 }
@@ -128,15 +129,18 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> PaiementResult<Binary> {
             start_after.map(Bound::exclusive),
             limit,
             |index, response| {
-                Ok::<_, StdError>(MessagesResponse {
+                Ok::<_, StdError>(MessageResponse {
                     message_id: index,
                     price_paid: response.price_paid,
                     sender: response.user,
-                    hash: response.msg_hash,
                     time: response.time,
+                    msg: response.msg,
                 })
             },
         )?)
         .map_err(Into::into),
+        QueryMsg::Message { message_id } => {
+            to_json_binary(&MESSAGES.load(deps.storage, message_id)?).map_err(Into::into)
+        }
     }
 }

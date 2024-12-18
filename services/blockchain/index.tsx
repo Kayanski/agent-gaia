@@ -1,26 +1,16 @@
-import { getMessageByTxHash } from "@/actions/getMessageByTxHash";
-import { isTxValidEthereum } from "./ethereum";
+import { getMessagesByPaiementId } from "@/actions/getMessageById";
 
 export const isTxValid = async (
-  txHash: string,
-  blockchain: string,
-  txExpiryMinutes?: number
+  paiementId: number,
+  _blockchain: string,
+  _txExpiryMinutes?: number
 ) => {
-  const message = await getMessageByTxHash(txHash, txExpiryMinutes);
-  if (!message || !message.price) {
+  const message = await getMessagesByPaiementId(paiementId);
+  if (!message || message.length == 0 || !message[0].pricePaid) {
     console.log({ message });
-    console.log(`Message not found with hash ${txHash} or price is not set`);
+    console.log(`Message not found with paiement ID ${message[0].paiementId} or price is not set`);
     return false;
   }
 
-  switch (blockchain.toLowerCase()) {
-    case "ethereum":
-      return isTxValidEthereum(
-        txHash,
-        message.price,
-        process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS!
-      );
-    default:
-      throw new Error(`Unsupported blockchain: ${blockchain}`);
-  }
+  return true
 };

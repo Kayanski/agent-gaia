@@ -168,7 +168,7 @@ export const Main = (props: TProps) => {
       <AnimatePresence>
         {selectedMessage && (
           <ConversationModal
-            messageId={selectedMessage.txHash}
+            messageId={selectedMessage.id}
             onClose={() => setSelectedMessage(null)}
           />
         )}

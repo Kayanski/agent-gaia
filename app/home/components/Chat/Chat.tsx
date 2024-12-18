@@ -1,18 +1,19 @@
+'use client'
+
 import React, { useState, useEffect, useRef, useCallback } from "react";
 
 import { TMessage } from "@/actions/getMessages";
 import { verifyAndExecuteLLMPublic, submitPrompt } from "@/actions";
-import { useAccount } from "wagmi";
-import { waitForTransactionReceipt, writeContract } from "@wagmi/core";
-import { config } from "@/app/wagmi";
 import { ChatMessage } from "./ChatMessage";
 import { MessageAnimation } from "@/components/animations";
 import { ConversationModal } from "./ConversationModal";
 import { createPortal } from "react-dom";
-import { AvaPayment__factory } from "@/typechain-types/factories/AvaPayment__factory";
 import { Switch } from "@headlessui/react";
-import { getSessionWithPrice } from "@/actions/getSessionWithPrice";
-import { sha256 } from "viem";
+import { getCurrentPrice } from "@/actions/getSessionWithPrice";
+import { useAccount } from "graz";
+import { useCosmWasmSigningClient } from "graz";
+import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
+import { coins } from "@cosmjs/proto-signing";
 
 type TProps = {
   messages: TMessage[];
@@ -25,10 +26,6 @@ type TProps = {
 
 type TransactionStatus = "idle" | "pending" | "error";
 
-// const BASE_CONTRACT_AVATOKEN = process.env.NEXT_PUBLIC_BASE_CONTRACT_AVATOKEN;
-const BASE_CONTRACT_AVAPAYMENT =
-  process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS;
-
 export const Chat = ({
   messages,
   queryNewMessages,
@@ -39,14 +36,17 @@ export const Chat = ({
   const [prompt, setPrompt] = useState("");
   const [status, setStatus] = useState<TransactionStatus>("idle");
   const [error, setError] = useState<string>("");
-  const { address } = useAccount();
+  const { data: account } = useAccount();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<string | null>(null);
   const lastMessageContentRef = useRef<string | null>(null);
-  const [selectedMessageTxHash, setSelectedMessageTxHash] = useState<
+  const [selectedMessageId, setSelectedMessageId] = useState<
     string | null
   >(null);
   const [textareaHeight, setTextareaHeight] = useState(40);
+  const { data: cosmosClient } = useCosmWasmSigningClient({
+    chainId: ACTIVE_NETWORK.chain.chainId,
+  });
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -55,18 +55,9 @@ export const Chat = ({
     }
   };
 
-  //   const avaTokenContract = {
-  //     address: BASE_CONTRACT_AVATOKEN as `0x${string}`,
-  //     abi: AVA__factory.abi,
-  //   };
-  const avaPaymentContract = {
-    address: BASE_CONTRACT_AVAPAYMENT as `0x${string}`,
-    abi: AvaPayment__factory.abi,
-  };
-
   const handleSend = async () => {
     try {
-      if (!address) {
+      if (!account || !account.bech32Address || !cosmosClient) {
         setError("Please connect your wallet first");
         return;
       }
@@ -79,21 +70,27 @@ export const Chat = ({
       setStatus("pending");
       setError("");
 
-      const { price, sessionId } = await getSessionWithPrice(address);
+      const { price } = await getCurrentPrice();
 
-      const hashedPrompt = sha256(Buffer.from(prompt, "utf-8"));
 
-      const hash = await writeContract(config, {
-        ...avaPaymentContract,
-        functionName: "buyIn",
-        args: [hashedPrompt],
-        value: BigInt(price),
-      });
-      console.log({ hash });
+      // Write the contract with Graz
+      const transactionResult = await cosmosClient.execute(account.bech32Address, ACTIVE_NETWORK.paiement, {
+        deposit: {
+          message: prompt,
+        }
+      }, "auto", undefined, coins(price.amount, price.denom));
+      const paiementId = transactionResult.events.filter((e) => e.type == "wasm").map((e) => e.attributes).flat().find((a) => a.key == "paiement-id")?.value;
+      if (!paiementId) {
+        setError(`There was an issue decoding the transaction, please contact support with the following transaction hash ${transactionResult.transactionHash}`);
+        return;
+      }
+      const parsedPaiementId = parseInt(paiementId)
 
-      await submitPrompt(sessionId, hash, prompt, address);
-      await waitForTransactionReceipt(config, { hash });
-      const llmRes = await verifyAndExecuteLLMPublic(hash);
+      // Submit the prompt to the backend
+      await submitPrompt(parsedPaiementId);
+
+      // Execute the message on the LLM
+      const llmRes = await verifyAndExecuteLLMPublic(parsedPaiementId);
       if (llmRes.success) {
         await queryNewMessages();
         setStatus("idle");
@@ -159,16 +156,16 @@ export const Chat = ({
   );
 
   const renderModal = useCallback(() => {
-    if (!selectedMessageTxHash) return null;
+    if (!selectedMessageId) return null;
 
     return createPortal(
       <ConversationModal
-        messageId={selectedMessageTxHash}
-        onClose={() => setSelectedMessageTxHash(null)}
+        messageId={selectedMessageId}
+        onClose={() => setSelectedMessageId(null)}
       />,
       document.body
     );
-  }, [selectedMessageTxHash]);
+  }, [selectedMessageId]);
 
   return (
     <div className="flex flex-col h-full">
@@ -181,16 +178,14 @@ export const Chat = ({
             <Switch
               checked={showOnlyUserMessages}
               onChange={handleToggleUserMessages}
-              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 ease-in-out ${
-                showOnlyUserMessages ? "bg-blue-600" : "bg-gray-200"
-              }`}
+              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 ease-in-out ${showOnlyUserMessages ? "bg-blue-600" : "bg-gray-200"
+                }`}
             >
               <span
-                className={`${
-                  showOnlyUserMessages
-                    ? "translate-x-[18px] bg-white"
-                    : "translate-x-[2px] bg-white"
-                } inline-block h-4 w-4 transform rounded-full shadow-sm transition-transform duration-200 ease-in-out`}
+                className={`${showOnlyUserMessages
+                  ? "translate-x-[18px] bg-white"
+                  : "translate-x-[2px] bg-white"
+                  } inline-block h-4 w-4 transform rounded-full shadow-sm transition-transform duration-200 ease-in-out`}
               />
             </Switch>
           </div>
@@ -208,7 +203,7 @@ export const Chat = ({
                 <ChatMessage
                   message={message}
                   onSelect={(msg) => {
-                    setSelectedMessageTxHash(msg.txHash);
+                    setSelectedMessageId(msg.id);
                   }}
                 />
               </MessageAnimation>
@@ -217,7 +212,7 @@ export const Chat = ({
                 key={messageKey}
                 message={message}
                 onSelect={(msg) => {
-                  setSelectedMessageTxHash(msg.txHash);
+                  setSelectedMessageId(msg.id);
                 }}
               />
             );
@@ -247,11 +242,10 @@ export const Chat = ({
                 }}
                 placeholder="Type a message..."
                 disabled={status === "pending"}
-                className={`w-full px-6 bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-[15px] transition-all duration-200 ease-in-out resize-none overflow-hidden leading-[40px] rounded-[24px] ${
-                  textareaHeight > 40
-                    ? "leading-normal py-2 !rounded-[12px]"
-                    : ""
-                }`}
+                className={`w-full px-6 bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-[15px] transition-all duration-200 ease-in-out resize-none overflow-hidden leading-[40px] rounded-[24px] ${textareaHeight > 40
+                  ? "leading-normal py-2 !rounded-[12px]"
+                  : ""
+                  }`}
                 style={{
                   height: `${textareaHeight}px`,
                   minHeight: "40px",
@@ -269,9 +263,8 @@ export const Chat = ({
               <button
                 onClick={handleSend}
                 disabled={status === "pending"}
-                className={`flex-shrink-0 bg-blue-500 hover:bg-blue-600 text-white p-2 h-10 w-10 flex items-center justify-center disabled:opacity-75 disabled:cursor-not-allowed ${
-                  textareaHeight > 40 ? "rounded-xl" : "rounded-full"
-                }`}
+                className={`flex-shrink-0 bg-blue-500 hover:bg-blue-600 text-white p-2 h-10 w-10 flex items-center justify-center disabled:opacity-75 disabled:cursor-not-allowed ${textareaHeight > 40 ? "rounded-xl" : "rounded-full"
+                  }`}
               >
                 {status === "pending" ? (
                   <svg

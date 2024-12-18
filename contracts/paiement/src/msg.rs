@@ -14,7 +14,7 @@ pub struct InstantiateMsg {
 pub enum ExecuteMsg {
     #[cw_orch(payable)]
     Deposit {
-        message_hash: String,
+        message: String,
         receiver: Option<String>,
     },
 }
@@ -24,7 +24,9 @@ pub enum ExecuteMsg {
 pub enum QueryMsg {
     #[returns(CurrentPriceResponse)]
     CurrentPrice {},
-    #[returns(MessagesResponse)]
+    #[returns(MessageResponse)]
+    Message { message_id: u32 },
+    #[returns(Vec<MessageResponse>)]
     Messages {
         start_after: Option<u32>,
         limit: Option<u32>,
@@ -37,11 +39,11 @@ pub struct CurrentPriceResponse {
 }
 
 #[cw_serde]
-pub struct MessagesResponse {
+pub struct MessageResponse {
     pub message_id: u32,
     pub price_paid: Coin,
     pub sender: Addr,
-    pub hash: String,
+    pub msg: String,
     pub time: Timestamp,
 }
 
@@ -60,7 +62,7 @@ pub const CONFIG: Item<Config> = Item::new("config");
 pub struct MessageState {
     pub price_paid: Coin,
     pub user: Addr,
-    pub msg_hash: String,
+    pub msg: String,
     pub time: Timestamp,
 }
 
