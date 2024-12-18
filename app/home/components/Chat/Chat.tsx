@@ -44,9 +44,7 @@ export const Chat = ({
     string | null
   >(null);
   const [textareaHeight, setTextareaHeight] = useState(40);
-  const { data: cosmosClient } = useCosmWasmSigningClient({
-    chainId: ACTIVE_NETWORK.chain.chainId,
-  });
+  const { data: cosmosClient } = useCosmWasmSigningClient();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
