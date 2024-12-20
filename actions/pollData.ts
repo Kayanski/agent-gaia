@@ -5,10 +5,11 @@ import { getHighestPaiementId } from './getMessageById';
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate';
 import { ACTIVE_NETWORK } from './gaia/constants';
 import { start } from 'repl';
-import { queryMessage, queryMessages } from '@/services/blockchain/cosmos';
+import { MessageResponse, queryMessage, queryMessages } from '@/services/blockchain/cosmos';
 import { insertAssistantMessage, insertUserMessage, messagePromptTransmitted } from './gaia/createDb';
 import { sendMessage } from '@/services/llm/claude';
 import { getMaxPaiementIdByRole } from './getMessages';
+import { Message } from 'postcss';
 
 let isProcessing = false;
 
@@ -56,20 +57,24 @@ async function updateDataFromBlockchain() {
         })
 
         // We send a LLVM request
-
-        // If it's not submitted, we send the message to the AI
-        const aiResponse = await sendMessage({
-            messages: [{
-                role: "user",
-                content: message.msg,
-            }
-            ]
-        });
-        await insertAssistantMessage(message.sender, message.message_id, aiResponse);
-
-        // After the LLVM request is processed, we update the message status in the DB
-        await messagePromptTransmitted(message.message_id);
+        await triggerAiResponse(message)
     }
+}
+
+async function triggerAiResponse(message: MessageResponse) {
+
+    // If it's not submitted, we send the message to the AI
+    const aiResponse = await sendMessage({
+        messages: [{
+            role: "user",
+            content: message.msg,
+        }
+        ]
+    });
+    await insertAssistantMessage(message.sender, message.message_id, aiResponse);
+
+    // After the LLVM request is processed, we update the message status in the DB
+    await messagePromptTransmitted(message.message_id, aiResponse.decision);
 }
 
 
@@ -91,21 +96,6 @@ export async function retryPastRequests() {
         const message = await queryMessage(paiementId, cosmwasmClient);
         console.log(message)
 
-        // Send a LLVM request
-        const aiResponse = await sendMessage({
-            messages: [{
-                role: "user",
-                content: message.msg,
-            }
-            ]
-        });
-        await insertAssistantMessage(message.sender, paiementId, aiResponse);
-
-        // After the LLVM request is processed, we update the message status in the DB
-        await messagePromptTransmitted(paiementId);
+        await triggerAiResponse(message)
     }
-
-
-
-
 }

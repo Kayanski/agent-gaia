@@ -15,16 +15,18 @@ export interface Count {
 }
 
 export async function getGameState(): Promise<TGameState> {
-
     const sql = neon(process.env.DATABASE_URL || "");
 
     const uniqueWallets = await sql(`SELECT COUNT(DISTINCT address) FROM prompts  `) as unknown as Count[];
     const messagesCount = await getMessagesCount();
 
+
+    const hasWinner = await sql(`SELECT COUNT(*) FROM prompts WHERE is_winner=true `) as unknown as Count[];
+    console.log(hasWinner)
     return {
         uniqueWallets: parseInt(uniqueWallets[0].count ?? "0"),
         messagesCount: messagesCount,
         endgameTime: endGameDate(),
-        isGameEnded: false,
+        isGameEnded: hasWinner[0].count !== "0"
     }
 }

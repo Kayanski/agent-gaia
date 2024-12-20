@@ -290,6 +290,7 @@ export const Chat = ({
                 value={prompt}
                 onChange={(e) => {
                   setPrompt(e.target.value);
+                  console.log("is updating text area", e)
                   const target = e.target;
                   target.style.height = "40px";
                   const newHeight = Math.min(target.scrollHeight, 200);

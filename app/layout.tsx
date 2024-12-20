@@ -24,7 +24,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Freysa.ai',
+  title: 'Gaia.ai',
   description: "World's first adversarial agent game",
 }
 

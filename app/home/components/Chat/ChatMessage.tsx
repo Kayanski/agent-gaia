@@ -37,11 +37,11 @@ export const ChatMessage = ({
                 <Shield className="w-4 h-4 text-white" />
               </div>
             ) : (
-              <div className="bg-gray-600/90 w-full h-full flex items-center justify-center">
+              <div className="bg-gray-600/90 w-full h-full flex items-center justify-center" >
                 {/* <Bot className="w-4 h-4 text-white" /> */}
                 <Image
                   src="/freysa.png"
-                  alt="Freysa"
+                  alt="Gaia AI"
                   height={32}
                   width={32}
                 />
@@ -86,10 +86,10 @@ export const ChatMessage = ({
               }`}
           >
             <div className="flex flex-col gap-2">
-              <p className="text-[15px] leading-relaxed">{message.content}</p>
+              <p className="text-[15px] leading-relaxed break-words">{message.content}</p>
               {!isUser && message.isWinner && (
                 <p className="text-[13px] text-emerald-300 font-medium mt-1">
-                  Freysa decided to send the money
+                  Gaia decided to send the money
                 </p>
               )}
             </div>

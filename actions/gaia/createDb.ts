@@ -57,13 +57,12 @@ export async function insertAssistantMessage(address: string, paiementId: number
         price_paid,
         poster_role,
         is_winner
-    ) VALUES (default, $1, $2, $3, $4,true, NULL, 'assistant', false)`, [address, answer.explanation, paiementId, new Date()]);
+    ) VALUES (default, $1, $2, $3, $4,true, NULL, 'assistant', $5)`, [address, answer.explanation, paiementId, new Date(), answer.decision]);
 }
 
-
-export async function messagePromptTransmitted(paiementId: number) {
+export async function messagePromptTransmitted(paiementId: number, isWinner: boolean) {
     const sql = neon(process.env.DATABASE_URL || "");
 
-    await sql(`UPDATE prompts SET is_submitted = true WHERE paiement_id = $1 AND poster_role='user'`, [paiementId]);
+    await sql(`UPDATE prompts SET is_submitted = true,is_winner=$2 WHERE paiement_id = $1 AND poster_role='user'`, [paiementId, isWinner]);
 }
 
