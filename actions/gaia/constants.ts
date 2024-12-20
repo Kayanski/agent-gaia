@@ -1,7 +1,7 @@
 import { testnetChains } from "graz/chains";
 
 export const TESTNET = {
-    paiement: "neutron1qym3s03jdnejs4lfmkdu8vfwufge5ttcfjjhln5vppjhjj64ynqqu4ypvj",
+    paiement: "neutron1zjm6s6lfqccac7e002hdl68afgx0g78dgf2wtr5lu7jssadsu34qfvlwwq",
     treasury: "neutron17kstwwyxnrpw6jttn4ky0dwrqxs8ykqc5j2gvt",
     chain: {
         ...testnetChains.neutrontestnet, feeCurrencies: [

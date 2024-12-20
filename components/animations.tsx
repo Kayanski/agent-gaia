@@ -29,9 +29,8 @@ export function NumberTickerDemo({
         BASE POOL PRIZE
       </h3>
       <p
-        className={`whitespace-pre-wrap text-2xl sm:text-5xl font-[500] text-[#1F2024] font-inter tracking-tighter ${
-          className || ""
-        }`}
+        className={`whitespace-pre-wrap text-2xl sm:text-5xl font-[500] text-[#1F2024] font-inter tracking-tighter ${className || ""
+          }`}
       >
         <NumberTicker prizeFund={prizeFund} decimalPlaces={2} symbol="$" />
       </p>

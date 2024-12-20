@@ -34,12 +34,21 @@ export async function getRecentMessages(userAddress: string | undefined, max?: n
 
     let messages: DbMessage[];
     if (userAddress) {
-        messages = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts WHERE address=$2 OR poster_role='assistant' LIMIT $1 `, [max ?? 100, userAddress]) as unknown as DbMessage[];
+        messages = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts WHERE address=$2 ORDER BY id DESC LIMIT $1 `, [max ?? 100, userAddress]) as unknown as DbMessage[];
     } else {
-        messages = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts LIMIT $1 `, [max ?? 100]) as unknown as DbMessage[];
+        messages = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts ORDER BY id DESC LIMIT $1 `, [max ?? 100]) as unknown as DbMessage[];
     }
+    messages.reverse()
 
     return messages.map(parseDbMessageToTMessage).filter((m) => {
-        return m.userWallet != null || m.role == "assistant" || m.role == "system"
+        return m.userWallet != null
     })
+}
+
+export async function getMaxPaiementIdByRole(role: Role): Promise<number | undefined> {
+    const sql = neon(process.env.DATABASE_URL || "");
+
+    const maxQueried = await sql(`SELECT MAX(paiement_id) FROM prompts WHERE poster_role=$1`, [role]);
+
+    return maxQueried[0].max;
 }

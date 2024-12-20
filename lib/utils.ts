@@ -31,6 +31,6 @@ export function parseDbMessageToTMessage(m: DbMessage): TMessage {
   })
 }
 
-export const MESSAGE_FIELDS = 'id, address, prompt, is_submitted, submit_date, order_id, paiement_id, price_paid, poster_role, is_winner';
+export const MESSAGE_FIELDS = 'id, address, prompt, is_submitted, submit_date, paiement_id, price_paid, poster_role, is_winner';
 
 export type Role = "user" | "system" | "assistant";

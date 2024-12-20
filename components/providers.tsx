@@ -8,6 +8,7 @@ import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 
 import { config } from "../app/wagmi";
 import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
+import { ToastContainer } from 'react-toastify';
 
 // Graz
 const queryClient = new QueryClient();
@@ -30,7 +31,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
               },
             }
           }} >
-            {children} </GrazProvider >
+            {children}
+            <ToastContainer />
+          </GrazProvider >
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider >

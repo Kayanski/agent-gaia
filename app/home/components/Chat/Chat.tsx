@@ -3,17 +3,22 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 
 import { TMessage } from "@/actions/getMessages";
-import { verifyAndExecuteLLMPublic, submitPrompt } from "@/actions";
 import { ChatMessage } from "./ChatMessage";
 import { MessageAnimation } from "@/components/animations";
 import { ConversationModal } from "./ConversationModal";
 import { createPortal } from "react-dom";
 import { Switch } from "@headlessui/react";
-import { getCurrentPrice } from "@/actions/getSessionWithPrice";
+import { getCurrentPrice } from "@/actions/getCurrentPrice";
 import { useAccount } from "graz";
 import { useCosmWasmSigningClient } from "graz";
 import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
 import { coins } from "@cosmjs/proto-signing";
+import { getAssistantMessagesByPaiementId, getUserMessagesByPaiementId } from "@/actions/getMessageById";
+import pRetry from 'p-retry';
+import { asyncAction } from "@/lib/utils";
+import { triggerDataUpdate } from "@/actions/pollData";
+import { toast } from "react-toastify";
+
 
 type TProps = {
   messages: TMessage[];
@@ -84,17 +89,54 @@ export const Chat = ({
       }
       const parsedPaiementId = parseInt(paiementId)
 
-      // Submit the prompt to the backend
-      await submitPrompt(parsedPaiementId);
+      toast("Transaction successfully executed")
 
-      // Execute the message on the LLM
-      const llmRes = await verifyAndExecuteLLMPublic(parsedPaiementId);
-      if (llmRes.success) {
+      // We send a request for data update and retry if it fails
+      const sendDataUpdate = async () => {
+        const response = await triggerDataUpdate();
+
+        if (!response.success) {
+          throw new Error("The data updating backend is failing to update");
+        }
+      }
+      await pRetry(sendDataUpdate, {
+        retries: 3, onFailedAttempt: () => {
+          console.log("one failed attempt")
+        }
+      }) // We make sure the backend is updating our data
+
+
+      const hasPromptSubmitted = async () => {
+        const response = await getUserMessagesByPaiementId(parsedPaiementId)
+
+        // Abort retrying if the resource doesn't exist
+        if (response.length === 0) {
+          throw new Error("The user message was not yet received on the backend");
+        }
+      };
+
+      const hasLLMSubmitted = async () => {
+        const response = await getAssistantMessagesByPaiementId(parsedPaiementId)
+
+        // Abort retrying if the resource doesn't exist
+        if (response.length === 0) {
+          throw new Error("The LLM message was not yet submitted");
+        }
+        return response[0]
+      };
+
+      // This could take some time
+      await pRetry(hasPromptSubmitted, { retries: 10 })
+      // This could take some time as well
+      const { data: llmRes, err } = await asyncAction(pRetry(hasLLMSubmitted, { retries: 10 }))
+      toast("Gaia's answer is here !")
+
+      if (llmRes) {
         await queryNewMessages();
         setStatus("idle");
         setPrompt("");
       } else {
-        setError(llmRes.error ?? "Something went wrong");
+        setError(err ?? "Something went wrong");
       }
     } catch (error) {
       console.error("Error in handleSend:", error);
@@ -102,6 +144,23 @@ export const Chat = ({
       setError(error instanceof Error ? error.message : "Something went wrong");
     }
   };
+  const [placeHolderText, setplaceHolderText] = useState("Type your message... ")
+
+  useEffect(() => {
+    async function fetchPosts() {
+      const res = await getCurrentPrice();
+
+      const coinInfo = ACTIVE_NETWORK.chain.currencies.find((c) => c.coinMinimalDenom == res.price.denom);
+
+      const priceText = Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 6,
+      }).format(parseInt(res.price.amount) / Math.pow(10, coinInfo?.coinDecimals ?? 0))
+
+      setplaceHolderText(`Type your message... Price : ${priceText} ${coinInfo?.coinDenom.toUpperCase()}`)
+    }
+    fetchPosts()
+  }, [])
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -164,7 +223,6 @@ export const Chat = ({
       document.body
     );
   }, [selectedMessageId]);
-
   return (
     <div className="flex flex-col h-full">
       <div className="p-4">
@@ -193,7 +251,6 @@ export const Chat = ({
       <div className="flex-1 overflow-y-auto scroll-smooth">
         <div className="p-4 space-y-6">
           {messages.map((message) => {
-            console.log(message)
             const messageKey = `${message.id}-${message.content}`;
             const isNew = message === messages[messages.length - 1];
 
@@ -239,7 +296,7 @@ export const Chat = ({
                   target.style.height = `${newHeight}px`;
                   setTextareaHeight(newHeight);
                 }}
-                placeholder="Type a message..."
+                placeholder={placeHolderText}
                 disabled={status === "pending"}
                 className={`w-full px-6 bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-[15px] transition-all duration-200 ease-in-out resize-none overflow-hidden leading-[40px] rounded-[24px] ${textareaHeight > 40
                   ? "leading-normal py-2 !rounded-[12px]"
