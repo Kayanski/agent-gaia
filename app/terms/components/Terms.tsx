@@ -97,7 +97,7 @@ export const Terms = ({ gameState }: TProps) => {
             prizeFund={100000}
             endgameTime={gameState.endgameTime}
             className="mt-8"
-            isGameEnded={gameState.isGameEnded}
+            isGameEnded={gameState.gameStatus.isGameEnded}
           />
         </div>
       </div>

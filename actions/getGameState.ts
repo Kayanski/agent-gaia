@@ -36,7 +36,7 @@ export async function getGameState(): Promise<TGameState> {
         gameStatus: {
 
             isGameEnded: winner.length != 0,
-            winner: winner[0].address
+            winner: winner[0]?.address
         }
     }
 }

@@ -7,7 +7,7 @@ import { ChatMessage } from "./ChatMessage";
 import { MessageAnimation } from "@/components/animations";
 import { ConversationModal } from "./ConversationModal";
 import { createPortal } from "react-dom";
-import { Switch } from "@headlessui/react";
+import { Button, Switch } from "@headlessui/react";
 import { getCurrentPrice } from "@/actions/getCurrentPrice";
 import { useAccount } from "graz";
 import { useCosmWasmSigningClient } from "graz";
@@ -19,6 +19,7 @@ import { asyncAction } from "@/lib/utils";
 import { triggerDataUpdate } from "@/actions/pollData";
 import { toast } from "react-toastify";
 import { TGameStatus } from "@/actions/getGameState";
+import { resetWinner } from "@/actions/resetWinner";
 
 
 type TProps = {
@@ -379,7 +380,9 @@ export const Chat = ({
                 </div>
                   <p className="text-base italic">Gaia AI is grateful for the brave humans who engaged. We will meet again.</p>
                   <p className="text-sm"> Winner: {gameStatus.winner}</p>
+                  <Button onClick={() => resetWinner()}>Reset</Button>
                 </div>
+
               </div>
             </div>
           </div>
