@@ -28,7 +28,6 @@ export async function getGameState(): Promise<TGameState> {
 
 
     const winner = await sql(`SELECT address FROM prompts WHERE is_winner=true ORDER BY id LIMIT 1 `) as unknown as { address }[];
-    console.log(winner)
     return {
         uniqueWallets: parseInt(uniqueWallets[0].count ?? "0"),
         messagesCount: messagesCount,

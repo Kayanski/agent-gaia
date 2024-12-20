@@ -94,7 +94,6 @@ export async function retryPastRequests() {
     for (let paiementId = (maxAssistantPaimentId ?? 0) + 1; paiementId <= maxUserPaimentId; paiementId++) {
 
         const message = await queryMessage(paiementId, cosmwasmClient);
-        console.log(message)
 
         await triggerAiResponse(message)
     }

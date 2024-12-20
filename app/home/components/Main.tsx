@@ -56,6 +56,7 @@ export const Main = (props: TProps) => {
   useEffect(() => {
     const fetchPrizeFund = async () => {
       const prizeFund = await getPrizePool();
+      console.log(prizeFund)
       setPrizeFund(prizeFund);
     };
     fetchPrizeFund();
