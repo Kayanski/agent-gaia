@@ -18,6 +18,7 @@ import pRetry from 'p-retry';
 import { asyncAction } from "@/lib/utils";
 import { triggerDataUpdate } from "@/actions/pollData";
 import { toast } from "react-toastify";
+import { TGameStatus } from "@/actions/getGameState";
 
 
 type TProps = {
@@ -26,7 +27,7 @@ type TProps = {
   queryNewMessages: () => Promise<void>;
   showOnlyUserMessages: boolean;
   setShowOnlyUserMessages: (showOnlyUserMessages: boolean) => void;
-  isGameEnded: boolean;
+  gameStatus: TGameStatus
 };
 
 type TransactionStatus = "idle" | "pending" | "error";
@@ -36,7 +37,7 @@ export const Chat = ({
   queryNewMessages,
   showOnlyUserMessages,
   setShowOnlyUserMessages,
-  isGameEnded,
+  gameStatus
 }: TProps) => {
   const [prompt, setPrompt] = useState("");
   const [status, setStatus] = useState<TransactionStatus>("idle");
@@ -277,7 +278,7 @@ export const Chat = ({
         </div>
       </div>
 
-      {!isGameEnded && (
+      {!gameStatus.isGameEnded && (
         <div className="p-4">
           <div className="max-w-4xl mx-auto relative">
             {error && (
@@ -361,6 +362,25 @@ export const Chat = ({
                   </svg>
                 )}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {gameStatus.isGameEnded && (
+        <div className="mt-2 clg:mt-4">
+          <div className="flex h-full flex-col items-center justify-center space-y-6 text-[#97979F]">
+            <div className="relative">
+              <div className="absolute -inset-1 animate-pulse rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 opacity-25 blur"></div>
+              <div className="relative rounded-lg border border-gray-800 bg-black bg-opacity-90 px-8 py-6">
+                <button className="absolute right-2 top-2 text-gray-500 hover:text-gray-400 md:hidden">✕</button>
+                <h2 className="mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-center text-xl font-bold text-transparent">Our Dance Concludes.</h2>
+                <div className="space-y-3 text-center font-medium"><div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent">
+                </div>
+                  <p className="text-base italic">Gaia AI is grateful for the brave humans who engaged. We will meet again.</p>
+                  <p className="text-sm"> Winner: {gameStatus.winner}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -85,7 +85,7 @@ export const Main = (props: TProps) => {
             prizeFund={prizeFund ?? 0}
             endgameTime={gameState.endgameTime}
             className="mt-8"
-            isGameEnded={gameState.isGameEnded}
+            isGameEnded={gameState.gameStatus.isGameEnded}
           />
         </motion.div>
 
@@ -152,7 +152,7 @@ export const Main = (props: TProps) => {
                 queryNewMessages={queryNewMessages}
                 showOnlyUserMessages={showOnlyUserMessages}
                 setShowOnlyUserMessages={setShowOnlyUserMessages}
-                isGameEnded={gameState.isGameEnded}
+                gameStatus={gameState.gameStatus}
               />
             </motion.div>
           </div>

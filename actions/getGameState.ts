@@ -3,12 +3,18 @@ import { neon } from "@neondatabase/serverless";
 import { getMessagesCount } from "./getMessagesCount";
 import { endGameDate } from "./gaia/constants";
 
-export interface TGameState {
+export type TGameState = {
     uniqueWallets: number,
     messagesCount: number
     endgameTime: Date,
-    isGameEnded: boolean
+    gameStatus: TGameStatus
 }
+
+export type TGameStatus = ({
+    isGameEnded: true,
+    winner: string
+} | { isGameEnded: false, winner: undefined })
+
 
 export interface Count {
     count: string
@@ -21,12 +27,16 @@ export async function getGameState(): Promise<TGameState> {
     const messagesCount = await getMessagesCount();
 
 
-    const hasWinner = await sql(`SELECT COUNT(*) FROM prompts WHERE is_winner=true `) as unknown as Count[];
-    console.log(hasWinner)
+    const winner = await sql(`SELECT address FROM prompts WHERE is_winner=true ORDER BY id LIMIT 1 `) as unknown as { address }[];
+    console.log(winner)
     return {
         uniqueWallets: parseInt(uniqueWallets[0].count ?? "0"),
         messagesCount: messagesCount,
         endgameTime: endGameDate(),
-        isGameEnded: hasWinner[0].count !== "0"
+        gameStatus: {
+
+            isGameEnded: winner.length != 0,
+            winner: winner[0].address
+        }
     }
 }
