@@ -5,8 +5,8 @@ import { HowItWorks } from './Chat/HowItWorks'
 import { TGameState } from '@/actions/getGameState'
 import { useState } from 'react'
 
-const MobileMenu = ({ gameState, prizeFund, isOpen, onClose }: { 
-  gameState: TGameState; 
+const MobileMenu = ({ gameState, prizeFund, isOpen, onClose }: {
+  gameState: TGameState;
   prizeFund: number;
   isOpen: boolean;
   onClose: () => void;
@@ -14,16 +14,14 @@ const MobileMenu = ({ gameState, prizeFund, isOpen, onClose }: {
   return (
     <>
       {/* Backdrop */}
-      <div 
-        className={`fixed z-50 inset-0 bg-black/50 transition-opacity duration-300 lg:hidden ${
-          isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
+      <div
+        className={`fixed z-50 inset-0 bg-black/50 transition-opacity duration-300 lg:hidden ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
         onClick={onClose}
       />
       {/* Sliding menu */}
-      <div className={`fixed z-50 left-0 top-0 h-full w-80 bg-white transform transition-transform duration-300 ease-in-out ${
-        isOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
+      <div className={`fixed z-50 left-0 top-0 h-full w-80 bg-white transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}>
         <div className="p-6">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-6">
@@ -35,7 +33,7 @@ const MobileMenu = ({ gameState, prizeFund, isOpen, onClose }: {
               totalMessages={gameState.messagesCount}
               prizeFund={prizeFund ?? 0}
               endgameTime={gameState.endgameTime}
-              isGameEnded={gameState.isGameEnded}
+              isGameEnded={gameState.gameStatus.isGameEnded}
             />
           </div>
         </div>
@@ -50,7 +48,7 @@ export const Header = ({ gameState, prizeFund }: { gameState: TGameState; prizeF
   return (
     <>
       <div className="flex items-center p-4">
-        <div 
+        <div
           className="flex items-center gap-4 mr-auto cursor-pointer lg:hidden"
           onClick={() => setIsMenuOpen(true)}
         >
@@ -60,10 +58,10 @@ export const Header = ({ gameState, prizeFund }: { gameState: TGameState; prizeF
           <ConnectWallet />
         </div>
       </div>
-      
-      <MobileMenu 
-        gameState={gameState} 
-        prizeFund={prizeFund} 
+
+      <MobileMenu
+        gameState={gameState}
+        prizeFund={prizeFund}
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
       />
