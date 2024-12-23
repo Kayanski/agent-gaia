@@ -37,6 +37,8 @@ export const Main = (props: TProps) => {
       showOnlyUserMessages ? account?.bech32Address : undefined)
     if (newMessages.length == totalMessageCount) {
       setHasMoreMessages(false);
+    } else {
+      setHasMoreMessages(true);
     }
     setMessages(newMessages);
 
