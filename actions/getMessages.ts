@@ -1,9 +1,9 @@
 "use server"
 
-import { MAX_MESSAGES_DEFAULT } from "@/app/page";
 import { MESSAGE_FIELDS, parseDbMessageToTMessage, Role } from "@/lib/utils";
 import { neon } from "@neondatabase/serverless";
 import { Count } from "./getGameState";
+import { MAX_MESSAGES_DEFAULT } from "./gaia/constants";
 
 export interface TMessage {
     content: string,

@@ -1,5 +1,9 @@
 import { mainnetChains, testnetChains } from "graz/chains";
 
+
+export const MAX_MESSAGES_DEFAULT = 10;
+export const MESSAGE_PAGE = 10;
+
 export const TESTNET = {
     paiement: "neutron1zjm6s6lfqccac7e002hdl68afgx0g78dgf2wtr5lu7jssadsu34qfvlwwq",
     treasury: "neutron17kstwwyxnrpw6jttn4ky0dwrqxs8ykqc5j2gvt",
