@@ -1,7 +1,9 @@
 "use server"
 
+import { MAX_MESSAGES_DEFAULT } from "@/app/page";
 import { MESSAGE_FIELDS, parseDbMessageToTMessage, Role } from "@/lib/utils";
 import { neon } from "@neondatabase/serverless";
+import { Count } from "./getGameState";
 
 export interface TMessage {
     content: string,
@@ -34,9 +36,9 @@ export async function getRecentMessages(userAddress: string | undefined, max?: n
 
     let messages: DbMessage[];
     if (userAddress) {
-        messages = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts WHERE address=$2 ORDER BY id DESC LIMIT $1 `, [max ?? 100, userAddress]) as unknown as DbMessage[];
+        messages = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts WHERE address=$2 ORDER BY id DESC LIMIT $1 `, [max ?? MAX_MESSAGES_DEFAULT, userAddress]) as unknown as DbMessage[];
     } else {
-        messages = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts ORDER BY id DESC LIMIT $1 `, [max ?? 100]) as unknown as DbMessage[];
+        messages = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts ORDER BY id DESC LIMIT $1 `, [max ?? MAX_MESSAGES_DEFAULT]) as unknown as DbMessage[];
     }
     messages.reverse()
 
@@ -51,4 +53,17 @@ export async function getMaxPaiementIdByRole(role: Role): Promise<number | undef
     const maxQueried = await sql(`SELECT MAX(paiement_id) FROM prompts WHERE poster_role=$1`, [role]);
 
     return maxQueried[0].max;
+}
+
+export async function getMessageCount(userAddress: string | undefined): Promise<number> {
+    const sql = neon(process.env.DATABASE_URL || "");
+
+    let messages: Count[]
+    if (userAddress) {
+        messages = await sql(`SELECT COUNT(*) FROM prompts WHERE address=$1 `, [userAddress]) as unknown as Count[];
+    } else {
+        messages = await sql(`SELECT COUNT(*) FROM prompts  `) as unknown as Count[];
+    }
+
+    return parseInt(messages[0].count);
 }

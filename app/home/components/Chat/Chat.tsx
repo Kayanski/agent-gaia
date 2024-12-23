@@ -22,13 +22,16 @@ import { TGameStatus } from "@/actions/getGameState";
 import { resetWinner } from "@/actions/resetWinner";
 
 
+
 type TProps = {
   messages: TMessage[];
   className?: string;
   queryNewMessages: () => Promise<void>;
   showOnlyUserMessages: boolean;
   setShowOnlyUserMessages: (showOnlyUserMessages: boolean) => void;
-  gameStatus: TGameStatus
+  gameStatus: TGameStatus,
+  loadMore: () => void,
+  hasMoreMessages: boolean
 };
 
 type TransactionStatus = "idle" | "pending" | "error";
@@ -38,7 +41,9 @@ export const Chat = ({
   queryNewMessages,
   showOnlyUserMessages,
   setShowOnlyUserMessages,
-  gameStatus
+  gameStatus,
+  loadMore,
+  hasMoreMessages
 }: TProps) => {
   const [prompt, setPrompt] = useState("");
   const [status, setStatus] = useState<TransactionStatus>("idle");
@@ -46,12 +51,17 @@ export const Chat = ({
   const { data: account } = useAccount();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<string | null>(null);
+  const firstMessageRef = useRef<string | null>(null);
   const lastMessageContentRef = useRef<string | null>(null);
+  const messageLength = useRef<number | null>(null);
+  const firstMessageContentRef = useRef<string | null>(null);
+  const scrollTarget = useRef<any>(null);
   const [selectedMessageId, setSelectedMessageId] = useState<
     string | null
   >(null);
   const [textareaHeight, setTextareaHeight] = useState(40);
   const { data: cosmosClient } = useCosmWasmSigningClient();
+  const [shouldFetchMore, setShouldFetchMore] = useState(false);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -177,28 +187,60 @@ export const Chat = ({
     }
   };
 
-  // Initial scroll on mount
-  useEffect(() => {
-    scrollToBottom();
-    if (messages.length > 0) {
-      lastMessageContentRef.current = messages[messages.length - 1].content;
+  // Load more messages on scroll
+  const handleMessageScroll = useCallback((e) => {
+    console.log(e.target.scrollTop)
+
+    if (e.target.scrollTop == 0) {
+      if (!shouldFetchMore && hasMoreMessages) {
+        setShouldFetchMore(true)
+        e.target.style.overflow = "hidden";
+        scrollTarget.current = e.target;
+        loadMore()
+        console.log("Should fetch more");
+      }
     }
-  }, []);
+
+  }, [shouldFetchMore, setShouldFetchMore]);
 
   // Handle new messages
   useEffect(() => {
     if (messages.length > 0) {
-      const currentLastMessage = messages[messages.length - 1];
+      if (messageLength.current == 0) {
+        scrollToBottom();
+        messageLength.current = messages.length
+      }
+      console.log("Ok, some new messages")
 
+      const currentLastMessage = messages[messages.length - 1];
+      const currentFirstMessage = messages[0];
       // Check if the last message content is different
-      if (currentLastMessage.content !== lastMessageContentRef.current) {
+      if (currentLastMessage.id !== lastMessageContentRef.current) {
+        console.log("Scroll to bottom")
         scrollToBottom();
         lastMessageRef.current = currentLastMessage.id;
       }
 
-      lastMessageContentRef.current = currentLastMessage.content;
+      if (currentFirstMessage.id !== firstMessageContentRef.current) {
+        console.log("can fetch more")
+        setTimeout(() => {
+          setShouldFetchMore(false)
+          if (scrollTarget.current) {
+            scrollTarget.current.style.overflow = "";
+            scrollTarget.current.scrollTo({
+              top: 10,
+              behavior: "smooth"
+            });
+
+          }
+        }, 500);
+        firstMessageRef.current = currentFirstMessage.id;
+      }
+
+      lastMessageContentRef.current = currentLastMessage.id;
+      firstMessageContentRef.current = currentFirstMessage.id;
     }
-  }, [messages]);
+  }, [messages, setShouldFetchMore]);
 
   // Add effect to refresh messages when toggle changes
   useEffect(() => {
@@ -250,8 +292,29 @@ export const Chat = ({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto scroll-smooth">
+      <div className="flex-1 overflow-y-auto scroll-smooth" onScroll={(e) => handleMessageScroll(e)}>
         <div className="p-4 space-y-6">
+          {shouldFetchMore && <svg
+            className="animate-spin h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            style={{ margin: "auto" }}
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
+          </svg>}
           {messages.map((message) => {
             const messageKey = `${message.id}-${message.content}`;
             const isNew = message === messages[messages.length - 1];

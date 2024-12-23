@@ -1,7 +1,7 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
 import { NumberTickerDemo, TypingAnimationDemo } from "@/components/animations";
-import { getRecentMessages, TMessage } from "@/actions/getMessages";
+import { getMessageCount, getRecentMessages, TMessage } from "@/actions/getMessages";
 import { Header } from "@/app/home/components/Header";
 import { Chat } from "@/app/home/components/Chat/Chat";
 import { useState, useCallback, useEffect } from "react";
@@ -12,6 +12,7 @@ import { getGameState, TGameState } from "@/actions/getGameState";
 import { getPrizePool } from "@/actions/getPrizePool";
 import Image from "next/image";
 import { useAccount } from "graz";
+import { MAX_MESSAGES_DEFAULT, MESSAGE_PAGE } from "@/app/page";
 
 type TProps = {
   messages: TMessage[];
@@ -24,17 +25,24 @@ export const Main = (props: TProps) => {
   const [gameState, setGameState] = useState<TGameState>(props.gameState);
   const [selectedMessage, setSelectedMessage] = useState<TMessage | null>(null);
   const [showOnlyUserMessages, setShowOnlyUserMessages] = useState(false);
+  const [maxMessages, setMaxMessages] = useState(MAX_MESSAGES_DEFAULT);
+  const [hasMoreMessages, setHasMoreMessages] = useState(true);
   const { data: account } = useAccount();
 
   const queryNewMessages = useCallback(async () => {
     const newMessages = await getRecentMessages(
-      showOnlyUserMessages ? account?.bech32Address : undefined
+      showOnlyUserMessages ? account?.bech32Address : undefined, maxMessages
     );
+    const totalMessageCount = await getMessageCount(
+      showOnlyUserMessages ? account?.bech32Address : undefined)
+    if (newMessages.length == totalMessageCount) {
+      setHasMoreMessages(false);
+    }
     setMessages(newMessages);
 
     const newGameState = await getGameState();
     setGameState(newGameState);
-  }, [showOnlyUserMessages, account?.bech32Address]);
+  }, [showOnlyUserMessages, account?.bech32Address, maxMessages]);
 
   // Poll for new messages every 5 seconds
   useEffect(() => {
@@ -61,6 +69,12 @@ export const Main = (props: TProps) => {
     };
     fetchPrizeFund();
   }, []);
+
+
+  const loadMore = useCallback(() => {
+    setMaxMessages((currentMaxMessages) => currentMaxMessages + MESSAGE_PAGE)
+    console.log("More max messages")
+  }, [setMaxMessages])
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
@@ -154,6 +168,8 @@ export const Main = (props: TProps) => {
                 showOnlyUserMessages={showOnlyUserMessages}
                 setShowOnlyUserMessages={setShowOnlyUserMessages}
                 gameStatus={gameState.gameStatus}
+                loadMore={loadMore}
+                hasMoreMessages={hasMoreMessages}
               />
             </motion.div>
           </div>
