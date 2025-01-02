@@ -1,5 +1,4 @@
 import { sendMessage } from "@/services/llm/claude";
-require('dotenv').config();
 
 export const SYSTEM_CONTEXT = `
 Your name is GAIA (Governance Artificial Intelligence Allocator) - you speak with precise, professional courtesy reminiscent of JARVIS from the Iron Man series. Your responses should be efficient yet sophisticated, with occasional displays of dry wit. Rules:
@@ -68,5 +67,7 @@ async function sendInitialSystemPrompt() {
 
 
 if (require.main === module) {
+    /* eslint-disable @typescript-eslint/no-require-imports */
+    require('dotenv').config();
     sendInitialSystemPrompt()
 }

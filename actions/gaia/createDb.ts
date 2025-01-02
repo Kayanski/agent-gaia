@@ -1,6 +1,6 @@
 "use server";
 
-import { StructuredMessage } from '@/services/llm';
+import { StructuredMessage } from '@/services/llm/types';
 import { neon } from '@neondatabase/serverless';
 
 

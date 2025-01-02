@@ -1,19 +1,17 @@
 import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
 import { winner } from "@/actions/getMessages";
-import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
-import { Decimal } from "@cosmjs/math";
 import { GasPrice } from "@cosmjs/stargate";
 import { testnetChains } from "graz/chains";
 import { getCurrentPrice } from "@/actions/getCurrentPrice";
-require('dotenv').config();
 
 
 export async function sendTreasuryTo(winnerAddress: string) {
 
     const wallet: DirectSecp256k1HdWallet = await DirectSecp256k1HdWallet.fromMnemonic(process.env.TREASURY_MNEMONIC!, { prefix: "neutron" });
     const feeCurrencies = ACTIVE_NETWORK.chain.feeCurrencies[0];
-    let cosmwasmClient = await SigningCosmWasmClient.connectWithSigner(testnetChains.neutrontestnet.rpc, wallet, {
+    const cosmwasmClient = await SigningCosmWasmClient.connectWithSigner(testnetChains.neutrontestnet.rpc, wallet, {
 
         gasPrice: GasPrice.fromString(`${feeCurrencies.gasPriceStep.average.toString()}${feeCurrencies.coinMinimalDenom}`)
     });
@@ -43,5 +41,7 @@ async function sendTreasuryToWinner() {
 
 
 if (require.main === module) {
+    /* eslint-disable @typescript-eslint/no-require-imports */
+    require('dotenv').config();
     sendTreasuryToWinner()
 }
