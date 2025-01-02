@@ -1,8 +1,15 @@
 import { mainnetChains, testnetChains } from "graz/chains";
+import { tree } from "next/dist/build/templates/app-page";
 
 
 export const MAX_MESSAGES_DEFAULT = 10;
 export const MESSAGE_PAGE = 10;
+export interface Network {
+    paiement: string,
+    treasury: string
+    chain: typeof testnetChains.neutrontestnet,
+    transferCost: number
+}
 
 export const TESTNET = {
     paiement: "neutron1zjm6s6lfqccac7e002hdl68afgx0g78dgf2wtr5lu7jssadsu34qfvlwwq",
@@ -12,7 +19,8 @@ export const TESTNET = {
             { ...testnetChains.neutrontestnet.feeCurrencies[0], coinGeckoId: 'neutron-protocol' },
             ...testnetChains.neutrontestnet.feeCurrencies.slice(1),
         ],
-    }
+    },
+    transferCost: 1000
 }
 
 
@@ -34,5 +42,5 @@ export function endGameDate() {
 }
 
 
-export const ACTIVE_NETWORK = TESTNET;
+export const ACTIVE_NETWORK: Network = TESTNET;
 export const POOL_INFORMATION = POOL_INFORMATION_TESTNET

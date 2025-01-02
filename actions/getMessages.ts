@@ -67,3 +67,12 @@ export async function getMessageCount(userAddress: string | undefined): Promise<
 
     return parseInt(messages[0].count);
 }
+
+
+export async function winner(): Promise<string | undefined> {
+    const sql = neon(process.env.DATABASE_URL || "");
+
+    const winner = await sql(`SELECT address FROM prompts WHERE is_winner=true`) as unknown as { address: string }[];
+    console.log("winner", winner)
+    return winner[0]?.address;
+}

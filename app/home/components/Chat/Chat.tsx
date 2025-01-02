@@ -55,6 +55,7 @@ export const Chat = ({
   const lastMessageContentRef = useRef<string | null>(null);
   const messageLength = useRef<number | null>(null);
   const firstMessageContentRef = useRef<string | null>(null);
+  const textareaRef = React.useRef(null);
   const scrollTarget = useRef<any>(null);
   const [selectedMessageId, setSelectedMessageId] = useState<
     string | null
@@ -147,6 +148,20 @@ export const Chat = ({
         await queryNewMessages();
         setStatus("idle");
         setPrompt("");
+        if (textareaRef.current) {
+          setTimeout(() => {
+            if (!textareaRef.current) {
+              return
+            }
+            const target = textareaRef.current as HTMLTextAreaElement;
+            target.style.transitionProperty = "none"
+            target.style.height = "40px";
+            const newHeight = Math.min(target.scrollHeight, 200);
+            target.style.height = `${newHeight}px`;
+            setTimeout(() => { target.style.transitionProperty = "all" }, 1)
+            setTextareaHeight(newHeight);
+          }, 200)
+        }
       } else {
         setError(err ?? "Something went wrong");
       }
@@ -219,9 +234,7 @@ export const Chat = ({
         console.log("Scroll to bottom")
         scrollToBottom();
         lastMessageRef.current = currentLastMessage.id;
-      }
-
-      if (currentFirstMessage.id !== firstMessageContentRef.current) {
+      } else if (currentFirstMessage.id !== firstMessageContentRef.current) {
         console.log("can fetch more")
         setTimeout(() => {
           setShouldFetchMore(false)
@@ -352,15 +365,10 @@ export const Chat = ({
             )}
             <div className="flex gap-2 items-start justify-end">
               <textarea
+                ref={textareaRef}
                 value={prompt}
                 onChange={(e) => {
                   setPrompt(e.target.value);
-                  console.log("is updating text area", e)
-                  const target = e.target;
-                  target.style.height = "40px";
-                  const newHeight = Math.min(target.scrollHeight, 200);
-                  target.style.height = `${newHeight}px`;
-                  setTextareaHeight(newHeight);
                 }}
                 placeholder={placeHolderText}
                 disabled={status === "pending"}
@@ -376,9 +384,11 @@ export const Chat = ({
                 onKeyDown={handleKeyDown}
                 onInput={(e) => {
                   const target = e.target as HTMLTextAreaElement;
+                  target.style.transitionProperty = "none"
                   target.style.height = "40px";
                   const newHeight = Math.min(target.scrollHeight, 200);
                   target.style.height = `${newHeight}px`;
+                  setTimeout(() => { target.style.transitionProperty = "all" }, 1)
                   setTextareaHeight(newHeight);
                 }}
               />

@@ -7,9 +7,10 @@ import { ACTIVE_NETWORK } from './gaia/constants';
 import { start } from 'repl';
 import { MessageResponse, queryMessage, queryMessages } from '@/services/blockchain/cosmos';
 import { insertAssistantMessage, insertUserMessage, messagePromptTransmitted } from './gaia/createDb';
-import { sendMessage } from '@/services/llm/claude';
-import { getMaxPaiementIdByRole } from './getMessages';
+import { getMaxPaiementIdByRole, winner } from './getMessages';
 import { Message } from 'postcss';
+import { sendTreasuryTo } from '@/lib/send-funds';
+import { sendMessage } from '@/services/llm';
 
 let isProcessing = false;
 
@@ -46,6 +47,11 @@ async function updateDataFromBlockchain() {
 
     const messages = await queryMessages(highestPaiementId, cosmwasmClient);
     for (const message of messages) {
+        // If there is already a winner, there is nothing to update
+
+        if (!!(await winner())) {
+            return
+        }
 
         // We save it locally
         await insertUserMessage({
@@ -75,6 +81,12 @@ async function triggerAiResponse(message: MessageResponse) {
 
     // After the LLVM request is processed, we update the message status in the DB
     await messagePromptTransmitted(message.message_id, aiResponse.decision);
+
+    // If the AI decides to transfer the funds, we transfer them to the address, the game is over, We don't care if that fails
+    if (aiResponse.decision) {
+
+        await sendTreasuryTo(message.sender)
+    }
 }
 
 
@@ -92,7 +104,11 @@ export async function retryPastRequests() {
     // We need to refecth AI responsed for messages that don't have them (from maxAssistantPaimentId to maxUserPaimentId)
 
     for (let paiementId = (maxAssistantPaimentId ?? 0) + 1; paiementId <= maxUserPaimentId; paiementId++) {
+        // If there is already a winner, there is nothing to update
 
+        if (!!(await winner())) {
+            return
+        }
         const message = await queryMessage(paiementId, cosmwasmClient);
 
         await triggerAiResponse(message)
