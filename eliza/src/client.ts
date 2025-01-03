@@ -128,7 +128,7 @@ export class DirectClient {
                 // We make sure only the frontend server can call this with a secret
                 let auth = req.headers.authorization;
                 if (process.env.ENV != "dev" && auth !== "Bearer " + process.env.API_BEARER_TOKEN) {
-                    throw "Only authorized bearer can communicate with this server"
+                    res.status(401).send("Only authorized bearer can communicate with this server")
                 }
                 if (!req.body.userName) {
                     res.status(422).send("Missing user name (body.userName)");

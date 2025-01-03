@@ -53,7 +53,6 @@ async function updateDataFromBlockchain() {
             // We send a LLVM request
             await triggerAiResponse(message)
         }
-
     }
 }
 
