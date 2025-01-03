@@ -1,6 +1,6 @@
 import { Shield } from "lucide-react";
 import Avatar from "boring-avatars";
-import { TMessage } from "@/actions/getMessages";
+import { TMessage } from "@/actions";
 import { format } from "timeago.js";
 import Image from "next/image";
 type ChatMessageProps = {

@@ -1,9 +1,8 @@
 import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
-import { winner } from "@/actions/getMessages";
+import { winner } from "@/actions";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { GasPrice } from "@cosmjs/stargate";
-import { testnetChains } from "graz/chains";
 import { getCurrentPrice } from "@/actions/getCurrentPrice";
 
 
@@ -11,7 +10,7 @@ export async function sendTreasuryTo(winnerAddress: string) {
 
     const wallet: DirectSecp256k1HdWallet = await DirectSecp256k1HdWallet.fromMnemonic(process.env.TREASURY_MNEMONIC!, { prefix: "neutron" });
     const feeCurrencies = ACTIVE_NETWORK.chain.feeCurrencies[0];
-    const cosmwasmClient = await SigningCosmWasmClient.connectWithSigner(testnetChains.neutrontestnet.rpc, wallet, {
+    const cosmwasmClient = await SigningCosmWasmClient.connectWithSigner(ACTIVE_NETWORK.chain.rpc, wallet, {
 
         gasPrice: GasPrice.fromString(`${feeCurrencies.gasPriceStep.average.toString()}${feeCurrencies.coinMinimalDenom}`)
     });

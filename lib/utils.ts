@@ -1,4 +1,4 @@
-import { DbMessage, TMessage } from "@/actions/getMessages"
+import { DbMessage, TMessage } from "@/actions"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 

@@ -5,16 +5,13 @@ import { StructuredMessage } from "./types";
 
 export async function sendMessage({
   messages,
-  maxTokens = 3000,
+  maxTokens = 5000,
 }: SendMessageOptions): Promise<StructuredMessage> {
 
 
   return claudeSendMessage({
-    messages: [{
-      role: "system",
-      content: SYSTEM_CONTEXT,
-    }, ...messages]
-    , maxTokens
+    messages,
+    maxTokens
   })
 
 }

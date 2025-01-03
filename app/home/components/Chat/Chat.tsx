@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 
-import { TMessage } from "@/actions/getMessages";
+import { TMessage } from "@/actions";
 import { ChatMessage } from "./ChatMessage";
 import { MessageAnimation } from "@/components/animations";
 import { ConversationModal } from "./ConversationModal";
@@ -13,12 +13,12 @@ import { useAccount } from "graz";
 import { useCosmWasmSigningClient } from "graz";
 import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
 import { coins } from "@cosmjs/proto-signing";
-import { getAssistantMessagesByPaiementId, getUserMessagesByPaiementId } from "@/actions/getMessageById";
+import { getAssistantMessagesByPaiementId, getUserMessagesByPaiementId } from "@/actions";
 import pRetry from 'p-retry';
 import { asyncAction } from "@/lib/utils";
 import { triggerDataUpdate } from "@/actions/pollData";
 import { toast } from "react-toastify";
-import { TGameStatus } from "@/actions/getGameState";
+import { TGameStatus } from "@/actions";
 import { resetWinner } from "@/actions/resetWinner";
 
 

@@ -8,7 +8,8 @@ export interface Network {
     paiement: string,
     treasury: string
     chain: typeof testnetChains.neutrontestnet,
-    transferCost: number
+    transferCost: number,
+    characterFile: string
 }
 
 export const TESTNET = {
@@ -20,7 +21,8 @@ export const TESTNET = {
             ...testnetChains.neutrontestnet.feeCurrencies.slice(1),
         ],
     },
-    transferCost: 1000
+    transferCost: 1000,
+    characterFile: "GAIA.json"
 }
 
 

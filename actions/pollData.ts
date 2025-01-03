@@ -1,16 +1,16 @@
 "use server"
 
 import { headers } from 'next/headers';
-import { getHighestPaiementId } from './getMessageById';
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate';
 import { ACTIVE_NETWORK } from './gaia/constants';
 import { start } from 'repl';
 import { MessageResponse, queryMessage, queryMessages } from '@/services/blockchain/cosmos';
 import { insertAssistantMessage, insertUserMessage, messagePromptTransmitted } from './gaia/createDb';
-import { getMaxPaiementIdByRole, winner } from './getMessages';
 import { Message } from 'postcss';
 import { sendTreasuryTo } from '@/lib/send-funds';
 import { sendMessage } from '@/services/llm';
+import { getHighestPaiementId } from './database/getMessageById';
+import { getMaxPaiementIdByRole, winner } from '.';
 
 let isProcessing = false;
 

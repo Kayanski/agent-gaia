@@ -1,7 +1,7 @@
 "use client";
 import { HowItWorks } from "@/app/home/components/Chat/HowItWorks";
 import { Stats } from "@/app/home/components/Chat/Stats";
-import { TGameState } from "@/actions/getGameState";
+import { TGameState } from "@/actions";
 import { X } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";

@@ -1,7 +1,7 @@
 "use server"
 import { neon } from "@neondatabase/serverless";
+import { endGameDate } from "@/actions/gaia/constants";
 import { getMessagesCount } from "./getMessagesCount";
-import { endGameDate } from "./gaia/constants";
 
 export type TGameState = {
     uniqueWallets: number,

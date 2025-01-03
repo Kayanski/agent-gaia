@@ -3,7 +3,7 @@
 import { MESSAGE_FIELDS, parseDbMessageToTMessage, Role } from "@/lib/utils";
 import { neon } from "@neondatabase/serverless";
 import { Count } from "./getGameState";
-import { MAX_MESSAGES_DEFAULT } from "./gaia/constants";
+import { MAX_MESSAGES_DEFAULT } from "@/actions/gaia/constants";
 
 export interface TMessage {
     content: string,

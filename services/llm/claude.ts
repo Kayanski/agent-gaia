@@ -8,7 +8,7 @@ export interface SendMessageOptions {
 
 export async function sendMessage({
   messages,
-  maxTokens = 1000,
+  maxTokens = 5000,
 }: SendMessageOptions): Promise<StructuredMessage> {
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY!,

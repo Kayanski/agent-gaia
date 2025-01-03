@@ -1,14 +1,14 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
 import { NumberTickerDemo, TypingAnimationDemo } from "@/components/animations";
-import { getMessageCount, getRecentMessages, TMessage } from "@/actions/getMessages";
+import { getMessageCount, getRecentMessages, TMessage } from "@/actions/";
 import { Header } from "@/app/home/components/Header";
 import { Chat } from "@/app/home/components/Chat/Chat";
 import { useState, useCallback, useEffect } from "react";
 import { ConversationModal } from "./Chat/ConversationModal";
 import { HowItWorks } from "./Chat/HowItWorks";
 import { Stats } from "./Chat/Stats";
-import { getGameState, TGameState } from "@/actions/getGameState";
+import { getGameState, TGameState } from "@/actions/";
 import { getPrizePool } from "@/actions/getPrizePool";
 import Image from "next/image";
 import { useAccount } from "graz";

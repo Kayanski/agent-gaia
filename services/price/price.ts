@@ -1,4 +1,4 @@
-import { getMessagesCount } from "@/actions/getMessagesCount";
+import { getMessagesCount } from "@/actions";
 import { parseEther } from "viem";
 
 export function getFees() {
