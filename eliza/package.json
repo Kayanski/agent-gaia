@@ -28,6 +28,7 @@
     },
     "scripts": {
         "build": "tsup --format esm --dts",
+        "start": "node dist/index.js",
         "dev": "tsup --format esm --dts --watch --onSuccess 'node dist/index.js'",
         "lint": "eslint --fix  --cache ."
     },
