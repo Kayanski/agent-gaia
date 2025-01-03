@@ -1,9 +1,5 @@
 "use server"
-import { neon } from "@neondatabase/serverless";
-import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
-import { getMessagesCount } from "./getMessagesCount";
-import PostgresDatabaseAdapter from "@elizaos/adapter-postgres";
-import type { UniqueWalletResponse, TGameState, TGameStateResponse } from "gaia-server";
+import { TGameState, TGameStateResponse, UniqueWalletResponse } from "@/lib/types";
 import { queryApi } from "./query";
 
 export async function getUniqueWallets(): Promise<number> {

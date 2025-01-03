@@ -1,4 +1,4 @@
-import { TGameState, TGameStatus } from "gaia-server";
+import { TGameState, TGameStatus } from "@/lib/types";
 import { getGameState } from "./database/getGameState";
 import { getAssistantMessageByPaiementId, getHighestPaiementId, getMessageById, getUserMessageByPaiementId, } from "./database/getMessageById";
 import { DbMessage, getMessageCount, getRecentMessages, TMessage } from "./database/getMessages";

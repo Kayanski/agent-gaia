@@ -1,7 +1,7 @@
 "use server"
 import { asyncAction } from "@/lib/utils";
 import { ACTIVE_NETWORK } from "../gaia/constants";
-import { ApiRoute } from "gaia-server";
+import { ApiRoute } from "@/lib/types";
 
 
 export async function queryApi(route: ApiRoute, queryArgs: Record<string, any> = {}) {

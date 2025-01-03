@@ -1,10 +1,9 @@
 "use server"
-import { neon } from "@neondatabase/serverless";
-import { MESSAGE_FIELDS, parseDbMessageToTMessage, parseElizaMemoryToTMessage } from "@/lib/utils";
+import { parseElizaMemoryToTMessage } from "@/lib/utils";
 import { DbMessage, TMessage } from "./getMessages";
 import { queryApi } from "./query";
-import { MemoryWithUserName } from "gaia-server";
 import { ApiResult } from "..";
+import { MemoryWithUserName } from "@/lib/types";
 
 
 export async function getHighestPaiementId(): Promise<number> {

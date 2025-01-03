@@ -1,7 +1,7 @@
 import { DbMessage, TMessage } from "@/actions"
 import { clsx, type ClassValue } from "clsx"
-import { MemoryWithUserName, MemoryWithWinnerAndUserName } from "gaia-server"
 import { twMerge } from "tailwind-merge"
+import { MemoryWithUserName, MemoryWithWinnerAndUserName } from "./types"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

@@ -562,16 +562,7 @@ const checkPortAvailable = (port: number): Promise<boolean> => {
     });
 };
 
-
 startAgentFromActiveNetwork().catch((error) => {
     elizaLogger.error("Unhandled error in startAgents:", error);
     process.exit(1);
 });
-
-export type { TGameState, TGameStatus, StructuredMessage, TGameStateResponse }
-export type { UniqueWalletResponse } from "./queries/gameState";
-export type { MemoryWithWinnerAndUserName, MemoryWithUserName } from "./queries/getMessages";
-
-
-export type ApiRoute = "gameState" | "uniqueWallets" | `highestPaiementId` | `recentMessages` | `messagesCount` | `winner` |
-    `messageById/${string}` | `messageByPaiementId/${string}` | `assistantMessageByPaiementId/${string}`

@@ -1,13 +1,9 @@
 "use server"
 
-import { MESSAGE_FIELDS, parseDbMessageToTMessage, parseElizaMemoryToTMessage, Role } from "@/lib/utils";
-import { neon } from "@neondatabase/serverless";
+import { parseElizaMemoryToTMessage, Role } from "@/lib/utils";
 import { MAX_MESSAGES_DEFAULT } from "@/actions/gaia/constants";
-import { MAX } from "uuid";
-import { Memory, stringToUuid } from "@elizaos/core";
-import PostgresDatabaseAdapter from "@elizaos/adapter-postgres";
 import { queryApi } from "./query";
-import { MemoryWithWinnerAndUserName } from "gaia-server";
+import { MemoryWithWinnerAndUserName } from "@/lib/types";
 
 export interface TMessage {
     content: string,

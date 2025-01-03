@@ -1,0 +1,12 @@
+{
+    "verbose": true,
+    "ignore": [
+        "node_modules",
+        ".next"
+    ],
+    "watch": [
+        "api/**/*",
+        "index.ts"
+    ],
+    "ext": "ts json"
+}

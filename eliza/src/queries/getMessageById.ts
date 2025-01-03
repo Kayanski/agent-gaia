@@ -3,7 +3,7 @@ import PostgresDatabaseAdapter from "@elizaos/adapter-postgres";
 import express from "express"
 import { getRuntime } from "../api";
 import { MAX_MESSAGES_DEFAULT } from "../constants";
-import { MemoryWithWinnerAndUserName, MemoryWithUserName } from "./getMessages";
+import { MemoryWithUserName } from "../types";
 
 export async function getHighestPaiementId(runtime: AgentRuntime): Promise<number | undefined> {
 

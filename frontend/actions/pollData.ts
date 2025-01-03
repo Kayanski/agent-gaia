@@ -1,16 +1,12 @@
 "use server"
 
-import { headers } from 'next/headers';
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate';
 import { ACTIVE_NETWORK } from './gaia/constants';
-import { start } from 'repl';
-import { MessageResponse, queryMessage, queryMessages } from '@/services/blockchain/cosmos';
-import { Message } from 'postcss';
+import { MessageResponse, queryMessages } from '@/services/blockchain/cosmos';
 import { sendTreasuryTo } from '@/lib/send-funds';
 import { getHighestPaiementId } from './database/getMessageById';
 import { winner } from '.';
-import { StructuredMessage } from "gaia-server"
-import { m } from 'framer-motion';
+import { StructuredMessage } from '@/lib/types';
 
 let isProcessing = false;
 

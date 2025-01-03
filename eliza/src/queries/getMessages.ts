@@ -5,10 +5,7 @@ import PostgresDatabaseAdapter from "@elizaos/adapter-postgres";
 import express, { Request as ExpressRequest } from "express";
 import { getRuntime } from "../api";
 import { getWinnerAssistantMemory, getWinnerMessageIdFromWinnerAssistantMemory } from "./winner";
-
-export type MemoryWithWinnerAndUserName = Memory & { isWinner: boolean, username: string }
-export type MemoryWithUserName = Memory & { username: string }
-
+import { MemoryWithWinnerAndUserName } from "../types";
 
 export async function getRecentMessages(runtime: AgentRuntime, userAddress: string | undefined, max: number = MAX_MESSAGES_DEFAULT): Promise<MemoryWithWinnerAndUserName[]> {
     // Build query
