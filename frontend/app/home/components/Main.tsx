@@ -35,7 +35,6 @@ export const Main = (props: TProps) => {
     );
     const totalMessageCount = await getMessageCount(
       showOnlyUserMessages ? account?.bech32Address : undefined)
-    console.log("Total message count", totalMessageCount, newMessages.length)
     if (newMessages.length == totalMessageCount) {
       setHasMoreMessages(false);
     } else {
@@ -76,7 +75,6 @@ export const Main = (props: TProps) => {
 
   const loadMore = useCallback(() => {
     setMaxMessages((currentMaxMessages) => currentMaxMessages + MESSAGE_PAGE)
-    console.log("More max messages")
   }, [setMaxMessages])
 
   return (

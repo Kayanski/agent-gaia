@@ -31,6 +31,6 @@ export function createWinnerRoutes(app: express.Application, agents: Map<string,
                 return;
             }
             const winnerAssistantMemory = await getWinnerAssistantMemory(runtime);
-            res.json(await getWinnerFromWinnerAssistantMemory(winnerAssistantMemory));
+            res.json({ result: getWinnerFromWinnerAssistantMemory(winnerAssistantMemory) });
         })
 }

@@ -109,12 +109,12 @@ export const Chat = ({
         const response = await triggerDataUpdate();
 
         if (!response.success) {
-          throw new Error("The data updating backend is failing to update");
+          throw new Error(`The data updating backend is failing to update : ${JSON.stringify(response)}`);
         }
       }
       await pRetry(sendDataUpdate, {
         retries: 3, onFailedAttempt: () => {
-          console.log("one failed attempt")
+          console.log("one failed attemp at sending data update")
         }
       }) // We make sure the backend is updating our data
 
@@ -132,7 +132,7 @@ export const Chat = ({
         const response = await getAssistantMessageByPaiementId(parsedPaiementId)
 
         // Abort retrying if the resource doesn't exist
-        if (response) {
+        if (!response) {
           throw new Error("The LLM message was not yet submitted");
         }
         return response

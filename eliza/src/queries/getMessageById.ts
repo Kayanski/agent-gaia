@@ -7,7 +7,7 @@ import { MemoryWithWinnerAndUserName, MemoryWithUserName } from "./getMessages";
 
 export async function getHighestPaiementId(runtime: AgentRuntime): Promise<number | undefined> {
 
-    let sql = `SELECT MAX(memories.content->>'paiementId') as max FROM memories;`;
+    let sql = `SELECT MAX(CAST(memories.content->>'paiementId' as INTEGER)) as max FROM memories;`;
 
     const { rows } = await (runtime.databaseAdapter as PostgresDatabaseAdapter).query(sql);
 
@@ -52,7 +52,9 @@ export function createIdRoutes(app: express.Application, agents: Map<string, Age
                 res.status(404).send("Agent not found");
                 return;
             }
-            res.json(await getHighestPaiementId(runtime));
+            res.json({
+                result: await getHighestPaiementId(runtime)
+            });
         })
     app.get(
         "/:agentId/messageById/:messageId",
@@ -67,7 +69,9 @@ export function createIdRoutes(app: express.Application, agents: Map<string, Age
                 res.status(422).send("Please specify a messageId");
                 return;
             }
-            res.json(await getMessageById(runtime, req.params.messageId));
+            res.json({
+                result: await getMessageById(runtime, req.params.messageId)
+            });
         })
     app.get(
         "/:agentId/messageByPaiementId/:paiementId",
@@ -82,7 +86,9 @@ export function createIdRoutes(app: express.Application, agents: Map<string, Age
                 res.status(422).send("Please specify a paiementId");
                 return;
             }
-            res.json(await getMessageByPaiementId(runtime, req.params.paiementId));
+            res.json({
+                result: await getMessageByPaiementId(runtime, req.params.paiementId)
+            });
         })
     app.get(
         "/:agentId/assistantMessageByPaiementId/:paiementId",
@@ -97,7 +103,9 @@ export function createIdRoutes(app: express.Application, agents: Map<string, Age
                 res.status(422).send("Please specify a paiementId");
                 return;
             }
-            res.json(await getAssistantMessageByPaiementId(runtime, req.params.paiementId));
+            res.json({
+                result: await getAssistantMessageByPaiementId(runtime, req.params.paiementId)
+            });
         })
 }
 

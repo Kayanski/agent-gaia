@@ -31,10 +31,6 @@ export async function getRecentMessages(runtime: AgentRuntime, userAddress: stri
     sql += ` LIMIT $${paramCount}`;
     values.push(max);
 
-    console.log(sql)
-
-
-
     const { rows } = await (runtime.databaseAdapter as PostgresDatabaseAdapter).query(sql, values);
     const messages: (Memory & Account)[] = rows.map((row) => ({
         ...row,
@@ -51,8 +47,6 @@ export async function getRecentMessages(runtime: AgentRuntime, userAddress: stri
     const winnerMessageId = getWinnerMessageIdFromWinnerAssistantMemory(winnerAssistantMemory)
 
     // We query the account userName for each
-
-    console.log(messages)
     return messages.map((message) => ({
         isWinner: message.id === winnerMessageId,
         ...message,

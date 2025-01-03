@@ -11,3 +11,6 @@ export type { TGameState, TGameStatus }
 export type { TMessage, DbMessage, }
 export { getHighestPaiementId, getMessageById, getAssistantMessageByPaiementId, getUserMessageByPaiementId }
 export { getRecentMessages, getMessageCount, winner }
+export type ApiResult<T> = {
+    result: T
+}
