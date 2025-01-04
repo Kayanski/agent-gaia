@@ -66,7 +66,7 @@ export async function getMessageCount(userAddress: string | undefined): Promise<
     if (userAddress) {
         params.userAddress = userAddress
     }
-    const messageCount: number = await queryApi("messagesCount", params)
+    const messageCount: number = await queryApi("messageCount", params)
 
     return messageCount
 }

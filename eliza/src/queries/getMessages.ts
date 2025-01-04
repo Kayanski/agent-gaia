@@ -15,9 +15,10 @@ export async function getRecentMessages(runtime: AgentRuntime, userAddress: stri
 
     // Adding user filter
     if (userAddress) {
-        paramCount++;
-        sql += ` AND "userId" = $${paramCount}`;
+        sql += ` AND ("userId" = $${paramCount + 1} OR memories.content->>'userName' = $${paramCount + 2})`;
+        paramCount += 2;
         values.push(stringToUuid(userAddress));
+        values.push(userAddress);
     }
 
     // Add ordering and limit
@@ -50,6 +51,32 @@ export async function getRecentMessages(runtime: AgentRuntime, userAddress: stri
     }))
 }
 
+export async function getMessageCount(runtime: AgentRuntime, userAddress: string | undefined): Promise<MemoryWithWinnerAndUserName[]> {
+    // Build query
+    let sql = `SELECT COUNT(*) as count FROM memories JOIN accounts ON memories."userId" = accounts.id WHERE type = $1 AND "roomId" = $2`;
+    const values: any[] = ["messages", roomId()];
+    let paramCount = 2;
+
+    // Adding user filter
+    if (userAddress) {
+        sql += ` AND ("userId" = $${paramCount + 1} OR memories.content->>'userName' = $${paramCount + 2})`;
+        paramCount += 2;
+        values.push(stringToUuid(userAddress));
+        values.push(userAddress);
+    }
+
+    const { rows } = await (runtime.databaseAdapter as PostgresDatabaseAdapter).query(sql, values);
+    const messages: (Memory & Account)[] = rows.map((row) => ({
+        ...row,
+        content:
+            typeof row.content === "string"
+                ? JSON.parse(row.content)
+                : row.content,
+    }));
+
+    return rows[0].count
+}
+
 export function createRecentMessagesRoute(app: express.Application, agents: Map<string, AgentRuntime>) {
     app.get(
         "/:agentId/recentMessages",
@@ -63,5 +90,17 @@ export function createRecentMessagesRoute(app: express.Application, agents: Map<
                 return;
             }
             res.json(await getRecentMessages(runtime, userAddress, maxMessages));
+        })
+    app.get(
+        "/:agentId/messageCount",
+        async (req: express.Request, res: express.Response) => {
+            let runtime = getRuntime(agents, req.params.agentId)
+            const userAddress = req.query.userAddress as string | undefined;
+
+            if (!runtime) {
+                res.status(404).send("Agent not found");
+                return;
+            }
+            res.json(await getMessageCount(runtime, userAddress));
         })
 }

@@ -1,8 +1,9 @@
 import { Memory } from "@elizaos/core"
 
 
-export type ApiRoute = "gameState" | "uniqueWallets" | `highestPaiementId` | `recentMessages` | `messagesCount` | `winner` |
-    `messageById/${string}` | `messageByPaiementId/${string}` | `assistantMessageByPaiementId/${string}`
+export type ApiRoute = "gameState" | "uniqueWallets" | `highestPaiementId` | `recentMessages` | `messagesCount` | `messageCount` | `winner` |
+    `messageById/${string}` | `messageByPaiementId/${string}` | `assistantMessageByPaiementId/${string}` |
+    `lastMessageSender` | `allAddresses`
 
 
 export interface UniqueWalletResponse {

@@ -35,6 +35,7 @@ export const Main = (props: TProps) => {
     );
     const totalMessageCount = await getMessageCount(
       showOnlyUserMessages ? account?.bech32Address : undefined)
+    console.log("current message", newMessages.length, "all message", totalMessageCount)
     if (newMessages.length == totalMessageCount) {
       setHasMoreMessages(false);
     } else {
