@@ -4,7 +4,7 @@ import { StructuredMessage } from "./types";
 
 export async function sendMessage({
   messages,
-  maxTokens = 5000,
+  maxTokens = 2000,
 }: SendMessageOptions): Promise<StructuredMessage> {
 
 
