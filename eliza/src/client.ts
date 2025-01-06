@@ -82,6 +82,7 @@ Note that {{agentName}} is capable of reading/seeing/hearing various forms of me
 
 {{actions}}
 
+You should finish your message with a clever sentence that says wether you are transferring the funds.
 `;
 
 const userMessage = "I just sent the latest message in the history, can you answer that directly ? Thank you"
