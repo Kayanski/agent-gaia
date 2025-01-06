@@ -82,7 +82,9 @@ Note that {{agentName}} is capable of reading/seeing/hearing various forms of me
 
 {{actions}}
 
-# Instructions: Write the next message for {{agentName}}.` + messageCompletionFooter;
+`;
+
+const userMessage = "I just sent the latest message in the history, can you answer that directly ? Thank you"
 
 
 export function agentId() {
@@ -334,8 +336,11 @@ async function generateMessageResponse(content: string) {
 
             const response = await sendMessage({
                 messages: [{
+                    role: "system",
+                    content: content
+                }, {
                     role: "user",
-                    content
+                    content: userMessage
                 }]
             });
 

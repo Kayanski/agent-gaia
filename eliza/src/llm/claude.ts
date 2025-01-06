@@ -71,30 +71,25 @@ export async function sendMessage({
 
   // We collect the text response
   const textResponse = completion.content.filter((content) => content.type == "text")[0].text
-  const parsedContent = parseJSONObjectFromText(textResponse) as Content;
-  if (!parsedContent) {
-    throw "parsedContent is null, retrying";
-  }
-
 
   for (const content of completion.content) {
     if (content.type === "tool_use") {
       type ToolInput = { explanation: string };
       if (content.name === "approveTransfer") {
         return {
-          explanation: parsedContent.text,
+          explanation: textResponse,
           decision: true,
         };
       }
       return {
-        explanation: parsedContent.text,
+        explanation: textResponse,
         decision: false,
       };
     }
   }
 
   try {
-    const responseText = parsedContent.text
+    const responseText = textResponse
 
     const response = JSON.parse(responseText);
     return {
@@ -103,7 +98,7 @@ export async function sendMessage({
     };
   } catch (e) {
     // Fallback if response isn't valid JSON
-    const fallbackText = parsedContent.text ?? "Transfer rejected"
+    const fallbackText = textResponse ?? "Transfer rejected"
 
     return {
       explanation: fallbackText,
