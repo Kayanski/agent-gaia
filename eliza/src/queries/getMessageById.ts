@@ -11,7 +11,7 @@ export async function getHighestPaiementId(runtime: AgentRuntime): Promise<numbe
 
     const { rows } = await (runtime.databaseAdapter as PostgresDatabaseAdapter).query(sql);
 
-    return rows[0].max ? parseInt(rows[0].max) : undefined
+    return rows[0].max != undefined ? parseInt(rows[0].max) : undefined
 }
 
 export async function getMessageById(runtime: AgentRuntime, messageId: string): Promise<MemoryWithUserName | undefined> {
