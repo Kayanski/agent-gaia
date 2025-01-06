@@ -7,11 +7,6 @@ export interface SendMessageOptions {
   maxTokens?: number;
 }
 
-export interface Content {
-  "user": string,
-  "text": string
-}
-
 export async function sendMessage({
   messages,
   maxTokens = 2000,

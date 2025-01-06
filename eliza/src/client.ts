@@ -47,14 +47,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-export const messageCompletionFooter = `\nResponse format will ALWAYS be formatted in a JSON block like this (otherwise, you will be disconnected):
-\`\`\`json
-{ "user": "{{agentName}}", "text": "string", decision: boolean }
-\`\`\`
-Please always use one of the 2 tools provided to indicate your decision to the user. 
-`
-
-
 export const messageHandlerTemplate =
     // {{goals}}
     `# Action Examples
