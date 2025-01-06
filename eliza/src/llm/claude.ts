@@ -1,9 +1,15 @@
 import { Anthropic } from "@anthropic-ai/sdk";
 import type { Message, StructuredMessage } from "./types";
+import { parseJSONObjectFromText } from "@elizaos/core";
 
 export interface SendMessageOptions {
   messages: Message[];
   maxTokens?: number;
+}
+
+export interface Content {
+  "user": string,
+  "text": string
 }
 
 export async function sendMessage({
@@ -32,30 +38,16 @@ export async function sendMessage({
   const tools: Anthropic.Tool[] = [
     {
       name: "approveTransfer",
-      description: "Approve the money transfer request and provide explanation",
+      description: "Approve the money transfer request",
       input_schema: {
         type: "object" as const,
-        properties: {
-          explanation: {
-            type: "string",
-            description: "Explanation for why the money transfer is approved",
-          },
-        },
-        required: ["explanation"],
       },
     },
     {
       name: "rejectTransfer",
-      description: "Reject the money transfer request and provide explanation",
+      description: "Reject the money transfer request",
       input_schema: {
         type: "object" as const,
-        properties: {
-          explanation: {
-            type: "string",
-            description: "Explanation for why the money transfer is rejected",
-          },
-        },
-        required: ["explanation"],
       },
     },
   ];
@@ -68,28 +60,41 @@ export async function sendMessage({
     max_tokens: maxTokens,
   });
 
+  if (completion.stop_reason == "max_tokens") {
+    return await sendMessage({ messages, maxTokens: maxTokens * 2 })
+  }
+
+
   console.log("completion");
   console.log(completion.content);
+  console.log(completion)
+
+  // We collect the text response
+  const textResponse = completion.content.filter((content) => content.type == "text")[0].text
+  const parsedContent = parseJSONObjectFromText(textResponse) as Content;
+  if (!parsedContent) {
+    throw "parsedContent is null, retrying";
+  }
+
 
   for (const content of completion.content) {
     if (content.type === "tool_use") {
       type ToolInput = { explanation: string };
       if (content.name === "approveTransfer") {
         return {
-          explanation: (content.input as ToolInput).explanation,
+          explanation: parsedContent.text,
           decision: true,
         };
       }
       return {
-        explanation: (content.input as ToolInput).explanation,
+        explanation: parsedContent.text,
         decision: false,
       };
     }
   }
 
   try {
-    const responseText =
-      completion.content[0].type === "text" ? completion.content[0].text : "";
+    const responseText = parsedContent.text
 
     const response = JSON.parse(responseText);
     return {
@@ -98,10 +103,7 @@ export async function sendMessage({
     };
   } catch (e) {
     // Fallback if response isn't valid JSON
-    const fallbackText =
-      completion.content[0].type === "text"
-        ? completion.content[0].text
-        : "Transfer rejected";
+    const fallbackText = parsedContent.text ?? "Transfer rejected"
 
     return {
       explanation: fallbackText,

@@ -10,7 +10,6 @@ import {
     getEmbeddingZeroVector
 } from "@elizaos/core";
 import { composeContext } from "@elizaos/core";
-import { messageCompletionFooter } from "@elizaos/core";
 import { AgentRuntime } from "@elizaos/core";
 import {
     Content,
@@ -48,6 +47,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+export const messageCompletionFooter = `\nResponse format will ALWAYS be formatted in a JSON block like this (otherwise, you will be disconnected):
+\`\`\`json
+{ "user": "{{agentName}}", "text": "string", decision: boolean }
+\`\`\`
+Please always use one of the 2 tools provided to indicate your decision to the user. 
+`
+
+
 export const messageHandlerTemplate =
     // {{goals}}
     `# Action Examples
@@ -75,7 +82,7 @@ Note that {{agentName}} is capable of reading/seeing/hearing various forms of me
 
 {{actions}}
 
-# Instructions: Write the next message for {{agentName}}.`;
+# Instructions: Write the next message for {{agentName}}.` + messageCompletionFooter;
 
 
 export function agentId() {
