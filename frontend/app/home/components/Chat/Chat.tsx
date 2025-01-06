@@ -220,7 +220,7 @@ export const Chat = ({
       }
     }
 
-  }, [shouldFetchMore, setShouldFetchMore]);
+  }, [shouldFetchMore, setShouldFetchMore, hasMoreMessages]);
 
   // Handle new messages
   useEffect(() => {

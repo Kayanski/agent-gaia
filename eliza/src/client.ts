@@ -131,15 +131,15 @@ export class DirectClient {
                     res.status(401).send("Only authorized bearer can communicate with this server")
                 }
                 if (!req.body.userName) {
-                    res.status(422).send("Missing user name (body.userName)");
+                    res.status(422).send({ error: "Missing user name (body.userName)" });
                     return;
                 }
                 if (!req.body.text) {
-                    res.status(422).send("Missing prompt content (body.text)");
+                    res.status(422).send({ error: "Missing prompt content (body.text)" });
                     return;
                 }
-                if (!req.body.paiementId) {
-                    res.status(422).send("Missing Paiement Id (paiementId)");
+                if (req.body.paiementId == undefined) {
+                    res.status(422).json({ error: "Missing Paiement Id (paiementId)" });
                     return;
                 }
                 const userName = req.body.userName

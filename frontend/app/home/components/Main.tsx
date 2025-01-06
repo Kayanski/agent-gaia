@@ -45,7 +45,7 @@ export const Main = (props: TProps) => {
 
     const newGameState = await getGameState();
     setGameState(newGameState);
-  }, [showOnlyUserMessages, account?.bech32Address, maxMessages]);
+  }, [showOnlyUserMessages, account?.bech32Address, maxMessages, setHasMoreMessages]);
 
   // Poll for new messages every 5 seconds
   useEffect(() => {
