@@ -20,11 +20,11 @@ export async function endGame() {
     const allAddresses: ApiResult<string[]> = await queryApi("allAddresses");
 
     const allNonLastSenderAddresses = allAddresses.result.filter((address) => {
-        address != lastSender.result
+        return address != lastSender.result
     })
 
     // We need enough gas to cover all the transfers
-    let totalGasCost = BigInt(ACTIVE_NETWORK.transferCost) * BigInt(allNonLastSenderAddresses.length + 1);
+    const totalGasCost = BigInt(ACTIVE_NETWORK.transferCost) * BigInt(allNonLastSenderAddresses.length + 1);
 
     // We get the total available funds
     const paiementPrice = await getCurrentPrice();
