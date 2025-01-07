@@ -38,8 +38,8 @@ export const HowItWorks = () => {
                       icon: "/github.svg",
                       alt: "Github",
                     },
-                  ].map((item) => (
-                    <a href={item.link} key={item.link} target="_blank">
+                  ].map((item, i) => (
+                    <a href={item.link} key={item.link ?? i} target="_blank">
                       <Image
                         src={item.icon}
                         alt={item.alt}
