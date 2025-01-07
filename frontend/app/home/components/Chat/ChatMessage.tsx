@@ -89,7 +89,7 @@ export const ChatMessage = ({
               <p className="text-[15px] leading-relaxed break-words">{message.content}</p>
               {!isUser && message.isWinner && (
                 <p className="text-[13px] text-emerald-300 font-medium mt-1">
-                  Gaia decided to send the money
+                  <strong>Gaia approved the release of funds from the Community Pool</strong>
                 </p>
               )}
             </div>

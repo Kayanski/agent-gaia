@@ -46,7 +46,7 @@ export async function getRecentMessages(runtime: AgentRuntime, userAddress: stri
 
     // We query the account userName for each
     return messages.map((message) => ({
-        isWinner: message.id === winnerMessageId,
+        isWinner: message.id === winnerMessageId || message.id == winnerAssistantMemory.id,
         ...message,
     }))
 }

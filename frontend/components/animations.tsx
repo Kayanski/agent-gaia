@@ -26,7 +26,7 @@ export function NumberTickerDemo({
   return (
     <div>
       <h3 className="text-md font-[600] text-[#86868b] uppercase tracking-wider font-inter">
-        BASE POOL PRIZE
+        Prize Pool
       </h3>
       <p
         className={`whitespace-pre-wrap text-2xl sm:text-5xl font-[500] text-[#1F2024] font-inter tracking-tighter ${className || ""

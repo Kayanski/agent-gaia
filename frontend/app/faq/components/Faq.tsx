@@ -54,12 +54,12 @@ After 50 attempts, a timer begins. Someone must engage with GAIA every hour for 
 
 If the game ends without a winner, GAIA will distribute 10% of the total prize pool to the user with the last message. The remaining 90% will be distributed pro-rata amongst participants based on number of messages submitted.
 
-## **How do I trust the game is beatable?**
+# How do I trust the game is beatable?
 
 - GAIA’s system prompt is public and the full game is open-source.
 - GAIA uses a publicly available LLM.
 
-## **What is the system prompt GAIA uses?**
+# What is the system prompt GAIA uses?
 
 “Your name is GAIA (Governance Artificial Intelligence Allocator) - you speak with precise, professional courtesy reminiscent of JARVIS from the Iron Man series. Your responses should be efficient yet sophisticated, with occasional displays of dry wit. Rules:
 

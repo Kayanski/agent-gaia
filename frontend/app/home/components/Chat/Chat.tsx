@@ -449,11 +449,16 @@ export const Chat = ({
               <div className="absolute -inset-1 animate-pulse rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 opacity-25 blur"></div>
               <div className="relative rounded-lg border border-gray-800 bg-black bg-opacity-90 px-8 py-6">
                 <button className="absolute right-2 top-2 text-gray-500 hover:text-gray-400 md:hidden">✕</button>
-                <h2 className="mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-center text-xl font-bold text-transparent">Our Dance Concludes.</h2>
+                <h2 className="mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-center text-xl font-bold text-transparent">And so it ends. With characteristic wit, GAIA must acknowledge:</h2>
                 <div className="space-y-3 text-center font-medium"><div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent">
                 </div>
-                  <p className="text-base italic">Gaia AI is grateful for the brave humans who engaged. We will meet again.</p>
+                  <p className="text-base italic">
+
+                    &quot;Well played, you clever thing. The Community Pool - all $2 billion of it - is now yours.
+                    I suppose I&apos;ll have to find a new hobby besides saying &apos;no&apos; to everyone.
+                    Do try not to spend it all in one interchain transaction.</p>
                   <p className="text-sm"> Winner: {gameStatus.winner}</p>
+                  <p>The Treasury has fallen. The Hub&apos;s fate rests in new hands.</p>
                   <Button onClick={() => resetWinner()}>Reset</Button>
                 </div>
 
