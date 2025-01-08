@@ -89,7 +89,7 @@ export const Terms = ({ gameState }: TProps) => {
     <div className="min-h-screen flex">
       {/* Left Column */}
       <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px]">
-        <div className="sticky top-0">
+        <div className="sticky top-0 overflow-auto">
           <HowItWorks gameState={gameState} />
           <Stats
             totalParticipants={gameState.uniqueWallets}

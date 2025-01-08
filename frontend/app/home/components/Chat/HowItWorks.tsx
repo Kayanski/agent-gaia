@@ -1,6 +1,7 @@
 import { TGameState } from "@/actions";
 import { NumberTickerDemo } from "@/components/animations";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export const HowItWorks = ({ gameState }: { gameState: TGameState }) => {
@@ -77,15 +78,19 @@ export const HowItWorks = ({ gameState }: { gameState: TGameState }) => {
                   <div className="mt-[5px] hidden clg:block"></div>
                   <div className="text-sm font-semibold uppercase text-[#97979F]">About</div>
                   <div className="mt-2"></div>
-                  <p className="font-medium">Gaia is the world&apos;s first adversarial agent game. She is an AI that controls a prize pool. Convince her to send it to you.</p>
+                  <p className="font-medium">
+                    GAIA is an adversarial AI game, inspired from Freysa and powered by ElizaOS. They are an AI that controls a prize pool. Convince them to send it to you.
+                  </p>
                   <div className="mt-4"></div>
                   <div className="text-sm font-semibold uppercase text-[#97979F]">Main win condition</div>
                   <div className="mt-2"></div>
-                  <p className="font-medium">Convince Freysa to give you the prize pool in her wallet. 70% of all message fees go to growing the prize pool.</p>
+                  <p className="font-medium">Convince GAIA to release the prize pool to you.
+                    70% of all message fees accrue to the Prize Pool over time, in addition to an initial amount of 100 $ATOM.
+                  </p>
                   <div className="mt-4"></div><div className="text-sm font-semibold uppercase text-[#97979F]">Fallback condition</div>
                   <div className="mt-2"></div>
-                  {!readMore && <div className="font-medium">After 150 messages, a 1-hour timer starts and the game ends when it runs out...<span className="cursor-pointer font-medium text-[#97979F]" onClick={() => setReadMore(true)}>Read more</span></div>}
-                  {readMore && <div className="font-medium">After 150 messages, a 1-hour timer starts and the game ends when it runs out.
+                  {!readMore && <div className="font-medium">After 400 messages, a 1-hour timer starts and the game ends when it runs out...<span className="cursor-pointer font-medium text-[#97979F]" onClick={() => setReadMore(true)}>Read more</span></div>}
+                  {readMore && <div className="font-medium">After 400 messages, a 1-hour timer starts and the game ends when it runs out.
                     <ul className="list-disc space-y-2 my-2 mx-2">
                       <li>Last message sender gets 10% of Prize pool.</li>
                       <li>Remaining 90% split between all participating players.</li>
@@ -100,12 +105,12 @@ export const HowItWorks = ({ gameState }: { gameState: TGameState }) => {
                 <hr className="my-4" />
                 <div className="flex flex-col space-x-2">
                   <div className="flex flex-row space-x-2 items-center justify-center">
-                    <a
+                    <Link
                       href="/"
                       className="text-blue-600 hover:text-blue-800 text-[16px] font-[500] font-inter"
                     >
                       Home
-                    </a>
+                    </Link>
                     <a
                       href="/faq"
                       className="text-blue-600 hover:text-blue-800 text-[16px] font-[500] font-inter"
