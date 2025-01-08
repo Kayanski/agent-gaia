@@ -1,6 +1,8 @@
 "use server"
 import { TGameState, TGameStateResponse, UniqueWalletResponse } from "@/lib/types";
 import { queryApi } from "./query";
+import { getCurrentPrice } from "../getCurrentPrice";
+import { getPrizePool } from "../getPrizePool";
 
 export async function getUniqueWallets(): Promise<number> {
     const data: UniqueWalletResponse = await queryApi("uniqueWallets")
@@ -10,10 +12,16 @@ export async function getUniqueWallets(): Promise<number> {
 export async function getGameState(): Promise<TGameState> {
     const gameStateResponse: TGameStateResponse = await queryApi("gameState")
 
+    const messagePrice = await getCurrentPrice();
+    const prizeFund = await getPrizePool();
+
+
     return {
         uniqueWallets: gameStateResponse.uniqueWallets,
         messagesCount: gameStateResponse.messagesCount,
         endgameTime: new Date(gameStateResponse.endgameTime),
-        gameStatus: gameStateResponse.gameStatus
+        gameStatus: gameStateResponse.gameStatus,
+        messagePrice: messagePrice.price,
+        prizeFund,
     }
 }

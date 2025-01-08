@@ -18,7 +18,12 @@ export type TGameState = {
     uniqueWallets: number,
     messagesCount: number
     endgameTime: Date,
-    gameStatus: TGameStatus
+    gameStatus: TGameStatus,
+    messagePrice: {
+        denom: string,
+        amount: string
+    },
+    prizeFund: number
 }
 
 export type TGameStateResponse = {

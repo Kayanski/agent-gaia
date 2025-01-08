@@ -127,14 +127,13 @@ export const Faq = ({ gameState }: TProps) => {
       {/* Left Column */}
       <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px]">
         <div className="sticky top-0 pt-8">
-          <HowItWorks />
+          <HowItWorks gameState={gameState} />
           <Stats
             totalParticipants={gameState.uniqueWallets}
             totalMessages={gameState.messagesCount}
-            prizeFund={100000}
             endgameTime={gameState.endgameTime}
-            className="mt-8"
             isGameEnded={gameState.gameStatus.isGameEnded}
+            messagePrice={gameState.messagePrice}
           />
         </div>
       </div>

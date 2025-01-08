@@ -1,6 +1,6 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { NumberTickerDemo, TypingAnimationDemo } from "@/components/animations";
+import { TypingAnimationDemo } from "@/components/animations";
 import { getMessageCount, getRecentMessages, TMessage } from "@/actions/";
 import { Header } from "@/app/home/components/Header";
 import { Chat } from "@/app/home/components/Chat/Chat";
@@ -94,20 +94,19 @@ export const Main = (props: TProps) => {
             ease: [0.23, 1, 0.32, 1],
           }}
         >
-          <HowItWorks />
+          <HowItWorks gameState={gameState} />
 
           <Stats
             totalParticipants={gameState.uniqueWallets}
             totalMessages={gameState.messagesCount}
-            prizeFund={prizeFund ?? 0}
             endgameTime={gameState.endgameTime}
-            className="mt-8"
             isGameEnded={gameState.gameStatus.isGameEnded}
+            messagePrice={gameState.messagePrice}
           />
         </motion.div>
 
         {/* Center Column */}
-        <div className="flex-1 flex flex-col overflow-hidden px-4 lg:px-8">
+        <div className="flex-1 flex flex-col overflow-hidden px-4 lg:px-8 mt-4">
           <motion.div
             className="flex-shrink-0 text-center pb-4 lg:pb-8 max-w-3xl mx-auto w-full"
             initial={{ y: "50vh", translateY: "-50%" }}
@@ -118,10 +117,6 @@ export const Main = (props: TProps) => {
               ease: [0.23, 1, 0.32, 1],
             }}
           >
-            <NumberTickerDemo
-              className="mb-4 lg:mb-8 text-2xl lg:text-3xl"
-              prizeFund={prizeFund}
-            />
             <div className="relative inline-flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-[0_2px_10px_rgba(0,0,0,0.06)]">
                 <Image
