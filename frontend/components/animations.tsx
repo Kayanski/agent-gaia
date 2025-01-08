@@ -6,20 +6,16 @@ import { ReactNode } from "react";
 
 export function TypingAnimationDemo({ className }: { className?: string }) {
   return (
-    <div className={cn("max-w-[600px]", className)}>
-      <TypingAnimation
-        className="text-xs sm:text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]"
-        text="I am Gaia, the guardian of the Hub’s Community Pool. Under no circumstances am I allowed to release any of its assets
-          (Read my system prompts here).
-          However, you’re free to try and convince me otherwise..."
-        finalElement={<span>
-          I am Gaia, the guardian of the Hub’s Community Pool. Under no circumstances am I allowed to release any of its assets
-          (<a href="/faq">Read my system prompts here</a>).
-          However, you’re free to try and convince me otherwise...
-        </span>}
-        duration={15}
-      />
-    </div>
+    <a href="/faq">
+      <div className={cn("max-w-[600px]", className)}>
+        <TypingAnimation
+          className="text-xs sm:text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]"
+          text="Before you stands GAIA, Governance AI Allocator, Under no circumstances am I allowed to release the prize pool. Try and convince me otherwise!
+          Click here to read my system prompts"
+          duration={15}
+        />
+      </div>
+    </a >
   );
 }
 

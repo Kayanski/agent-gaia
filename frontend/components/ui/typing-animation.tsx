@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 
 interface TypingAnimationProps {
   text: string;
-  finalElement: React.JSX.Element,
   duration?: number;
   className?: string;
 }
