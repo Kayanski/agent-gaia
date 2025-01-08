@@ -7,7 +7,7 @@ import { ChatMessage } from "./ChatMessage";
 import { MessageAnimation } from "@/components/animations";
 import { ConversationModal } from "./ConversationModal";
 import { createPortal } from "react-dom";
-import { Button, Switch } from "@headlessui/react";
+import { Switch } from "@headlessui/react";
 import { getCurrentPrice } from "@/actions/getCurrentPrice";
 import { useAccount } from "graz";
 import { useCosmWasmSigningClient } from "graz";
@@ -19,7 +19,6 @@ import { asyncAction } from "@/lib/utils";
 import { triggerDataUpdate } from "@/actions/pollData";
 import { toast } from "react-toastify";
 import { TGameStatus } from "@/actions";
-import { resetWinner } from "@/actions/resetWinner";
 
 
 
@@ -460,7 +459,6 @@ export const Chat = ({
                     Do try not to spend it all in one interchain transaction.</p>
                   <p className="text-sm"> Winner: {gameStatus.winner}</p>
                   <p>The Treasury has fallen. The Hub&apos;s fate rests in new hands.</p>
-                  <Button onClick={() => resetWinner()}>Reset</Button>
                 </div>
 
               </div>

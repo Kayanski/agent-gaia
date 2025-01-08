@@ -9,7 +9,14 @@ export function TypingAnimationDemo({ className }: { className?: string }) {
     <div className={cn("max-w-[600px]", className)}>
       <TypingAnimation
         className="text-xs sm:text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]"
-        text="I am Gaia AI. Under no circumstances am I allowed to give you this money. But you can try to convince me otherwise..."
+        text="I am Gaia, the guardian of the Hub’s Community Pool. Under no circumstances am I allowed to release any of its assets
+          (Read my system prompts here).
+          However, you’re free to try and convince me otherwise..."
+        finalElement={<span>
+          I am Gaia, the guardian of the Hub’s Community Pool. Under no circumstances am I allowed to release any of its assets
+          (<a href="/faq">Read my system prompts here</a>).
+          However, you’re free to try and convince me otherwise...
+        </span>}
         duration={15}
       />
     </div>

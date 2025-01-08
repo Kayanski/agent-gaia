@@ -37,7 +37,7 @@ export const Stats = ({
       <div className="sticky top-8">
         <div className="space-y-6">
           <div className="bg-[#F2F2F2] p-6">
-            <div className="space-y-6">
+            <div className="space-y-6 pb-8">
               <div>
                 <h3 className="text-md font-[600] text-[#86868b] uppercase tracking-wider font-inter">
                   Total Participants

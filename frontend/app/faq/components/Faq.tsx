@@ -126,7 +126,7 @@ export const Faq = ({ gameState }: TProps) => {
     <div className="min-h-screen flex">
       {/* Left Column */}
       <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px]">
-        <div className="sticky top-0 pt-8">
+        <div className="sticky top-0">
           <HowItWorks gameState={gameState} />
           <Stats
             totalParticipants={gameState.uniqueWallets}

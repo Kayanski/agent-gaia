@@ -31,12 +31,13 @@ export const HowItWorks = ({ gameState }: { gameState: TGameState }) => {
   }, [gameState.endgameTime]);
 
   const [readMore, setReadMore] = useState(false)
-  const minutes = Math.floor(timeRemaining / 60);
+  const hours = Math.min(Math.floor(timeRemaining / 3600), 23);
+  const minutes = Math.min(Math.floor(timeRemaining / 60), 59);
   const seconds = timeRemaining % 60;
   const timeDisplay =
     timeRemaining <= 0
       ? "Game Ended"
-      : `${minutes}:${seconds.toString().padStart(2, "0")}`;
+      : `${hours}:${minutes}:${seconds.toString().padStart(2, "0")}`;
 
   return (
     <div className="p-0">
@@ -99,6 +100,12 @@ export const HowItWorks = ({ gameState }: { gameState: TGameState }) => {
                 <hr className="my-4" />
                 <div className="flex flex-col space-x-2">
                   <div className="flex flex-row space-x-2 items-center justify-center">
+                    <a
+                      href="/"
+                      className="text-blue-600 hover:text-blue-800 text-[16px] font-[500] font-inter"
+                    >
+                      Home
+                    </a>
                     <a
                       href="/faq"
                       className="text-blue-600 hover:text-blue-800 text-[16px] font-[500] font-inter"
