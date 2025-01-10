@@ -141,14 +141,14 @@ export const Chat = ({
       // This could take some time
       await pRetry(hasPromptSubmitted, { retries: 50, minTimeout: 200 })
 
-      toast("Prompt succesfully tansmitted to Gaia")
+      toast("Gaia received your prompt")
       await queryNewMessages();
       setPrompt("");
 
 
       // This could take some time as well
       const { data: llmRes, err } = await asyncAction(pRetry(hasLLMSubmitted, { retries: 10 }))
-      toast("Gaia's answer is here !")
+      toast("Gaia's answer is here!")
 
       if (llmRes) {
         await queryNewMessages();
