@@ -12,7 +12,7 @@ export interface Network {
 }
 
 export const TESTNET = {
-    paiement: "neutron1yxrjha4p3naa0675lrn98krg0lwqvskdpnhmkl26r2ng4l8973ls6ms92a",
+    paiement: "neutron1ch0xep23n66zqhgnkzv0cacgrx34se4km6r5r3lj37ax8j599vpqq722rf",
     treasury: "neutron17kstwwyxnrpw6jttn4ky0dwrqxs8ykqc5j2gvt",
     chain: {
         ...testnetChains.neutrontestnet, feeCurrencies: [
