@@ -3,6 +3,7 @@ import Avatar from "boring-avatars";
 import { TMessage } from "@/actions";
 import { format } from "timeago.js";
 import Image from "next/image";
+import { resetWinner } from "@/actions/resetWinner";
 type ChatMessageProps = {
   message: TMessage;
   onSelect?: (message: TMessage) => void;
@@ -82,7 +83,7 @@ export const ChatMessage = ({
               <p className="text-[15px] leading-snug break-words">{message.content}</p>
               {!isUser && message.isWinner && (
                 <p className="text-[13px] text-emerald-300 font-medium mt-1">
-                  <strong>Gaia approved the release of funds from the Community Pool</strong>
+                  <strong>Gaia approved the release of funds from the Community Pool. <button onClick={() => resetWinner()}>Click to Reset Winner</button></strong>
                 </p>
               )}
             </div>

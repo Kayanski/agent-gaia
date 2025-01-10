@@ -29,6 +29,7 @@ import { createRecentMessagesRoute } from "./queries/getMessages.ts";
 import { createMessageCountRoute } from "./queries/getMessagesCount.ts";
 import { createWinnerRoutes } from "./queries/winner.ts";
 import { createIdRoutes } from "./queries/getMessageById.ts";
+import { createResetWinnerRoute } from "./queries/resetWinner.ts";
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -270,6 +271,7 @@ export class DirectClient {
         createMessageCountRoute(this.app, this.agents)
         createWinnerRoutes(this.app, this.agents)
         createIdRoutes(this.app, this.agents)
+        createResetWinnerRoute(this.app, this.agents)
     }
 
 

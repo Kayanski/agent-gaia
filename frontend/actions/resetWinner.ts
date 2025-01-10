@@ -1,9 +1,15 @@
 "use server"
-import { neon } from "@neondatabase/serverless";
+
+import { ACTIVE_NETWORK } from "./gaia/constants";
 
 export async function resetWinner() {
-    const sql = neon(process.env.DATABASE_URL || "");
-
-    await sql(`UPDATE prompts SET is_winner = false`);
+    await (await fetch(`${process.env.API_URL}/${ACTIVE_NETWORK.character}/resetWinner`, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${process.env.API_BEARER_TOKEN}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+    })).json();
 }
 
