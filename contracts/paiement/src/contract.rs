@@ -6,7 +6,10 @@ use cw_paginate::paginate_map;
 use cw_storage_plus::Bound;
 
 use crate::{
-    msg::{CurrentPriceResponse, ExecuteMsg, InstantiateMsg, MessageResponse, QueryMsg, MESSAGES},
+    msg::{
+        CurrentPriceResponse, ExecuteMsg, InstantiateMsg, MessageResponse, QueryMsg,
+        TimeoutStatusResponse, MESSAGES,
+    },
     state::{Config, CONFIG},
     PaiementError, PaiementResult,
 };
@@ -153,6 +156,22 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> PaiementResult<Binary> {
                 }
             })?)
             .map_err(Into::into)
+        }
+        QueryMsg::TimeoutStatus {} => {
+            let config = CONFIG.load(deps.storage)?;
+
+            let response = if config.is_timer_inactive() {
+                TimeoutStatusResponse::Inactive {
+                    current_messages: config.next_payment_key,
+                    trigger_message_count: config.time_limit.min_messages,
+                }
+            } else {
+                TimeoutStatusResponse::Active {
+                    end_date: config.timer_end(),
+                }
+            };
+
+            to_json_binary(&response).map_err(Into::into)
         }
     }
 }

@@ -20,18 +20,23 @@ pub struct Config {
 
 impl Config {
     pub fn assert_time_limit(&self, env: &Env) -> PaiementResult<()> {
-        if self.next_payment_key <= self.time_limit.min_messages {
+        if self.is_timer_inactive() {
             return Ok(());
         }
-        if self
-            .last_message_timestamp
-            .plus_seconds(self.time_limit.seconds_limit)
-            < env.block.time
-        {
+        if self.timer_end() < env.block.time {
             Err(PaiementError::GameEnded {})
         } else {
             Ok(())
         }
+    }
+
+    pub fn is_timer_inactive(&self) -> bool {
+        self.next_payment_key <= self.time_limit.min_messages
+    }
+
+    pub fn timer_end(&self) -> Timestamp {
+        self.last_message_timestamp
+            .plus_seconds(self.time_limit.seconds_limit)
     }
 
     pub fn assert_paiement(&self, info: MessageInfo) -> PaiementResult<(Coin, Option<BankMsg>)> {

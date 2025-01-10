@@ -46,7 +46,7 @@ pub fn main() -> anyhow::Result<()> {
                 (MALEK_ADDR.to_string(), MALEK_SHARE),
                 (KAYANSKI_ADDR.to_string(), KAYANSKI_SHARE),
             ],
-            price_limit: PRICE_LIMIT.map(|s| Decimal::from_str(s)).transpose()?,
+            price_limit: PRICE_LIMIT.map(Decimal::from_str).transpose()?,
             time_limit: TimeLimit {
                 min_messages: MIN_MESSAGES,
                 seconds_limit: SECONDS_LIMIT, // One hour

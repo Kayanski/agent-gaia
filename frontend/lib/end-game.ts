@@ -5,9 +5,24 @@ import { GasPrice } from "@cosmjs/stargate";
 import { getCurrentPrice } from "@/actions/getCurrentPrice";
 import { queryApi } from "@/actions/database/query";
 import { ApiResult } from "@/actions";
+import { getTimeoutStatus } from "@/actions/getConfig";
+import 'dotenv/config'
 
 
 export async function endGame() {
+
+    // We make sure the game is ended
+    const timeoutStatus = await getTimeoutStatus();
+    if ("inactive" in timeoutStatus) {
+        console.warn("Not enough messages sent")
+        return;
+    }
+
+    const endDate = timeoutStatus["active"].endDate;
+    if (endDate.getTime() > Date.now()) {
+        console.warn("Date is not elapsed, the game shouldn't be stopped")
+        return;
+    }
 
     // We get the last message sender
     const lastSender: ApiResult<string | undefined> = await queryApi("lastMessageSender");
@@ -68,8 +83,9 @@ export async function endGame() {
                 }]
             },
         }));
-
         await cosmwasmClient.signAndBroadcast(accounts[0].address, messages, "auto");
     }
-
+}
+if (require.main === module) {
+    endGame();
 }

@@ -21,11 +21,22 @@ export type EndGameCondition = {
     triggerMessageNumber: number
 };
 
+export type TimeoutStatus = {
+    "inactive": {
+        currentMessages: number,
+        triggerMessageCount: number
+    }
+} | {
+    "active": {
+        endDate: Date
+    }
+}
+
 
 export type TGameState = {
     uniqueWallets: number,
     messagesCount: number
-    endgameCondition: EndGameCondition,
+    timeoutStatus: TimeoutStatus,
     gameStatus: TGameStatus,
     messagePrice: {
         denom: string,

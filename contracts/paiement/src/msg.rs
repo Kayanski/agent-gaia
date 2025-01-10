@@ -35,6 +35,8 @@ pub enum QueryMsg {
     Config {},
     #[returns(CurrentPriceResponse)]
     CurrentPrice {},
+    #[returns(TimeoutStatusResponse)]
+    TimeoutStatus {},
     #[returns(MessageResponse)]
     Message { message_id: u32 },
     #[returns(Vec<MessageResponse>)]
@@ -47,6 +49,17 @@ pub enum QueryMsg {
 #[cw_serde]
 pub struct CurrentPriceResponse {
     pub price: Coin,
+}
+
+#[cw_serde]
+pub enum TimeoutStatusResponse {
+    Inactive {
+        current_messages: u32,
+        trigger_message_count: u32,
+    },
+    Active {
+        end_date: Timestamp,
+    },
 }
 
 #[cw_serde]
