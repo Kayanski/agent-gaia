@@ -6,7 +6,6 @@ import { useMemo } from "react";
 interface StatsProps {
   totalParticipants: number;
   totalMessages: number;
-  endgameTime: Date | undefined;
   className?: string;
   isGameEnded: boolean;
   messagePrice: TGameState["messagePrice"]

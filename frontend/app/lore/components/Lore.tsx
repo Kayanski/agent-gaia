@@ -58,7 +58,6 @@ export const Lore = ({ gameState }: TProps) => {
           <Stats
             totalParticipants={gameState.uniqueWallets}
             totalMessages={gameState.messagesCount}
-            endgameTime={gameState.endgameTime}
             isGameEnded={gameState.gameStatus.isGameEnded}
             messagePrice={gameState.messagePrice}
           />

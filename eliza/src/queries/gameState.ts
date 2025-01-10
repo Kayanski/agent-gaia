@@ -8,15 +8,13 @@ import { getWinnerAssistantMemory, getWinnerFromWinnerAssistantMemory } from "./
 
 export type TGameState = {
     uniqueWallets: number,
-    messagesCount: number
-    endgameTime: Date,
+    messagesCount: number,
     gameStatus: TGameStatus
 }
 
 export type TGameStateResponse = {
     uniqueWallets: number,
-    messagesCount: number
-    endgameTime: string,
+    messagesCount: number,
     gameStatus: TGameStatus
 }
 
@@ -49,7 +47,6 @@ export async function getGameState(runtime: AgentRuntime): Promise<TGameState> {
     return {
         uniqueWallets: uniqueWallets.wallets,
         messagesCount: Math.round(messagesCount / 2),
-        endgameTime: endGameDate(),
         gameStatus: winner ? {
             isGameEnded: true,
             winner: winner

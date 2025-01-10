@@ -35,7 +35,6 @@ export const Main = (props: TProps) => {
     );
     const totalMessageCount = await getMessageCount(
       showOnlyUserMessages ? account?.bech32Address : undefined)
-    console.log("current message", newMessages.length, "all message", totalMessageCount)
     if (newMessages.length == totalMessageCount) {
       setHasMoreMessages(false);
     } else {
@@ -53,21 +52,9 @@ export const Main = (props: TProps) => {
     return () => clearInterval(interval);
   }, [queryNewMessages]);
 
-  // Add this to debug the selected message
-  useEffect(() => {
-    if (selectedMessage) {
-      console.log("Selected Message State:", selectedMessage);
-      console.log(
-        "Has fullConversation:",
-        "fullConversation" in selectedMessage
-      );
-    }
-  }, [selectedMessage]);
-
   useEffect(() => {
     const fetchPrizeFund = async () => {
       const prizeFund = await getPrizePool();
-      console.log(prizeFund)
       setPrizeFund(prizeFund);
     };
     fetchPrizeFund();
@@ -99,7 +86,6 @@ export const Main = (props: TProps) => {
           <Stats
             totalParticipants={gameState.uniqueWallets}
             totalMessages={gameState.messagesCount}
-            endgameTime={gameState.endgameTime}
             isGameEnded={gameState.gameStatus.isGameEnded}
             messagePrice={gameState.messagePrice}
           />

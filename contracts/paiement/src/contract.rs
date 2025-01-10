@@ -121,6 +121,11 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> PaiementResult<Binary> {
                 ),
             })?)
         }
+        QueryMsg::Config {} => {
+            let config = CONFIG.load(deps.storage)?;
+
+            Ok(to_json_binary(&config)?)
+        }
         QueryMsg::Messages { start_after, limit } => to_json_binary(&paginate_map(
             &MESSAGES,
             deps.storage,
@@ -140,7 +145,7 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> PaiementResult<Binary> {
         QueryMsg::Message { message_id } => {
             to_json_binary(&MESSAGES.load(deps.storage, message_id).map(|response| {
                 MessageResponse {
-                    message_id: message_id,
+                    message_id,
                     price_paid: response.price_paid,
                     sender: response.user,
                     time: response.time,

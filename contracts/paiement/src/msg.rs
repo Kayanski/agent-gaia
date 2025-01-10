@@ -1,3 +1,4 @@
+use crate::state::Config;
 use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::{Addr, Coin, Decimal, Timestamp};
 use cw_storage_plus::Map;
@@ -30,6 +31,8 @@ pub enum ExecuteMsg {
 #[cw_serde]
 #[derive(cw_orch::QueryFns, QueryResponses)]
 pub enum QueryMsg {
+    #[returns(Config)]
+    Config {},
     #[returns(CurrentPriceResponse)]
     CurrentPrice {},
     #[returns(MessageResponse)]

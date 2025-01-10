@@ -56,20 +56,6 @@ async function updateDataFromBlockchain() {
 
 async function triggerAiResponse(message: MessageResponse) {
 
-    // If it's not submitted, we send the message to the AI
-    console.log(`${process.env.API_URL}/${ACTIVE_NETWORK.character}/message`, {
-        method: "POST",
-        body: JSON.stringify({
-            userName: message.sender,
-            text: message.msg,
-            paiementId: message.message_id
-        }),
-        headers: {
-            "Authorization": `Bearer ${process.env.API_BEARER_TOKEN}`,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-    })
     const aiResponse: StructuredMessage = await (await fetch(`${process.env.API_URL}/${ACTIVE_NETWORK.character}/message`, {
         method: "POST",
         body: JSON.stringify({

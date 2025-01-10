@@ -35,6 +35,5 @@ export async function queryMessage(messageId: number, cosmwasmClient: CosmWasmCl
             message_id: messageId
         }
     })
-    console.log("Inside query message")
     return message
 }

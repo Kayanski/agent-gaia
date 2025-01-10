@@ -54,7 +54,7 @@ export const MessageAnimation = ({ children }: { children: ReactNode }) => {
         opacity: 1,
         scale: 1,
         y: 0,
-        backgroundColor: ["rgb(220 252 231)", "transparent"],
+        backgroundColor: ["rgb(220 252 231)", "rgb(220 252 231 0)"],
       }}
       transition={{
         duration: 0.6,

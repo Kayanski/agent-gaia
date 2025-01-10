@@ -14,10 +14,18 @@ export type MemoryWithWinnerAndUserName = Memory & { isWinner: boolean, username
 export type MemoryWithUserName = Memory & { username: string }
 
 
+export type EndGameCondition = {
+    date: Date
+} | {
+    currentMessageNumber: number,
+    triggerMessageNumber: number
+};
+
+
 export type TGameState = {
     uniqueWallets: number,
     messagesCount: number
-    endgameTime: Date,
+    endgameCondition: EndGameCondition,
     gameStatus: TGameStatus,
     messagePrice: {
         denom: string,
@@ -28,8 +36,7 @@ export type TGameState = {
 
 export type TGameStateResponse = {
     uniqueWallets: number,
-    messagesCount: number
-    endgameTime: string,
+    messagesCount: number,
     gameStatus: TGameStatus
 }
 

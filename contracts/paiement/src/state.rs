@@ -28,7 +28,7 @@ impl Config {
             .plus_seconds(self.time_limit.seconds_limit)
             < env.block.time
         {
-            return Err(PaiementError::GameEnded {});
+            Err(PaiementError::GameEnded {})
         } else {
             Ok(())
         }

@@ -9,12 +9,12 @@ export const HowItWorks = ({ gameState }: { gameState: TGameState }) => {
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
 
   useEffect(() => {
-    if (!gameState.endgameTime) return;
+    if (!("date" in gameState.endgameCondition)) return;
 
     // Calculate initial time remaining in seconds
     const now = new Date();
     const initialTimeRemaining = Math.floor(
-      (gameState.endgameTime.getTime() - now.getTime()) / 1000
+      (gameState.endgameCondition.date.getTime() - now.getTime()) / 1000
     );
     setTimeRemaining(initialTimeRemaining);
 
@@ -29,7 +29,7 @@ export const HowItWorks = ({ gameState }: { gameState: TGameState }) => {
     }, 1000);
 
     return () => clearInterval(timerInterval);
-  }, [gameState.endgameTime]);
+  }, [gameState.endgameCondition]);
 
   const [readMore, setReadMore] = useState(false)
   const hours = Math.min(Math.floor(timeRemaining / 3600), 23);
@@ -120,13 +120,23 @@ export const HowItWorks = ({ gameState }: { gameState: TGameState }) => {
                       </p>
                     </div>
                   )}
-                  {!gameState.gameStatus.isGameEnded && gameState.endgameTime && (
+                  {!gameState.gameStatus.isGameEnded && "date" in gameState.endgameCondition && (
                     <div>
                       <h3 className="text-md font-[600] text-[#86868b] uppercase tracking-wider font-inter">
                         Time Remaining
                       </h3>
                       <p className="inline-block  text-2xl lg:text-3xl font-semibold clg:text-[28px] clg:font-bold clg:leading-[28px] ">
                         {timeDisplay}
+                      </p>
+                    </div>
+                  )}
+                  {!gameState.gameStatus.isGameEnded && !("date" in gameState.endgameCondition) && (
+                    <div>
+                      <h3 className="text-md font-[600] text-[#86868b] uppercase tracking-wider font-inter">
+                        Time Remaining
+                      </h3>
+                      <p className="inline-block  text-1xl lg:text-2xl font-semibold clg:text-[28px] clg:font-bold clg:leading-[28px] ">
+                        Timer Inactive ({gameState.endgameCondition.currentMessageNumber}/{gameState.endgameCondition.triggerMessageNumber})
                       </p>
                     </div>
                   )}
