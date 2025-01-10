@@ -120,7 +120,7 @@ export const Main = (props: TProps) => {
             <div className="relative inline-flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-[0_2px_10px_rgba(0,0,0,0.06)]">
                 <Image
-                  src="/freysa.png"
+                  src="/gaia-pp.png"
                   alt="Gaia AI"
                   height={48}
                   width={48}
@@ -150,7 +150,7 @@ export const Main = (props: TProps) => {
 
           <div className="flex-1 pb-8 min-h-0 flex justify-center">
             <motion.div
-              className="h-full rounded-3xl overflow-hidden max-w-3xl w-full"
+              className="h-full rounded-3xl overflow-hidden max-w-4xl w-full"
               initial={{ opacity: 0, scale: 1.02 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{
@@ -173,7 +173,7 @@ export const Main = (props: TProps) => {
         </div>
 
         {/* Right Column */}
-        <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px] overflow-y-auto">
+        <div className="hidden lg:block w-2/12 min-w-[200px] max-w-[300px] overflow-y-auto">
           {/* Empty right column with same width as left */}
         </div>
       </div>

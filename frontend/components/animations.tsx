@@ -32,7 +32,7 @@ export function NumberTickerDemo({
         Prize Pool
       </h3>
       <p
-        className={`whitespace-pre-wrap text-2xl sm:text-5xl font-[500] text-[#1F2024] font-inter tracking-tighter ${className || ""
+        className={`whitespace-pre-wrap inline-block text-[24px] font-semibold clg:text-[28px] clg:font-bold clg:leading-[28px] ${className || ""
           }`}
       >
         <NumberTicker prizeFund={prizeFund} decimalPlaces={2} symbol="$" />

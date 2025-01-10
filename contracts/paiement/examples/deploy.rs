@@ -3,7 +3,10 @@ use cw_orch::{
     daemon::{networks::PION_1, Daemon},
     prelude::*,
 };
-use paiement::{interface::Paiement, msg::InstantiateMsg};
+use paiement::{
+    interface::Paiement,
+    msg::{InstantiateMsg, TimeLimit},
+};
 
 pub const INITIAL_PRICE: u128 = 20;
 pub const INITIAL_DENOM: &str = "untrn";
@@ -35,6 +38,11 @@ pub fn main() -> anyhow::Result<()> {
                 (MALEK_ADDR.to_string(), MALEK_SHARE),
                 (KAYANSKI_ADDR.to_string(), KAYANSKI_SHARE),
             ],
+            price_limit: None,
+            time_limit: TimeLimit {
+                min_messages: 400,
+                seconds_limit: 60 * 60, // One hour
+            },
         },
         Some(&chain.sender_addr()),
         &[],

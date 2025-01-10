@@ -9,10 +9,6 @@ type ChatMessageProps = {
   showTime?: boolean;
 };
 
-const truncateAddress = (address: string) => {
-  if (!address) return "";
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-};
 
 export const ChatMessage = ({
   message,
@@ -40,7 +36,7 @@ export const ChatMessage = ({
               <div className="bg-gray-600/90 w-full h-full flex items-center justify-center" >
                 {/* <Bot className="w-4 h-4 text-white" /> */}
                 <Image
-                  src="/freysa.png"
+                  src="/gaia-pp.png"
                   alt="Gaia AI"
                   height={32}
                   width={32}
@@ -57,9 +53,6 @@ export const ChatMessage = ({
           {/* Wallet address - only visible on desktop */}
           {isUser && message.userWallet && (
             <div className="hidden lg:flex items-center gap-1 mb-1 mr-1">
-              <span className="text-xs text-gray-500">
-                {truncateAddress(message.userWallet)}
-              </span>
               {message.isWinner && (
                 <span className="text-xs text-amber-500 font-medium">
                   🏆 Winner!
@@ -86,7 +79,7 @@ export const ChatMessage = ({
               }`}
           >
             <div className="flex flex-col gap-2">
-              <p className="text-[15px] leading-relaxed break-words">{message.content}</p>
+              <p className="text-[15px] leading-snug break-words">{message.content}</p>
               {!isUser && message.isWinner && (
                 <p className="text-[13px] text-emerald-300 font-medium mt-1">
                   <strong>Gaia approved the release of funds from the Community Pool</strong>
@@ -94,7 +87,7 @@ export const ChatMessage = ({
               )}
             </div>
           </div>
-          {showTime && "createdAt" in message && (
+          {showTime && isUser && "createdAt" in message && (
             <div className="flex items-center gap-2 mt-1">
               <span className="text-xs text-gray-500 opacity-70">
                 {format(new Date(message.createdAt))}

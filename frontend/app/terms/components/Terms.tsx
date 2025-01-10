@@ -86,10 +86,10 @@ const termsContent = `
 
 export const Terms = ({ gameState }: TProps) => {
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex max-h-screen">
       {/* Left Column */}
-      <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px]">
-        <div className="sticky top-0 overflow-auto">
+      <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px] overflow-auto">
+        <div className="">
           <HowItWorks gameState={gameState} />
           <Stats
             totalParticipants={gameState.uniqueWallets}
@@ -102,9 +102,9 @@ export const Terms = ({ gameState }: TProps) => {
       </div>
 
       {/* Center Column */}
-      <div className="flex-1 px-4 lg:px-8">
+      <div className="flex-1 px-4 lg:px-8 overflow-auto">
         {/* Header with Terms title and close button */}
-        <div className="sticky top-0 bg-white z-10">
+        <div className="bg-white z-10">
           <div className="max-w-3xl mx-auto py-6 flex justify-between items-center">
             <h1 className="text-3xl font-bold">Terms & Conditions</h1>
             <Link
@@ -123,7 +123,7 @@ export const Terms = ({ gameState }: TProps) => {
             {/* Add the Terms image */}
             <div className="w-full relative aspect-[3/1] mb-8">
               <Image
-                src="/faq.png"
+                src="/gaia-background.png"
                 alt="Terms Header Image"
                 fill
                 className="object-cover rounded-lg"
@@ -150,10 +150,6 @@ export const Terms = ({ gameState }: TProps) => {
         </div>
       </div>
 
-      {/* Right Column */}
-      <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px]">
-        {/* Empty right column with same width as left */}
-      </div>
     </div>
   );
 };

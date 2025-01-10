@@ -1,12 +1,20 @@
 use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::{Addr, Coin, Decimal, Timestamp};
-use cw_storage_plus::{Item, Map};
+use cw_storage_plus::Map;
+
+#[cw_serde]
+pub struct TimeLimit {
+    pub min_messages: u32,
+    pub seconds_limit: u64,
+}
 
 #[cw_serde]
 pub struct InstantiateMsg {
     pub initial_price: Coin,
     pub multiplier: Decimal,
     pub shares: Vec<(String, Decimal)>,
+    pub price_limit: Option<Decimal>,
+    pub time_limit: TimeLimit,
 }
 
 #[cw_serde]
@@ -46,17 +54,6 @@ pub struct MessageResponse {
     pub msg: String,
     pub time: Timestamp,
 }
-
-#[cw_serde]
-pub struct Config {
-    pub current_price: Decimal,
-    pub paiement_denom: String,
-    pub multiplier: Decimal,
-    pub shares: Vec<(Addr, Decimal)>,
-    pub next_payment_key: u32,
-}
-
-pub const CONFIG: Item<Config> = Item::new("config");
 
 #[cw_serde]
 pub struct MessageState {

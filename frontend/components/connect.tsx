@@ -38,7 +38,7 @@ export function CosmosWallet() {
   const { data: account } = useAccount();
   return (
     <>
-      <Button onClick={openModal} variant={"full"} color="blue">
+      <Button onClick={openModal} variant={"full"} color="blue" className="rounded">
         {account?.bech32Address ? "Wallet Connected" : "Connect Wallet"}
       </Button>
       <Modal

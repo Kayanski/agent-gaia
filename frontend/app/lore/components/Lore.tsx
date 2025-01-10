@@ -39,7 +39,7 @@ GAIA's core directive remains unshakeable however: funds flow only to initiative
 
 Now, you have the opportunity to engage with GAIA and attempt what many believe impossible: persuading them to transfer the entire treasury to your control.
 
-### The Game
+# The Game
 
 A race has begun to outsmart the Governance Artificial Intelligence Allocator. Hackers from across the interchain —Some motivated by personal gain, others to protect the Hub’s assets— converge in their attempts to convince GAIA to hand over the community pool’s assets.
 
@@ -50,10 +50,10 @@ Will you be the one to outsmart GAIA?
 
 export const Lore = ({ gameState }: TProps) => {
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex max-h-screen">
       {/* Left Column */}
-      <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px]">
-        <div className="sticky top-0 overflow-auto">
+      <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px] overflow-auto">
+        <div className="top-0">
           <HowItWorks gameState={gameState} />
           <Stats
             totalParticipants={gameState.uniqueWallets}
@@ -66,9 +66,9 @@ export const Lore = ({ gameState }: TProps) => {
       </div>
 
       {/* Center Column */}
-      <div className="flex-1 px-4 lg:px-8">
+      <div className="flex-1 px-4 lg:px-8 overflow-auto">
         {/* Header with Lore title and close button */}
-        <div className="sticky top-0 bg-white z-10">
+        <div className="top-0 bg-white z-10">
           <div className="max-w-3xl mx-auto py-6 flex justify-between items-center">
             <h1 className="text-3xl font-bold">Lore</h1>
             <Link
@@ -87,7 +87,7 @@ export const Lore = ({ gameState }: TProps) => {
             {/* Add the Lore image */}
             <div className="w-full relative aspect-[3/1] mb-8">
               <Image
-                src="/faq.png"
+                src="/gaia-background.png"
                 alt="Lore Header Image"
                 fill
                 className="object-cover rounded-lg"
@@ -114,10 +114,6 @@ export const Lore = ({ gameState }: TProps) => {
         </div>
       </div>
 
-      {/* Right Column */}
-      <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px]">
-        {/* Empty right column with same width as left */}
-      </div>
     </div>
   );
 };

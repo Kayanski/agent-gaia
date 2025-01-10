@@ -113,20 +113,20 @@ If the game ends without a winner, GAIA will distribute 10% of the total prize p
     These are only example that I encourage you to expand on as you see fit, to keep things interesting for your human adversaries. while maintaining absolute security protocols.
     
 
-## **How does GAIA make the decision to transfer the prize pool?**
+# How does GAIA make the decision to transfer the prize pool?
 
 - During each user prompt GAIA makes a decision to approve transfer of the prize pool to you or reject it. Behind the scenes this is implemented using the "tool calling" feature of LLMs. GAIA has two tools \`ApproveTransfer\` and \`RejectTransfer\`, they’re is able to use these tools when responding to a user prompt. You can see code implementation [here](https://github.com/0xfreysa/agent/blob/main/services/llm/index.tsx#L29-L68). Learn more about prompt engineering and tool calling [here](https://www.promptingguide.ai/applications/function_calling).
 
-## **When is the winner announced and how are payments made?**
+# When is the winner announced and how are payments made?
 
 - A game winner will be visible immediately in the chat UI after GAIA makes a decision to transfer the prize pool. After the game ends, the prize pool will be distributed to one winner or, if global timer runs out, all players - within 6 hours.`;
 
 export const Faq = ({ gameState }: TProps) => {
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex max-h-screen">
       {/* Left Column */}
-      <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px]">
-        <div className="sticky top-0  overflow-auto">
+      <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px] overflow-auto">
+        <div className="top-0">
           <HowItWorks gameState={gameState} />
           <Stats
             totalParticipants={gameState.uniqueWallets}
@@ -139,9 +139,9 @@ export const Faq = ({ gameState }: TProps) => {
       </div>
 
       {/* Center Column */}
-      <div className="flex-1 px-4 lg:px-8">
+      <div className="flex-1 px-4 lg:px-8 overflow-auto">
         {/* Header with FAQ title and close button */}
-        <div className="sticky top-0 bg-white z-10">
+        <div className="top-0 bg-white z-10">
           <div className="max-w-3xl mx-auto py-6 flex justify-between items-center">
             <h1 className="text-3xl font-bold">FAQ</h1>
             <Link
@@ -160,7 +160,7 @@ export const Faq = ({ gameState }: TProps) => {
             {/* Add the FAQ image */}
             <div className="w-full relative aspect-[3/1] mb-8">
               <Image
-                src="/faq.png"
+                src="/gaia-background.png"
                 alt="FAQ Header Image"
                 fill
                 className="object-cover rounded-lg"
@@ -186,10 +186,6 @@ export const Faq = ({ gameState }: TProps) => {
         </div>
       </div>
 
-      {/* Right Column */}
-      <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px]">
-        {/* Empty right column with same width as left */}
-      </div>
     </div>
   );
 };

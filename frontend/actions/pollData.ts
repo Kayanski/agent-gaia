@@ -17,18 +17,16 @@ export async function triggerDataUpdate() {
         }
     }
     isProcessing = true;
-    return updateDataFromBlockchain().then(() => {
-        return {
-            success: true
-        }
-    }).catch((e) => {
-        return {
-            success: false,
-            err: e
-        }
+    // Launch that promise asynchronously so we don't hang the user
+    updateDataFromBlockchain().then(() => {
+
+    }).catch(() => {
+
     }).finally(() => {
         isProcessing = false
     })
+
+    return { success: true }
 }
 
 async function updateDataFromBlockchain() {

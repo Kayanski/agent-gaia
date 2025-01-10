@@ -1,6 +1,7 @@
 pub mod msg;
 use cosmwasm_std::{Coin, DecimalRangeExceeded, Response, StdError};
 pub mod contract;
+pub mod state;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub mod interface;
@@ -20,6 +21,9 @@ pub enum PaiementError {
 
     #[error("Input shares sum should be equal to 1")]
     SharesNotEqualToOne {},
+
+    #[error("Game Ended")]
+    GameEnded {},
 }
 
 pub type PaiementResult<T = Response> = Result<T, PaiementError>;

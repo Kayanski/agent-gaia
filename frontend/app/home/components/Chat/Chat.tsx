@@ -20,7 +20,7 @@ import { triggerDataUpdate } from "@/actions/pollData";
 import { toast } from "react-toastify";
 import { TGameStatus } from "@/actions";
 
-
+const MAX_PROMPT_LENGTH = 2000;
 
 type TProps = {
   messages: TMessage[];
@@ -307,7 +307,7 @@ export const Chat = ({
       </div>
 
       <div className="flex-1 overflow-y-auto scroll-smooth" onScroll={(e) => handleMessageScroll(e)}>
-        <div className="p-4 space-y-6">
+        <div className="p-4 space-y-2">
           {shouldFetchMore && <svg
             className="animate-spin h-5 w-5"
             xmlns="http://www.w3.org/2000/svg"
@@ -369,7 +369,7 @@ export const Chat = ({
                 ref={textareaRef}
                 value={prompt}
                 onChange={(e) => {
-                  setPrompt(e.target.value);
+                  setPrompt(e.target.value.slice(0, MAX_PROMPT_LENGTH));
                 }}
                 placeholder={placeHolderText}
                 disabled={status === "pending"}
@@ -389,9 +389,18 @@ export const Chat = ({
                   target.style.height = "40px";
                   const newHeight = Math.min(target.scrollHeight, 200);
                   target.style.height = `${newHeight}px`;
+
+                  // We allow scrolling only if the height is too much
+                  if (newHeight == 200) {
+                    target.style.overflowY = "auto"
+                  } else {
+                    target.style.overflowY = "hidden"
+                  }
+
                   setTimeout(() => { target.style.transitionProperty = "all" }, 1)
                   setTextareaHeight(newHeight);
                 }}
+                maxLength={MAX_PROMPT_LENGTH}
               />
               <button
                 onClick={handleSend}
