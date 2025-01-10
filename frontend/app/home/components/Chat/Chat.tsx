@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import { TGameStatus } from "@/actions";
 
 const MAX_PROMPT_LENGTH = 2000;
+const MORE_FUNDS_FACTOR = 0.1;
 
 type TProps = {
   messages: TMessage[];
@@ -87,6 +88,8 @@ export const Chat = ({
       setError("");
 
       const { price } = await getCurrentPrice();
+
+      price.amount = Math.trunc((parseInt(price.amount) * (1 + MORE_FUNDS_FACTOR))).toString();
 
 
       // Write the contract with Graz

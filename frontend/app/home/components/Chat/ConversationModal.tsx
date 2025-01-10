@@ -75,11 +75,14 @@ export const ConversationModal = ({
               ) : message?.fullConversation ? (
                 <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto">
                   <code className="text-sm">
-                    {JSON.stringify(
+                    {/* {JSON.stringify(
                       JSON.parse(message.fullConversation),
                       null,
                       2
-                    )}
+                    )} */}
+                    {JSON.stringify({
+                      userMessage: message.fullConversation
+                    })}
                   </code>
                 </pre>
               ) : (

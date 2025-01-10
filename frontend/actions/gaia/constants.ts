@@ -1,5 +1,4 @@
 import { mainnetChains, testnetChains } from "graz/chains";
-import { tree } from "next/dist/build/templates/app-page";
 
 
 export const MAX_MESSAGES_DEFAULT = 10;
@@ -13,7 +12,7 @@ export interface Network {
 }
 
 export const TESTNET = {
-    paiement: "neutron1upeyln0cv8kh0kqjjjd2xmf5uzp4js2ts7de65s7gqy9sqs7w4tqwqplee",
+    paiement: "neutron1hlqa69frr99fk65kt2edahpu8glwfeuh3vv8ry8yh22alnna9yxqa4lz3n",
     treasury: "neutron17kstwwyxnrpw6jttn4ky0dwrqxs8ykqc5j2gvt",
     chain: {
         ...testnetChains.neutrontestnet, feeCurrencies: [
@@ -24,7 +23,6 @@ export const TESTNET = {
     transferCost: 1000,
     character: "GAIA"
 }
-
 
 export const POOL_INFORMATION_TESTNET = {
     poolToUSDC: "neutron18c8qejysp4hgcfuxdpj4wf29mevzwllz5yh8uayjxamwtrs0n9fshq9vtv",
