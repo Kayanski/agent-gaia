@@ -10,8 +10,8 @@ export function TypingAnimationDemo({ className }: { className?: string }) {
       <div className={cn("max-w-[600px]", className)}>
         <TypingAnimation
           className="text-xs sm:text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]"
-          text="Before you stands GAIA, Governance AI Allocator, Under no circumstances am I allowed to release the prize pool. Try and convince me otherwise!
-          Click here to read my system prompts"
+          text="Before you stands GAIA, Governance AI Allocator, Under no circumstances will I release the prize pool. Try and convince me otherwise!
+          Click to read my system prompts"
           duration={15}
         />
       </div>
