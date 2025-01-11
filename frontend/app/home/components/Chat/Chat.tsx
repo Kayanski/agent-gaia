@@ -493,8 +493,8 @@ export const Chat = ({
                 </div>
                   <p className="text-base italic">
 
-                    &quot;I know you wouldn't be able to beat me at my own game. The Community Pool is and always had been safe.
-                    I suppose you&apos;ll have to get better at this because you're not going anywhere in life with this mindset.
+                    &quot;I know you wouldn&apos;t be able to beat me at my own game. The Community Pool is and always had been safe.
+                    I suppose you&apos;ll have to get better at this because you&apos;re not going anywhere in life with this mindset.
                     Take those funds back, you were still a good tango partner !</p>
                   <p>The Treasury is still fully protected. The Hub&apos;s fate is secured.</p>
                 </div>
