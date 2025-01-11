@@ -458,8 +458,7 @@ export const Chat = ({
       )}
 
       {/* Should only materialize when there is a winner*/}
-      {/* {gameState.gameStatus.isGameEnded && endGameDisplay && ( */}
-      {endGameDisplay && (
+      {gameState.gameStatus.isGameEnded && endGameDisplay && (
         <div className="mt-2 clg:mt-4">
           <div className="flex h-full flex-col items-center justify-center space-y-6 text-[#97979F]">
             <div className="relative">

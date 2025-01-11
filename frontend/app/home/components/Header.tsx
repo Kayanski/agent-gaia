@@ -23,7 +23,7 @@ const MobileMenu = ({ gameState, isOpen, onClose }: {
       <div className={`fixed z-50 left-0 top-0 h-full w-80 bg-[#F2F2F2] transform transition-transform duration-300 ease-in-out overflow-auto ${isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
         <div className="">
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col">
             <div className="flex flex-col gap-6">
               <X className="w-6 h-6 m-3 cursor-pointer ml-auto" onClick={onClose} />
             </div>
