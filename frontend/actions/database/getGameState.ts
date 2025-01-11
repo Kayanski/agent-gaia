@@ -4,6 +4,7 @@ import { getCurrentPrice } from "../getCurrentPrice";
 import { getPrizePool } from "../getPrizePool";
 import { getTimeoutStatus } from "../getConfig";
 import { useQuery } from "@tanstack/react-query";
+import { createContext } from "react";
 
 export async function getUniqueWallets(): Promise<number> {
     const data: UniqueWalletResponse = await queryApi("uniqueWallets")

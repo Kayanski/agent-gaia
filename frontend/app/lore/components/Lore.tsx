@@ -6,7 +6,8 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import Image from "next/image";
-import { useGameState } from "@/actions/database/getGameState";
+import { useContext } from "react";
+import { GameStateContext } from "@/actions/database/gameStateContext";
 
 type TProps = {
   gameState: TGameState;
@@ -51,7 +52,7 @@ Will you be the one to outsmart GAIA?
 
 export const Lore = ({ gameState: initialGameState }: TProps) => {
 
-  const { data: gameState } = useGameState();
+  const gameState = useContext(GameStateContext);
 
   return (
     <div className="min-h-screen flex max-h-screen">

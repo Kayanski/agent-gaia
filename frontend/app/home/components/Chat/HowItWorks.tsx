@@ -65,24 +65,24 @@ export const HowItWorks = ({ gameState }: { gameState: TGameState }) => {
                     >
                       Home
                     </Link>
-                    <a
+                    <Link
                       href="/faq"
                       className="hover:text-blue-800 text-[16px] font-[500] text-[#0B2BF8] font-inter"
                     >
                       FAQ
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       href="/lore"
                       className="hover:text-blue-800 text-[16px] font-[500] text-[#0B2BF8] font-inter"
                     >
                       Lore
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       href="/terms"
                       className="hover:text-blue-800 text-[16px] font-[500] text-[#0B2BF8] font-inter"
                     >
                       Terms
-                    </a>
+                    </Link>
                   </div>
                 </div>
                 <div className="px-3 space-y-3">

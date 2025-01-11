@@ -11,8 +11,8 @@ import { ToastContainer } from 'react-toastify';
 const queryClient = new QueryClient();
 
 // End Graz
-
 export function Providers({ children }: { children: React.ReactNode }) {
+
   return (
     <QueryClientProvider client={queryClient}>
       <GrazProvider grazOptions={{

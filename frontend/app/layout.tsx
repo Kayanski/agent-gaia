@@ -6,6 +6,7 @@ import { Inter } from 'next/font/google'
 import '@rainbow-me/rainbowkit/styles.css'
 
 import { Providers } from '../components/providers'
+import { Context } from '@/components/context'
 
 // const geistSans = localFont({
 //   src: './fonts/GeistVF.woff',
@@ -39,7 +40,10 @@ export default function RootLayout({
         className={`${geistMono.variable} ${inter.variable} antialiased`}
         id="body"
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <Context>{children}
+          </Context>
+        </Providers>
       </body>
     </html>
   )
