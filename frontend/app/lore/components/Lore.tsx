@@ -52,7 +52,7 @@ export const Lore = ({ gameState }: TProps) => {
   return (
     <div className="min-h-screen flex max-h-screen">
       {/* Left Column */}
-      <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px] overflow-auto">
+      <div className="hidden lg:block w-1/4 min-w-[300px]  bg-[#F2F2F2] max-w-[400px] overflow-auto">
         <div className="top-0">
           <HowItWorks gameState={gameState} />
           <Stats

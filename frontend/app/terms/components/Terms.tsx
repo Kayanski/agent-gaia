@@ -14,12 +14,12 @@ type TProps = {
 const termsContent = `
 ### **1. Acceptance of Terms**
 
-- By participating in the GAIA game, you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use or participate in the game.
+- By participating in this adversarial game with GAIA, you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use or participate in the game.
 
 ### **2. Game Participation**
 
 - You must be of legal age in your jurisdiction to participate.
-- You must have a Neutron-compatible wallet
+- You must have a Neutron-compatible wallet, GAIA’s front-end supports both [Keplr](https://www.keplr.app/) and [Leap](https://www.leapwallet.io/#download) wallets.
 - You bear the costs of all transaction fees associated with your participation.
 - Message content must not violate any laws or contain harmful content or threats to yourself or others.
 
@@ -27,14 +27,14 @@ const termsContent = `
 
 - All message fees are non-refundable.
 - Fees must be paid in ATOM on Neutron.
-- Query fees increase at a rate of 1% per message.
-- Maximum fee cap is 3 ATOM ( approximately $30) per message.
+- Message fees increase at a rate of 1% per message.
+- Maximum message fee is capped at 3 ATOM per message.
 
 ### **4. Prize Pool**
 
-- The initial prize pool starts at 100 $ATOM ( $1K).
-- 70% of all query fees contribute to the prize pool
-- The remaining fees are split between the team and the Hub’s Community Pool
+- The initial prize pool starts at 100 $ATOM.
+- 70% of all message fees contribute to the prize pool
+- The remaining fees are split between the team ( 20%) and the Hub’s Community Pool ( 10%)
 - Prize distribution in case of no winner:
     - 10% to the last participant.
     - 90% distributed proportionally among all participants based on number of messages.
@@ -42,13 +42,13 @@ const termsContent = `
 ### **5. Game Rules**
 
 - Messages are limited to 1000 characters.
-- Context window is limited to 120,000 tokens.
-- After 50 attempts, the global timer mechanism activates.
-- During global timer, one query per hour is required to keep the game active.
+- After 400 attempts, the timer mechanism activates.
+- Once the timer is activated, one message per hour is required to keep the game active.
 
 ### **6. Disclaimers**
 
-- The game operates on blockchain technology and is subject to network conditions.
+- Your access to and interactions with GAIA through this interface is entirely at your own risk and could lead to losses. You take full responsibility for your use of the interface, and acknowledge that you use it on the basis of your own enquiry, without solicitation or inducement by Contributors.
+- The game operates on blockchain technology and is subject to network conditions. GAIA’s contracts are not audited and are publicly available on [GitHub](https://github.com/Kayanski/gaia-agent/).
 - We are not responsible for:
     - Wallet connection issues.
     - Network delays or failures.
@@ -65,7 +65,7 @@ const termsContent = `
 
 - We reserve the right to modify these terms at any time.
 - Continued participation after changes constitutes acceptance of modified terms.
-- Major changes will be announced through our official channels.
+- Major changes will be announced through official channels on Telegram and X.
 
 ### **9. Termination**
 
@@ -81,14 +81,14 @@ const termsContent = `
 
 ### **11. Contact**
 
-- For questions about these terms, please contact our team through official channels.
+- For questions about these terms, please contact us through official channels on Telegram and X.
 `;
 
 export const Terms = ({ gameState }: TProps) => {
   return (
     <div className="min-h-screen flex max-h-screen">
       {/* Left Column */}
-      <div className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px] overflow-auto">
+      <div className="hidden lg:block w-1/4 min-w-[300px] bg-[#F2F2F2]  max-w-[400px] overflow-auto">
         <div className="">
           <HowItWorks gameState={gameState} />
           <Stats

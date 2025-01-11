@@ -72,7 +72,7 @@ export const Main = (props: TProps) => {
       <div className="flex-1 flex overflow-hidden">
         {/* Left Column */}
         <motion.div
-          className="hidden lg:block w-1/4 min-w-[300px] max-w-[400px] overflow-y-auto"
+          className="hidden lg:block w-1/4 min-w-[300px]  bg-[#F2F2F2]  max-w-[400px] overflow-y-auto"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{

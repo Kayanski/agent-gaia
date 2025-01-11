@@ -20,13 +20,13 @@ pub const TREASURY_ADDR: &str = "neutron17kstwwyxnrpw6jttn4ky0dwrqxs8ykqc5j2gvt"
 pub const TREASURY_SHARE: Decimal = Decimal::percent(70);
 
 pub const COSMOS_GOV_ADDR: &str = "neutron1cz3qf94nkectenvan4erylqpx073md7lgsyt8n";
-pub const COSMOS_GOV_SHARE: Decimal = Decimal::percent(15);
+pub const COSMOS_GOV_SHARE: Decimal = Decimal::percent(10);
 
 pub const KAYANSKI_ADDR: &str = "neutron1cz3qf94nkectenvan4erylqpx073md7lgsyt8n";
-pub const KAYANSKI_SHARE: Decimal = Decimal::permille(75);
+pub const KAYANSKI_SHARE: Decimal = Decimal::percent(10);
 
 pub const MALEK_ADDR: &str = "neutron1hm988d2gre5stxc3cd99xs9vjg8cqdx94vmu4c";
-pub const MALEK_SHARE: Decimal = Decimal::permille(75);
+pub const MALEK_SHARE: Decimal = Decimal::percent(10);
 
 pub fn main() -> anyhow::Result<()> {
     dotenv::dotenv()?;
