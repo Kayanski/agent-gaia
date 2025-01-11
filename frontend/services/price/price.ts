@@ -17,7 +17,6 @@ export function getFees() {
 export const getTicketPrice = async (): Promise<string> => {
   const { PRICE_INCREMENT, MAX_FEE, BASE_FEE } = getFees();
   const messagesCount = await getMessagesCount();
-  console.log({ messagesCount });
 
   const cumulativeFee = BASE_FEE * Math.pow(PRICE_INCREMENT, messagesCount);
   const finalFee = cumulativeFee < MAX_FEE ? cumulativeFee : MAX_FEE;

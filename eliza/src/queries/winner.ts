@@ -22,7 +22,6 @@ export function getWinnerMessageIdFromWinnerAssistantMemory(memory: Memory | und
 
 export async function lastMessageSender(runtime: AgentRuntime): Promise<string | undefined> {
     const queryResult = await (runtime.databaseAdapter as PostgresDatabaseAdapter).query(`SELECT accounts.userName FROM memories JOIN accounts ON memories."userId" = accounts.id WHERE type = 'messages' AND memories."agentId" != memories."userId" ORDER BY memories."createdAt" DESC LIMIT 1`)
-    console.log(queryResult)
     return queryResult.rows[0]?.username as string
 }
 

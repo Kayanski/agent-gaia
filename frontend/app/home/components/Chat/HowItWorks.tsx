@@ -2,34 +2,12 @@ import { TGameState } from "@/actions";
 import { NumberTickerDemo } from "@/components/animations";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useTimeRemaining } from "../useTimeRemaining";
 
 export const HowItWorks = ({ gameState }: { gameState: TGameState }) => {
 
-  const [timeRemaining, setTimeRemaining] = useState<number>(0);
-
-  useEffect(() => {
-    if ("inactive" in gameState.timeoutStatus) return;
-
-    // Calculate initial time remaining in seconds
-    const now = new Date();
-    const initialTimeRemaining = Math.floor(
-      (gameState.timeoutStatus.active.endDate.getTime() - now.getTime()) / 1000
-    );
-    setTimeRemaining(initialTimeRemaining);
-
-    const timerInterval = setInterval(() => {
-      setTimeRemaining((prevTime) => {
-        if (prevTime <= 0) {
-          clearInterval(timerInterval);
-          return 0;
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timerInterval);
-  }, [gameState.timeoutStatus]);
+  const { timeRemaining } = useTimeRemaining({ gameState });
 
   const [readMore, setReadMore] = useState(false)
   const hours = Math.min(Math.floor(timeRemaining / 3600), 23);

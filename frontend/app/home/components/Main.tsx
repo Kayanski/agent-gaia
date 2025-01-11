@@ -150,7 +150,7 @@ export const Main = (props: TProps) => {
                 queryNewMessages={queryNewMessages}
                 showOnlyUserMessages={showOnlyUserMessages}
                 setShowOnlyUserMessages={setShowOnlyUserMessages}
-                gameStatus={gameState.gameStatus}
+                gameState={gameState}
                 loadMore={loadMore}
                 hasMoreMessages={hasMoreMessages}
               />

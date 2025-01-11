@@ -31,7 +31,6 @@ const MobileMenu = ({ gameState, isOpen, onClose }: {
             <Stats
               totalParticipants={gameState.uniqueWallets}
               totalMessages={gameState.messagesCount}
-              endgameTime={gameState.endgameTime}
               isGameEnded={gameState.gameStatus.isGameEnded}
               messagePrice={gameState.messagePrice}
             />

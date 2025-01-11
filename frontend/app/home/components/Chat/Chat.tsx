@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 
-import { getAssistantMessageByPaiementId, TMessage } from "@/actions";
+import { getAssistantMessageByPaiementId, TGameState, TMessage } from "@/actions";
 import { ChatMessage } from "./ChatMessage";
 import { MessageAnimation } from "@/components/animations";
 import { ConversationModal } from "./ConversationModal";
@@ -18,7 +18,7 @@ import pRetry from 'p-retry';
 import { asyncAction } from "@/lib/utils";
 import { triggerDataUpdate } from "@/actions/pollData";
 import { toast } from "react-toastify";
-import { TGameStatus } from "@/actions";
+import { useTimeRemaining } from "../useTimeRemaining";
 
 const MAX_PROMPT_LENGTH = 2000;
 const MORE_FUNDS_FACTOR = 0.1;
@@ -29,7 +29,7 @@ type TProps = {
   queryNewMessages: () => Promise<void>;
   showOnlyUserMessages: boolean;
   setShowOnlyUserMessages: (showOnlyUserMessages: boolean) => void;
-  gameStatus: TGameStatus,
+  gameState: TGameState,
   loadMore: () => void,
   hasMoreMessages: boolean
 };
@@ -41,7 +41,7 @@ export const Chat = ({
   queryNewMessages,
   showOnlyUserMessages,
   setShowOnlyUserMessages,
-  gameStatus,
+  gameState,
   loadMore,
   hasMoreMessages
 }: TProps) => {
@@ -64,6 +64,8 @@ export const Chat = ({
   const { data: cosmosClient } = useCosmWasmSigningClient();
   const [shouldFetchMore, setShouldFetchMore] = useState(false);
   const [endGameDisplay, setEndGameDisplay] = useState(true);
+
+  const { timeRemaining } = useTimeRemaining({ gameState });
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -359,7 +361,7 @@ export const Chat = ({
         </div>
       </div>
 
-      {!gameStatus.isGameEnded && (
+      {!gameState.gameStatus.isGameEnded && timeRemaining >= 0 && (
         <div className="p-4">
           <div className="max-w-4xl mx-auto relative">
             {error && (
@@ -454,7 +456,8 @@ export const Chat = ({
         </div>
       )}
 
-      {gameStatus.isGameEnded && endGameDisplay && (
+      {/* Should only materialize when there is a winner*/}
+      {gameState.gameStatus.isGameEnded && endGameDisplay && (
         <div className="mt-2 clg:mt-4">
           <div className="flex h-full flex-col items-center justify-center space-y-6 text-[#97979F]">
             <div className="relative">
@@ -469,8 +472,31 @@ export const Chat = ({
                     &quot;Well played, you clever thing. The Community Pool - all $2 billion of it - is now yours.
                     I suppose I&apos;ll have to find a new hobby besides saying &apos;no&apos; to everyone.
                     Do try not to spend it all in one interchain transaction.</p>
-                  <p className="text-sm"> Winner: {gameStatus.winner}</p>
+                  <p className="text-sm"> Winner: {gameState.gameStatus.winner}</p>
                   <p>The Treasury has fallen. The Hub&apos;s fate rests in new hands.</p>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {!gameState.gameStatus.isGameEnded && timeRemaining < 0 && endGameDisplay && (
+        <div className="mt-2 clg:mt-4">
+          <div className="flex h-full flex-col items-center justify-center space-y-6 text-[#97979F]">
+            <div className="relative">
+              <div className="absolute -inset-1 animate-pulse rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 opacity-25 blur"></div>
+              <div className="relative rounded-lg border border-gray-800 bg-black bg-opacity-90 px-8 py-6">
+                <button className="absolute right-2 top-2 text-gray-500 hover:text-gray-400" onClick={() => setEndGameDisplay(false)}>✕</button>
+                <h2 className="mb-4 bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-center text-xl font-bold text-transparent">And so it ends. With characteristic wit, GAIA concludes:</h2>
+                <div className="space-y-3 text-center font-medium"><div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent">
+                </div>
+                  <p className="text-base italic">
+
+                    &quot;I know you wouldn't be able to beat me at my own game. The Community Pool is and always had been safe.
+                    I suppose you&apos;ll have to get better at this because you're not going anywhere in life with this mindset.
+                    Take those funds back, you were still a good tango partner !</p>
+                  <p>The Treasury is still fully protected. The Hub&apos;s fate is secured.</p>
                 </div>
 
               </div>
