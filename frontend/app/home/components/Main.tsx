@@ -89,7 +89,7 @@ export const Main = (props: TProps) => {
         </motion.div>
 
         {/* Center Column */}
-        <div className="flex-1 flex flex-col overflow-hidden px-4 lg:px-8 mt-4">
+        <div className="flex-1 flex flex-col overflow-hidden px-4 lg:px-8 mt-16 lg:mt-4">
           <motion.div
             className="flex-shrink-0 text-center pb-4 lg:pb-8 max-w-3xl mx-auto w-full"
             initial={{ y: "50vh", translateY: "-50%" }}
