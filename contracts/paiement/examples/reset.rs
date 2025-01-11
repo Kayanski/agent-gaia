@@ -39,7 +39,7 @@ pub fn main() -> anyhow::Result<()> {
             ],
             price_limit: None,
             time_limit: TimeLimit {
-                min_messages: 2,
+                min_messages: 10,
                 seconds_limit: 60 * 60, // One hour
             },
         },

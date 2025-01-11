@@ -1,9 +1,9 @@
-"use server"
 import { TGameState, TGameStateResponse, UniqueWalletResponse } from "@/lib/types";
 import { queryApi } from "./query";
 import { getCurrentPrice } from "../getCurrentPrice";
 import { getPrizePool } from "../getPrizePool";
 import { getTimeoutStatus } from "../getConfig";
+import { useQuery } from "@tanstack/react-query";
 
 export async function getUniqueWallets(): Promise<number> {
     const data: UniqueWalletResponse = await queryApi("uniqueWallets")
@@ -26,4 +26,13 @@ export async function getGameState(): Promise<TGameState> {
         messagePrice: messagePrice.price,
         prizeFund,
     }
+}
+
+export function useGameState() {
+    return useQuery({
+        queryKey: ['gameState'],
+        queryFn: () =>
+            getGameState()
+    },
+    );
 }

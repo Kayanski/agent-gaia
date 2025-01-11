@@ -1,5 +1,3 @@
-"use server"
-
 import { parseElizaMemoryToTMessage, Role } from "@/lib/utils";
 import { MAX_MESSAGES_DEFAULT } from "@/actions/gaia/constants";
 import { queryApi } from "./query";

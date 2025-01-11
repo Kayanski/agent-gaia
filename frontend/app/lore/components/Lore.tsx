@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import { HowItWorks } from "@/app/home/components/Chat/HowItWorks";
 import { Stats } from "@/app/home/components/Chat/Stats";
 import { TGameState } from "@/actions";
@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import Image from "next/image";
+import { useGameState } from "@/actions/database/getGameState";
 
 type TProps = {
   gameState: TGameState;
@@ -48,20 +49,21 @@ Every new interaction is costlier than the previous one, increasingly growing th
 Will you be the one to outsmart GAIA?
 `;
 
-export const Lore = ({ gameState }: TProps) => {
+export const Lore = ({ gameState: initialGameState }: TProps) => {
+
+  const { data: gameState } = useGameState();
+
   return (
     <div className="min-h-screen flex max-h-screen">
       {/* Left Column */}
       <div className="hidden lg:block w-1/4 min-w-[300px]  bg-[#F2F2F2] max-w-[400px] overflow-auto">
         <div className="top-0">
-          <HowItWorks gameState={gameState} />
+          <HowItWorks gameState={gameState ?? initialGameState} />
           <Stats
-            totalParticipants={gameState.uniqueWallets}
-            totalMessages={gameState.messagesCount}
-            isGameEnded={gameState.gameStatus.isGameEnded}
-            messagePrice={gameState.messagePrice}
+            gameState={gameState ?? initialGameState}
           />
         </div>
+
       </div>
 
       {/* Center Column */}

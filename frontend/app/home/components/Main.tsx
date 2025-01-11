@@ -84,10 +84,7 @@ export const Main = (props: TProps) => {
           <HowItWorks gameState={gameState} />
 
           <Stats
-            totalParticipants={gameState.uniqueWallets}
-            totalMessages={gameState.messagesCount}
-            isGameEnded={gameState.gameStatus.isGameEnded}
-            messagePrice={gameState.messagePrice}
+            gameState={gameState}
           />
         </motion.div>
 

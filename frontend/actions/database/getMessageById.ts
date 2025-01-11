@@ -1,4 +1,3 @@
-"use server"
 import { parseElizaMemoryToTMessage } from "@/lib/utils";
 import { DbMessage, TMessage } from "./getMessages";
 import { queryApi } from "./query";

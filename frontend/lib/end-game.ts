@@ -34,12 +34,9 @@ export async function endGame() {
     // We get all the addresses
     const allAddresses: ApiResult<string[]> = await queryApi("allAddresses");
 
-    const allNonLastSenderAddresses = allAddresses.result.filter((address) => {
-        return address != lastSender.result
-    })
 
     // We need enough gas to cover all the transfers
-    const totalGasCost = BigInt(ACTIVE_NETWORK.transferCost) * BigInt(allNonLastSenderAddresses.length + 1);
+    const totalGasCost = BigInt(ACTIVE_NETWORK.transferCost) * BigInt(allAddresses.result.length + 1);
 
     // We get the total available funds
     const paiementPrice = await getCurrentPrice();
@@ -65,11 +62,12 @@ export async function endGame() {
     }], "auto", "You won Gaia's transfer!");
 
 
+
     // We split the rest between all the other addresses by batches of 100 transfers
     const chunkSize = 100;
-    const participantCoins = (availableBalanceAmount - firstSenderCoins) / BigInt(allNonLastSenderAddresses.length);
-    for (let i = 0; i < allNonLastSenderAddresses.length; i += chunkSize) {
-        const chunk = allNonLastSenderAddresses.slice(i, i + chunkSize);
+    const participantCoins = (availableBalanceAmount - firstSenderCoins) / BigInt(allAddresses.result.length);
+    for (let i = 0; i < allAddresses.result.length; i += chunkSize) {
+        const chunk = allAddresses.result.slice(i, i + chunkSize);
         // We send the funds to the chunk
 
         const messages = chunk.map((address) => ({
@@ -85,6 +83,7 @@ export async function endGame() {
         }));
         await cosmwasmClient.signAndBroadcast(accounts[0].address, messages, "auto");
     }
+
 }
 if (require.main === module) {
     endGame();

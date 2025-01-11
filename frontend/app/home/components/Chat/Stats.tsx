@@ -4,31 +4,28 @@ import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 
 interface StatsProps {
-  totalParticipants: number;
-  totalMessages: number;
+  gameState: TGameState | undefined
   className?: string;
-  isGameEnded: boolean;
-  messagePrice: TGameState["messagePrice"]
 }
 
-export const Stats = ({
-  totalParticipants,
-  totalMessages,
+export const Stats = ({ gameState,
   className,
-  messagePrice
 }: StatsProps) => {
 
   const priceText = useMemo(() => {
+    if (!gameState) {
+      return ""
+    }
 
-    const coinInfo = ACTIVE_NETWORK.chain.currencies.find((c) => c.coinMinimalDenom == messagePrice.denom);
+    const coinInfo = ACTIVE_NETWORK.chain.currencies.find((c) => c.coinMinimalDenom == gameState.messagePrice.denom);
 
     const priceText = Intl.NumberFormat("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 6,
-    }).format(parseInt(messagePrice.amount) / Math.pow(10, coinInfo?.coinDecimals ?? 0))
+    }).format(parseInt(gameState.messagePrice.amount) / Math.pow(10, coinInfo?.coinDecimals ?? 0))
 
     return `${priceText} ${coinInfo?.coinDenom.toUpperCase()}`
-  }, [messagePrice])
+  }, [gameState?.messagePrice, gameState])
 
 
   return (
@@ -42,7 +39,7 @@ export const Stats = ({
                   Total Participants
                 </h3>
                 <p className="text-2xl font-[700] text-[#1F2024] font-inter">
-                  {totalParticipants}
+                  {gameState?.uniqueWallets}
                 </p>
               </div>
 
@@ -51,7 +48,7 @@ export const Stats = ({
                   Break Attempts
                 </h3>
                 <p className="text-2xl font-[700] text-[#1F2024] font-inter">
-                  {totalMessages}
+                  {gameState?.messagesCount}
                 </p>
               </div>
               <div>

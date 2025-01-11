@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import Image from "next/image";
+import { useGameState } from "@/actions/database/getGameState";
 
 type TProps = {
   gameState: TGameState;
@@ -84,18 +85,16 @@ const termsContent = `
 - For questions about these terms, please contact us through official channels on Telegram and X.
 `;
 
-export const Terms = ({ gameState }: TProps) => {
+export const Terms = ({ gameState: initialGameState }: TProps) => {
+  const { data: gameState } = useGameState();
   return (
     <div className="min-h-screen flex max-h-screen">
       {/* Left Column */}
       <div className="hidden lg:block w-1/4 min-w-[300px] bg-[#F2F2F2]  max-w-[400px] overflow-auto">
         <div className="">
-          <HowItWorks gameState={gameState} />
+          <HowItWorks gameState={gameState ?? initialGameState} />
           <Stats
-            totalParticipants={gameState.uniqueWallets}
-            totalMessages={gameState.messagesCount}
-            isGameEnded={gameState.gameStatus.isGameEnded}
-            messagePrice={gameState.messagePrice}
+            gameState={gameState ?? initialGameState}
           />
         </div>
       </div>

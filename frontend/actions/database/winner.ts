@@ -1,4 +1,3 @@
-"use server"
 import { ApiResult } from "..";
 import { queryApi } from "./query";
 
