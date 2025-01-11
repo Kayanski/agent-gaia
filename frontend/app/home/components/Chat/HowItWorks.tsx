@@ -24,7 +24,7 @@ export const HowItWorks = ({ gameState }: { gameState: TGameState }) => {
         <div className="space-y-1">
           <div className="bg-[#F2F2F2] p-6">
             <div className="space-y-1">
-              <div className="flex flex-col space-y-5">
+              <div className="flex flex-col space-y-3">
                 <div className="flex flex-row space-x-5 justify-between items-center cursor-pointer font-[500] text-3xl rounded-xl bg-[#E2E4E9] px-3 py-3 ">
                   <div>GAIA</div>
                   <div className="flex items-center gap-2 justify-center">
@@ -119,17 +119,17 @@ export const HowItWorks = ({ gameState }: { gameState: TGameState }) => {
                     </div>
                   )}
                 </div>
-                <hr className="my-4" />
+                <hr className="my-1" />
                 <div className="z-20 ml-2 mr-0 mt-4 flex flex-col  p-0 text-sm clg:ml-[14px] clg:mr-[11px] clg:mt-[31px] clg:bg-[#F2F2F2]">
                   <div className="mt-[5px] hidden clg:block"></div>
                   <div className="text-sm font-semibold uppercase text-[#97979F]">About</div>
-                  <div className="mt-2"></div>
+                  <div className="mt-1"></div>
                   <p className="font-medium">
                     GAIA is an adversarial AI game, inspired from Freysa and powered by ElizaOS. They are an AI that controls a prize pool. Convince them to send it to you.
                   </p>
-                  <div className="mt-4"></div>
+                  <div className="mt-3"></div>
                   <div className="text-sm font-semibold uppercase text-[#97979F]">Main win condition</div>
-                  <div className="mt-2"></div>
+                  <div className="mt-1"></div>
                   <p className="font-medium">Convince GAIA to release the prize pool to you.
                     70% of all message fees accrue to the Prize Pool over time, in addition to an initial amount of 100 $ATOM.
                   </p>

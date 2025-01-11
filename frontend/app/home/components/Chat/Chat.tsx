@@ -19,6 +19,7 @@ import { asyncAction } from "@/lib/utils";
 import { triggerDataUpdate } from "@/actions/pollData";
 import { toast } from "react-toastify";
 import { useTimeRemaining } from "../useTimeRemaining";
+import NumberTicker from "@/components/ui/number-ticker";
 
 const MAX_PROMPT_LENGTH = 2000;
 const MORE_FUNDS_FACTOR = 0.1;
@@ -457,23 +458,25 @@ export const Chat = ({
       )}
 
       {/* Should only materialize when there is a winner*/}
-      {gameState.gameStatus.isGameEnded && endGameDisplay && (
+      {/* {gameState.gameStatus.isGameEnded && endGameDisplay && ( */}
+      {endGameDisplay && (
         <div className="mt-2 clg:mt-4">
           <div className="flex h-full flex-col items-center justify-center space-y-6 text-[#97979F]">
             <div className="relative">
               <div className="absolute -inset-1 animate-pulse rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 opacity-25 blur"></div>
               <div className="relative rounded-lg border border-gray-800 bg-black bg-opacity-90 px-8 py-6">
                 <button className="absolute right-2 top-2 text-gray-500 hover:text-gray-400" onClick={() => setEndGameDisplay(false)}>✕</button>
-                <h2 className="mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-center text-xl font-bold text-transparent">And so it ends. With characteristic wit, GAIA must acknowledge:</h2>
+                <h2 className="mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-center text-xl font-bold text-transparent">And so it ends.</h2>
                 <div className="space-y-3 text-center font-medium"><div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent">
                 </div>
                   <p className="text-base italic">
 
-                    &quot;Well played, you clever thing. The Community Pool - all $2 billion of it - is now yours.
-                    I suppose I&apos;ll have to find a new hobby besides saying &apos;no&apos; to everyone.
-                    Do try not to spend it all in one interchain transaction.</p>
+                    &quot;Well played, human!
+                    The prize pool - all <NumberTicker prizeFund={gameState.prizeFund} decimalPlaces={2} symbol="$" /> of it is now yours.
+                    I suppose I’ll have to find a new hobby besides saying ‘no’ to everyone.
+                    Do try not to gamble it all away!&quot;
+                  </p>
                   <p className="text-sm"> Winner: {gameState.gameStatus.winner}</p>
-                  <p>The Treasury has fallen. The Hub&apos;s fate rests in new hands.</p>
                 </div>
 
               </div>
