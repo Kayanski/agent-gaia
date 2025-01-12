@@ -24,6 +24,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
               denom: ACTIVE_NETWORK.chain.feeCurrencies[0].coinDenom,
             },
           },
+        },
+        walletConnect: {
+          options: {
+            projectId: "c93bd3533007ae84dec279c3a67e9f46"
+          }
         }
       }} >
         {children}

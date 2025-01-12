@@ -24,6 +24,7 @@ export function WalletModal({ closeModal }) {
             {wallets.leap && <WalletButton walletType={WalletType.LEAP} img="/leap-wallet.webp" alt="Leap" />}
             {wallets.wc_keplr_mobile && <WalletButton walletType={WalletType.WC_KEPLR_MOBILE} img="/keplr-wallet.png" alt="Keplr Mobile" />}
             {wallets.wc_leap_mobile && <WalletButton walletType={WalletType.WC_LEAP_MOBILE} img="/leap-wallet.webp" alt="Leap Mobile" />}
+            {wallets.walletconnect && <WalletButton walletType={WalletType.WALLETCONNECT} img="/wallet-connect.png" alt="Wallet Connect" />}
         </div >
     </>
     );
