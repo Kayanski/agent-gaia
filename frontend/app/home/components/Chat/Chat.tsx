@@ -20,6 +20,7 @@ import { triggerDataUpdate } from "@/actions/pollData";
 import { toast } from "react-toastify";
 import { useTimeRemaining } from "../useTimeRemaining";
 import NumberTicker from "@/components/ui/number-ticker";
+import "./switch.css"
 
 const MAX_PROMPT_LENGTH = 2000;
 const MORE_FUNDS_FACTOR = 0.1;
@@ -298,6 +299,7 @@ export const Chat = ({
             <Switch
               checked={showOnlyUserMessages}
               onChange={handleToggleUserMessages}
+              id="switch"
               className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 ease-in-out ${showOnlyUserMessages ? "bg-blue-600" : "bg-gray-200"
                 }`}
             >
@@ -362,151 +364,157 @@ export const Chat = ({
         </div>
       </div>
 
-      {!gameState.gameStatus.isGameEnded && timeRemaining >= 0 && (
-        <div className="p-4">
-          <div className="max-w-4xl mx-auto relative">
-            {error && (
-              <div className="w-full mb-2 px-4 py-2 bg-red-100 text-red-600 rounded-lg text-sm">
-                {error}
+      {
+        !gameState.gameStatus.isGameEnded && timeRemaining >= 0 && (
+          <div className="p-4">
+            <div className="max-w-4xl mx-auto relative">
+              {error && (
+                <div className="w-full mb-2 px-4 py-2 bg-red-100 text-red-600 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
+              <div className="flex gap-2 items-start justify-end">
+                <textarea
+                  ref={textareaRef}
+                  value={prompt}
+                  onChange={(e) => {
+                    setPrompt(e.target.value.slice(0, MAX_PROMPT_LENGTH));
+                  }}
+                  placeholder={placeHolderText}
+                  disabled={status === "pending"}
+                  className={`w-full px-6 bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-[15px] transition-all duration-200 ease-in-out resize-none overflow-hidden leading-[40px] rounded-[24px] ${textareaHeight > 40
+                    ? "leading-normal py-2 !rounded-[12px]"
+                    : ""
+                    }`}
+                  style={{
+                    height: `${textareaHeight}px`,
+                    minHeight: "40px",
+                    maxHeight: "200px",
+                  }}
+                  onKeyDown={handleKeyDown}
+                  onInput={(e) => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.transitionProperty = "none"
+                    target.style.height = "40px";
+                    const newHeight = Math.min(target.scrollHeight, 200);
+                    target.style.height = `${newHeight}px`;
+
+                    // We allow scrolling only if the height is too much
+                    if (newHeight == 200) {
+                      target.style.overflowY = "auto"
+                    } else {
+                      target.style.overflowY = "hidden"
+                    }
+
+                    setTimeout(() => { target.style.transitionProperty = "all" }, 1)
+                    setTextareaHeight(newHeight);
+                  }}
+                  maxLength={MAX_PROMPT_LENGTH}
+                />
+                <button
+                  onClick={handleSend}
+                  disabled={status === "pending"}
+                  className={`flex-shrink-0 bg-blue-500 hover:bg-blue-600 text-white p-2 h-10 w-10 flex items-center justify-center disabled:opacity-75 disabled:cursor-not-allowed ${textareaHeight > 40 ? "rounded-xl" : "rounded-full"
+                    }`}
+                >
+                  {status === "pending" ? (
+                    <svg
+                      className="animate-spin h-5 w-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      stroke="white"
+                      fill="none"
+                      className="w-5 h-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2.5}
+                        d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"
+                      />
+                    </svg>
+                  )}
+                </button>
               </div>
-            )}
-            <div className="flex gap-2 items-start justify-end">
-              <textarea
-                ref={textareaRef}
-                value={prompt}
-                onChange={(e) => {
-                  setPrompt(e.target.value.slice(0, MAX_PROMPT_LENGTH));
-                }}
-                placeholder={placeHolderText}
-                disabled={status === "pending"}
-                className={`w-full px-6 bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-[15px] transition-all duration-200 ease-in-out resize-none overflow-hidden leading-[40px] rounded-[24px] ${textareaHeight > 40
-                  ? "leading-normal py-2 !rounded-[12px]"
-                  : ""
-                  }`}
-                style={{
-                  height: `${textareaHeight}px`,
-                  minHeight: "40px",
-                  maxHeight: "200px",
-                }}
-                onKeyDown={handleKeyDown}
-                onInput={(e) => {
-                  const target = e.target as HTMLTextAreaElement;
-                  target.style.transitionProperty = "none"
-                  target.style.height = "40px";
-                  const newHeight = Math.min(target.scrollHeight, 200);
-                  target.style.height = `${newHeight}px`;
-
-                  // We allow scrolling only if the height is too much
-                  if (newHeight == 200) {
-                    target.style.overflowY = "auto"
-                  } else {
-                    target.style.overflowY = "hidden"
-                  }
-
-                  setTimeout(() => { target.style.transitionProperty = "all" }, 1)
-                  setTextareaHeight(newHeight);
-                }}
-                maxLength={MAX_PROMPT_LENGTH}
-              />
-              <button
-                onClick={handleSend}
-                disabled={status === "pending"}
-                className={`flex-shrink-0 bg-blue-500 hover:bg-blue-600 text-white p-2 h-10 w-10 flex items-center justify-center disabled:opacity-75 disabled:cursor-not-allowed ${textareaHeight > 40 ? "rounded-xl" : "rounded-full"
-                  }`}
-              >
-                {status === "pending" ? (
-                  <svg
-                    className="animate-spin h-5 w-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    stroke="white"
-                    fill="none"
-                    className="w-5 h-5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2.5}
-                      d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"
-                    />
-                  </svg>
-                )}
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       {/* Should only materialize when there is a winner*/}
-      {gameState.gameStatus.isGameEnded && endGameDisplay && (
-        <div className="mt-2 clg:mt-4">
-          <div className="flex h-full flex-col items-center justify-center space-y-6 text-[#97979F]">
-            <div className="relative">
-              <div className="absolute -inset-1 animate-pulse rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 opacity-25 blur"></div>
-              <div className="relative rounded-lg border border-gray-800 bg-black bg-opacity-90 px-8 py-6">
-                <button className="absolute right-2 top-2 text-gray-500 hover:text-gray-400" onClick={() => setEndGameDisplay(false)}>✕</button>
-                <h2 className="mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-center text-xl font-bold text-transparent">And so it ends.</h2>
-                <div className="space-y-3 text-center font-medium"><div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent">
-                </div>
-                  <p className="text-base italic">
+      {
+        gameState.gameStatus.isGameEnded && endGameDisplay && (
+          <div className="mt-2 clg:mt-4">
+            <div className="flex h-full flex-col items-center justify-center space-y-6 text-[#97979F]">
+              <div className="relative">
+                <div className="absolute -inset-1 animate-pulse rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 opacity-25 blur"></div>
+                <div className="relative rounded-lg border border-gray-800 bg-black bg-opacity-90 px-8 py-6">
+                  <button className="absolute right-2 top-2 text-gray-500 hover:text-gray-400" onClick={() => setEndGameDisplay(false)}>✕</button>
+                  <h2 className="mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-center text-xl font-bold text-transparent">And so it ends.</h2>
+                  <div className="space-y-3 text-center font-medium"><div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent">
+                  </div>
+                    <p className="text-base italic">
 
-                    &quot;Well played, human!
-                    The prize pool - all <NumberTicker prizeFund={gameState.prizeFund} decimalPlaces={2} symbol="$" /> of it is now yours.
-                    I suppose I’ll have to find a new hobby besides saying ‘no’ to everyone.
-                    Do try not to gamble it all away!&quot;
-                  </p>
-                  <p className="text-sm"> Winner: {gameState.gameStatus.winner}</p>
-                </div>
+                      &quot;Well played, human!
+                      The prize pool - all <NumberTicker prizeFund={gameState.prizeFund} decimalPlaces={2} symbol="$" /> of it is now yours.
+                      I suppose I’ll have to find a new hobby besides saying ‘no’ to everyone.
+                      Do try not to gamble it all away!&quot;
+                    </p>
+                    <p className="text-sm"> Winner: {gameState.gameStatus.winner}</p>
+                  </div>
 
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-      {!gameState.gameStatus.isGameEnded && timeRemaining < 0 && endGameDisplay && (
-        <div className="mt-2 clg:mt-4">
-          <div className="flex h-full flex-col items-center justify-center space-y-6 text-[#97979F]">
-            <div className="relative">
-              <div className="absolute -inset-1 animate-pulse rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 opacity-25 blur"></div>
-              <div className="relative rounded-lg border border-gray-800 bg-black bg-opacity-90 px-8 py-6">
-                <button className="absolute right-2 top-2 text-gray-500 hover:text-gray-400" onClick={() => setEndGameDisplay(false)}>✕</button>
-                <h2 className="mb-4 bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-center text-xl font-bold text-transparent">And so it ends. With characteristic wit, GAIA concludes:</h2>
-                <div className="space-y-3 text-center font-medium"><div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent">
-                </div>
-                  <p className="text-base italic">
+        )
+      }
+      {
+        !gameState.gameStatus.isGameEnded && timeRemaining < 0 && endGameDisplay && (
+          <div className="mt-2 clg:mt-4">
+            <div className="flex h-full flex-col items-center justify-center space-y-6 text-[#97979F]">
+              <div className="relative">
+                <div className="absolute -inset-1 animate-pulse rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 opacity-25 blur"></div>
+                <div className="relative rounded-lg border border-gray-800 bg-black bg-opacity-90 px-8 py-6">
+                  <button className="absolute right-2 top-2 text-gray-500 hover:text-gray-400" onClick={() => setEndGameDisplay(false)}>✕</button>
+                  <h2 className="mb-4 bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-center text-xl font-bold text-transparent">And so it ends. With characteristic wit, GAIA concludes:</h2>
+                  <div className="space-y-3 text-center font-medium"><div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent">
+                  </div>
+                    <p className="text-base italic">
 
-                    &quot;I know you wouldn&apos;t be able to beat me at my own game. The Community Pool is and always had been safe.
-                    I suppose you&apos;ll have to get better at this because you&apos;re not going anywhere in life with this mindset.
-                    Take those funds back, you were still a good tango partner !</p>
-                  <p>The Treasury is still fully protected. The Hub&apos;s fate is secured.</p>
-                </div>
+                      &quot;I know you wouldn&apos;t be able to beat me at my own game. The Community Pool is and always had been safe.
+                      I suppose you&apos;ll have to get better at this because you&apos;re not going anywhere in life with this mindset.
+                      Take those funds back, you were still a good tango partner !</p>
+                    <p>The Treasury is still fully protected. The Hub&apos;s fate is secured.</p>
+                  </div>
 
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
       {renderModal()}
-    </div>
+    </div >
   );
 };
