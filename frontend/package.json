@@ -13,13 +13,11 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.33.1",
     "@cosmjs/cosmwasm-stargate": "^0.32.4",
     "@cosmjs/launchpad": "^0.27.1",
     "@cosmjs/proto-signing": "^0.32.4",
     "@cosmjs/stargate": "^0.32.4",
     "@cosmjs/tendermint-rpc": "^0.32.4",
-    "@elizaos/core": "^0.1.7-alpha.2",
     "@headlessui/react": "^2.2.0",
     "@keplr-wallet/types": "^0.12.163",
     "@leapwallet/cosmos-social-login-capsule-provider": "^0.0.44",
@@ -50,7 +48,6 @@
     "next": "15.0.3",
     "node-telegram-bot-api": "^0.66.0",
     "npm": "^11.0.0",
-    "openai": "^4.77.0",
     "p-retry": "^6.2.1",
     "pino-pretty": "^13.0.0",
     "postgres": "^3.4.5",

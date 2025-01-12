@@ -1,5 +1,53 @@
-import { Memory } from "@elizaos/core"
 
+// @eliza/core
+
+/**
+ * Represents a stored memory/message
+ */
+interface Memory {
+    /** Optional unique identifier */
+    id?: UUID;
+    /** Associated user ID */
+    userId: UUID;
+    /** Associated agent ID */
+    agentId: UUID;
+    /** Optional creation timestamp */
+    createdAt?: number;
+    /** Memory content */
+    content: Content;
+    /** Optional embedding vector */
+    embedding?: number[];
+    /** Associated room ID */
+    roomId: UUID;
+    /** Whether memory is unique */
+    unique?: boolean;
+    /** Embedding similarity score */
+    similarity?: number;
+}
+
+/**
+ * Represents a UUID string in the format "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+ */
+type UUID = `${string}-${string}-${string}-${string}-${string}`;
+/**
+ * Represents the content of a message or communication
+ */
+interface Content {
+    /** The main text content */
+    text: string;
+    /** Optional action associated with the message */
+    action?: string;
+    /** Optional source/origin of the content */
+    source?: string;
+    /** URL of the original message/post (e.g. tweet URL, Discord message link) */
+    url?: string;
+    /** UUID of parent message if this is a reply/thread */
+    inReplyTo?: UUID;
+    /** Array of media attachments */
+    attachments?: any[];
+    /** Additional dynamic properties */
+    [key: string]: unknown;
+}
 
 export type ApiRoute = "gameState" | "uniqueWallets" | `highestPaiementId` | `recentMessages` | `messagesCount` | `messageCount` | `winner` |
     `messageById/${string}` | `messageByPaiementId/${string}` | `assistantMessageByPaiementId/${string}` |
