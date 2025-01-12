@@ -10,7 +10,7 @@
     "generate": "graz generate -g -T neutrontestnet"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=22.9.0"
   },
   "dependencies": {
     "@cosmjs/cosmwasm-stargate": "^0.32.4",
