@@ -1,9 +1,11 @@
-import { ConnectWallet } from '@/components/connect'
+import { ConnectWallet, WalletAddress } from '@/components/connect'
 import { Menu, X } from 'lucide-react'
 import { Stats } from './Chat/Stats'
 import { HowItWorks } from './Chat/HowItWorks'
 import { TGameState } from '@/actions'
 import { useState } from 'react'
+import { useAccount } from 'graz'
+import { useScreenMediaQuery } from '@/lib/useMediaQuery'
 
 const MobileMenu = ({ gameState, isOpen, onClose }: {
   gameState: TGameState;
@@ -11,6 +13,9 @@ const MobileMenu = ({ gameState, isOpen, onClose }: {
   isOpen: boolean;
   onClose: () => void;
 }) => {
+
+  const { isLargeDevice, isExtraLargeDevice } = useScreenMediaQuery();
+  const { data: account } = useAccount();
   return (
     <>
       {/* Backdrop */}
@@ -24,7 +29,9 @@ const MobileMenu = ({ gameState, isOpen, onClose }: {
         }`}>
         <div className="">
           <div className="flex flex-col">
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-row gap-6 items-center">
+              <X className="opacity-0 w-6 h-6 m-3 cursor-pointer ml-auto" />
+              {!(isLargeDevice || isExtraLargeDevice) && !!account?.bech32Address && <WalletAddress address={account?.bech32Address} />}
               <X className="w-6 h-6 m-3 cursor-pointer ml-auto" onClick={onClose} />
             </div>
             <HowItWorks gameState={gameState} />

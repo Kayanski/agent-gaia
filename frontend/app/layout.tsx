@@ -7,6 +7,7 @@ import '@rainbow-me/rainbowkit/styles.css'
 
 import { Providers } from '../components/providers'
 import { Context } from '@/components/context'
+import { Capsule } from '@/components/capsule'
 
 // const geistSans = localFont({
 //   src: './fonts/GeistVF.woff',
@@ -41,7 +42,10 @@ export default function RootLayout({
         id="body"
       >
         <Providers>
-          <Context>{children}
+          <Context>
+            <Capsule>
+              {children}
+            </Capsule>
           </Context>
         </Providers>
       </body>

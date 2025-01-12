@@ -21,7 +21,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           [ACTIVE_NETWORK.chain.chainId]: {
             gas: {
               price: ACTIVE_NETWORK.chain.feeCurrencies[0].gasPriceStep.average.toString(),
-              denom: ACTIVE_NETWORK.chain.feeCurrencies[0].coinDenom,
+              denom: ACTIVE_NETWORK.chain.feeCurrencies[0].coinMinimalDenom,
             },
           },
         },
@@ -29,7 +29,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
           options: {
             projectId: "c93bd3533007ae84dec279c3a67e9f46"
           }
-        }
+        },
+        capsuleConfig: {
+          apiKey: process.env.NEXT_PUBLIC_CAPSULE_API_KEY,
+          env: process.env.NEXT_PUBLIC_CAPSULE_ENV as any,
+        },
       }} >
         {children}
         <ToastContainer />
