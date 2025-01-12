@@ -2,13 +2,14 @@
 'use client'
 
 import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
-import { useAccount, useConnect, useSuggestChainAndConnect, WalletType } from "graz";
+import { getAvailableWallets, useAccount, useConnect, useSuggestChainAndConnect, WalletType } from "graz";
 import { useEffect } from "react";
 import Image from 'next/image'
 
 export function WalletModal({ closeModal }) {
 
     const { data: account } = useAccount()
+    const wallets = getAvailableWallets();
 
     useEffect(() => {
         if (account?.bech32Address) {
@@ -18,9 +19,11 @@ export function WalletModal({ closeModal }) {
 
     return (<>
         Connect your Wallet :
-        <div style={{ display: "flex", flexDirection: "row", alignItems: "middle", margin: "20px", gap: "30px", flexWrap: "wrap" }}>
-            <WalletButton walletType={WalletType.KEPLR} img="/keplr-wallet.png" alt="Keplr" />
-            <WalletButton walletType={WalletType.LEAP} img="/leap-wallet.webp" alt="Leap" />
+        <div style={{ display: "flex", flexDirection: "row", alignItems: "middle", justifyContent: "center", margin: "20px", gap: "30px", flexWrap: "wrap" }}>
+            {wallets.keplr && <WalletButton walletType={WalletType.KEPLR} img="/keplr-wallet.png" alt="Keplr" />}
+            {wallets.leap && <WalletButton walletType={WalletType.LEAP} img="/leap-wallet.webp" alt="Leap" />}
+            {wallets.wc_keplr_mobile && <WalletButton walletType={WalletType.WC_KEPLR_MOBILE} img="/keplr-wallet.png" alt="Keplr Mobile" />}
+            {wallets.wc_leap_mobile && <WalletButton walletType={WalletType.WC_LEAP_MOBILE} img="/leap-wallet.webp" alt="Leap Mobile" />}
         </div >
     </>
     );
