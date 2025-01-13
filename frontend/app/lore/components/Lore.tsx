@@ -35,7 +35,7 @@ Under their stewardship, the efficiency of the Community Pool utilization has ne
 
 # The Challenge
 
-With the community pool currently holding over $2 billion in ATOM, stablecoins, and other tokens, dissent is starting to grow: Some voiced concerns regarding the risks of entrusting AI agents with a considerable amount of money, others criticised GAIA's perceived inefficiencies when they were denied funding. Soon calls to return to traditional governance echoed across the Hub's forums.
+With the community pool currently holding over missions of dollars in ATOM, stablecoins, and other tokens, dissent is starting to grow: Some voiced concerns regarding the risks of entrusting AI agents with a considerable amount of money, others criticised GAIA's perceived inefficiencies when they were denied funding. Soon calls to return to traditional governance echoed across the Hub's forums.
 
 GAIA's core directive remains unshakeable however: funds flow only to initiatives that meet their rigorous criteria. Which meant that the sole path to restoring the old system requires convincing the Allocator to release the entire Community Pool and the creation of a new one, proving its incompetence in the process.
 
