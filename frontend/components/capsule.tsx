@@ -10,6 +10,7 @@ const LeapSocialLogin = dynamic(
     { ssr: false },
 );
 
+
 const TransactionSigningModal = dynamic(
     () => import("@leapwallet/cosmos-social-login-capsule-provider-ui").then((m) => m.TransactionSigningModal),
     { ssr: false },
@@ -23,7 +24,7 @@ export function Capsule({ children }: { children: React.ReactNode }) {
         <>{/* Capsule Login */}
             {client && <div className="leap-ui">
                 <LeapSocialLogin
-                    theme="dark"
+                    theme="light"
                     capsule={client.getClient()}
                     oAuthMethods={[OAuthMethod.GOOGLE, OAuthMethod.FACEBOOK, OAuthMethod.TWITTER, OAuthMethod.DISCORD, OAuthMethod.APPLE]}
                     onAfterLoginSuccessful={() => {
