@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 import { WalletModal } from "./wallet";
 import Modal from 'react-modal';
-import { useAccount, useDisconnect } from "@usecapsule/graz";
+import { useAccount } from "@usecapsule/graz";
 import { useScreenMediaQuery } from "@/lib/useMediaQuery";
 import Image from "next/image";
 import { toast } from "react-toastify";
@@ -53,15 +53,6 @@ export function WalletAddress({ address }: { address: string }) {
 export function CosmosWallet() {
   const [modalIsOpen, setIsOpen] = useState(false);
 
-  const { disconnect } = useDisconnect();
-
-  function openModal() {
-    if (account?.bech32Address) {
-      disconnect()
-    } else {
-      setIsOpen(true);
-    }
-  }
   function closeModal() {
     setIsOpen(false);
   }

@@ -11,7 +11,7 @@ const CapsuleModal = dynamic(
 const capsuleClient = new CapsuleClient(Environment.BETA, process.env.NEXT_PUBLIC_CAPSULE_API_KEY);
 
 export const capsuleContext = React.createContext({
-    setModalState: (a: boolean) => { },
+    setModalState: (a: boolean) => { console.warn('context not provided:', a) },
     modalState: false
 });
 
@@ -32,7 +32,7 @@ export function CapsuleProvider({ children }: {
                 onClose={() => setIsModalOpen(false)}
                 logo={""}
                 theme={{ "backgroundColor": "#ffffff" }}
-                oAuthMethods={["GOOGLE"]}
+                oAuthMethods={[OAuthMethod.GOOGLE]}
                 disableEmailLogin={false}
                 disablePhoneLogin={false}
                 authLayout={["AUTH:FULL", "EXTERNAL:FULL"]}
