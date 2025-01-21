@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 import { WalletModal } from "./wallet";
@@ -8,6 +8,7 @@ import { useAccount, useDisconnect } from "@usecapsule/graz";
 import { useScreenMediaQuery } from "@/lib/useMediaQuery";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import { capsuleContext } from "./capsule";
 
 Modal.setAppElement('#body');
 
@@ -66,12 +67,16 @@ export function CosmosWallet() {
   }
 
   const { isLargeDevice, isExtraLargeDevice } = useScreenMediaQuery();
+  const { setModalState } = useContext(capsuleContext);
 
   const { data: account } = useAccount();
   return (
     <>
       <div className="flex flex-row lg:flex-col gap-2 items-center">
-        <Button onClick={openModal} variant={"full"} color="blue" className="rounded">
+        <Button onClick={() => {
+          console.log("opening modal")
+          setModalState(true)
+        }} variant={"full"} color="blue" className="rounded">
           {account?.bech32Address ? "Wallet Connected" : "Connect Wallet"}
         </Button>
         {(isLargeDevice || isExtraLargeDevice) && !!account?.bech32Address && <WalletAddress address={account?.bech32Address} />}

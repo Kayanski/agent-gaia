@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
 import { ToastContainer } from 'react-toastify';
 import { CapsuleCosmosProvider, keplrWallet, leapWallet } from '@usecapsule/cosmos-wallet-connectors';
+import { CapsuleProvider } from "./capsule";
 
 // Graz
 const queryClient = new QueryClient();
@@ -45,12 +46,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
         }}
         multiChain
         walletConnect={{ options: { projectId: 'c93bd3533007ae84dec279c3a67e9f46' } }}
-        capsuleConfig={{
-          apiKey: process.env.NEXT_PUBLIC_CAPSULE_API_KEY,
-          env: process.env.NEXT_PUBLIC_CAPSULE_ENV as any,
-        }}
       >
-        {children}
+        <CapsuleProvider>
+          {children}
+        </CapsuleProvider>
       </CapsuleCosmosProvider>
       <ToastContainer />
       {/* </GrazProvider > */}

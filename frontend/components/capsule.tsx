@@ -1,39 +1,47 @@
 "use client"
-import { useCapsule } from "@usecapsule/graz";
-
+import CapsuleClient, { Environment, OAuthMethod } from "@usecapsule/react-sdk";
 import dynamic from "next/dynamic";
-import { OAuthMethod } from "@usecapsule/react-sdk";
+import React from "react";
 
 const CapsuleModal = dynamic(
     () => import("@usecapsule/react-sdk").then((mod) => mod.CapsuleModal),
     { ssr: false }
 );
 
-export function Capsule({ children }: { children: React.ReactNode }) {
+const capsuleClient = new CapsuleClient(Environment.BETA, process.env.NEXT_PUBLIC_CAPSULE_API_KEY);
 
-    const { client, modalState, onAfterLoginSuccessful, setModalState, onLoginFailure } = useCapsule();
+export const capsuleContext = React.createContext({
+    setModalState: (a: boolean) => { },
+    modalState: false
+});
 
-    return (
-        <>{/* Capsule Login */}
-            {client && <div className="leap-ui">
+export function CapsuleProvider({ children }: {
+    children?: React.ReactNode
+}) {
 
-                <CapsuleModal
-                    capsule={client.getClient()}
-                    isOpen={modalState}
-                    onClose={() => setModalState(false)}
-                    logo={""}
-                    theme={{}}
-                    oAuthMethods={[OAuthMethod.GOOGLE]}
-                    disableEmailLogin={false}
-                    disablePhoneLogin={false}
-                    authLayout={["AUTH:FULL", "EXTERNAL:FULL"]}
-                    externalWallets={["METAMASK", "PHANTOM"]}
-                    twoFactorAuthEnabled={false}
-                    recoverySecretStepEnabled={true}
-                    onRampTestMode
-                />
-            </div>}
+    const [isModalOpen, setIsModalOpen] = React.useState(true);
+
+    return <>
+        <capsuleContext.Provider value={{
+            setModalState: setIsModalOpen,
+            modalState: isModalOpen
+        }}>
+            <CapsuleModal
+                capsule={capsuleClient}
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                logo={""}
+                theme={{ "backgroundColor": "#ffffff" }}
+                oAuthMethods={["GOOGLE"]}
+                disableEmailLogin={false}
+                disablePhoneLogin={false}
+                authLayout={["AUTH:FULL", "EXTERNAL:FULL"]}
+                externalWallets={["KEPLR", "LEAP"]}
+                twoFactorAuthEnabled={false}
+                recoverySecretStepEnabled={true}
+                onRampTestMode
+            />
             {children}
-        </>
-    )
+        </capsuleContext.Provider>
+    </>
 }
