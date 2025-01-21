@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 import { WalletModal } from "./wallet";
 import Modal from 'react-modal';
-import { useAccount, useDisconnect } from "graz";
+import { useAccount, useDisconnect } from "@usecapsule/graz";
 import { useScreenMediaQuery } from "@/lib/useMediaQuery";
 import Image from "next/image";
 import { toast } from "react-toastify";

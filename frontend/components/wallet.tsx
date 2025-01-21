@@ -2,7 +2,7 @@
 'use client'
 
 import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
-import { getAvailableWallets, useAccount, useConnect, useSuggestChainAndConnect, WalletType } from "graz";
+import { getAvailableWallets, useAccount, useConnect, useSuggestChainAndConnect, WalletType } from "@usecapsule/graz";
 import { useEffect } from "react";
 import Image from 'next/image'
 

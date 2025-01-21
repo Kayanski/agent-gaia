@@ -1,19 +1,12 @@
 "use client"
-import { useCapsule } from "graz";
+import { useCapsule } from "@usecapsule/graz";
 
-import { OAuthMethod } from "@leapwallet/cosmos-social-login-capsule-provider";
-import "@leapwallet/cosmos-social-login-capsule-provider-ui/styles.css";
 import dynamic from "next/dynamic";
+import { OAuthMethod } from "@usecapsule/react-sdk";
 
-const LeapSocialLogin = dynamic(
-    () => import("@leapwallet/cosmos-social-login-capsule-provider-ui").then((m) => m.CustomCapsuleModalView),
-    { ssr: false },
-);
-
-
-const TransactionSigningModal = dynamic(
-    () => import("@leapwallet/cosmos-social-login-capsule-provider-ui").then((m) => m.TransactionSigningModal),
-    { ssr: false },
+const CapsuleModal = dynamic(
+    () => import("@usecapsule/react-sdk").then((mod) => mod.CapsuleModal),
+    { ssr: false }
 );
 
 export function Capsule({ children }: { children: React.ReactNode }) {
@@ -23,24 +16,22 @@ export function Capsule({ children }: { children: React.ReactNode }) {
     return (
         <>{/* Capsule Login */}
             {client && <div className="leap-ui">
-                <LeapSocialLogin
-                    theme="light"
+
+                <CapsuleModal
                     capsule={client.getClient()}
-                    oAuthMethods={[OAuthMethod.GOOGLE, OAuthMethod.FACEBOOK, OAuthMethod.TWITTER, OAuthMethod.DISCORD, OAuthMethod.APPLE]}
-                    onAfterLoginSuccessful={() => {
-                        try {
-                            void onAfterLoginSuccessful?.();
-                        } catch (e) {
-                            console.log(e)
-                        }
-                    }}
-                    onLoginFailure={() => {
-                        onLoginFailure();
-                    }}
-                    setShowCapsuleModal={setModalState}
-                    showCapsuleModal={modalState}
+                    isOpen={modalState}
+                    onClose={() => setModalState(false)}
+                    logo={""}
+                    theme={{}}
+                    oAuthMethods={[OAuthMethod.GOOGLE]}
+                    disableEmailLogin={false}
+                    disablePhoneLogin={false}
+                    authLayout={["AUTH:FULL", "EXTERNAL:FULL"]}
+                    externalWallets={["METAMASK", "PHANTOM"]}
+                    twoFactorAuthEnabled={false}
+                    recoverySecretStepEnabled={true}
+                    onRampTestMode
                 />
-                <TransactionSigningModal dAppInfo={{ name: "Agent Gaia" }} />
             </div>}
             {children}
         </>

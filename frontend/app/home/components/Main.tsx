@@ -11,7 +11,7 @@ import { Stats } from "./Chat/Stats";
 import { getGameState, TGameState } from "@/actions/";
 import { getPrizePool } from "@/actions/getPrizePool";
 import Image from "next/image";
-import { useAccount } from "graz";
+import { useAccount } from "@usecapsule/graz";
 import { MAX_MESSAGES_DEFAULT, MESSAGE_PAGE } from "@/actions/gaia/constants";
 
 type TProps = {

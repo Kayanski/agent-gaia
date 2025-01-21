@@ -4,7 +4,7 @@ import { Stats } from './Chat/Stats'
 import { HowItWorks } from './Chat/HowItWorks'
 import { TGameState } from '@/actions'
 import { useState } from 'react'
-import { useAccount } from 'graz'
+import { useAccount } from "@usecapsule/graz"
 import { useScreenMediaQuery } from '@/lib/useMediaQuery'
 
 const MobileMenu = ({ gameState, isOpen, onClose }: {
