@@ -31,8 +31,8 @@ export function CapsuleProvider({ children }: {
             <CapsuleModal
                 capsule={capsuleClient}
                 isOpen={isModalOpen}
+                logo={"https://agentgaia.xyz/gaia-pp.png"}
                 onClose={() => setIsModalOpen(false)}
-                logo={""}
                 theme={{ "backgroundColor": "#ffffff" }}
                 oAuthMethods={[OAuthMethod.GOOGLE]}
                 disableEmailLogin={false}
