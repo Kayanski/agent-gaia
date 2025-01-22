@@ -39,6 +39,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
       }} > */}
       <CapsuleCosmosProvider
         chains={[ACTIVE_NETWORK.chain]}
+
+        chainsConfig={{
+          [ACTIVE_NETWORK.chain.chainId]: {
+            gas: {
+              price: ACTIVE_NETWORK.chain.feeCurrencies[0].gasPriceStep.average.toString(),
+              denom: ACTIVE_NETWORK.chain.feeCurrencies[0].coinMinimalDenom,
+            },
+          },
+        }}
         wallets={[keplrWallet, leapWallet]}
         selectedChainId={chainId}
         onSwitchChain={chainId => {

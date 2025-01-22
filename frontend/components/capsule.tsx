@@ -2,6 +2,8 @@
 import CapsuleClient, { Environment, OAuthMethod } from "@usecapsule/react-sdk";
 import dynamic from "next/dynamic";
 import React from "react";
+import "@usecapsule/react-sdk/styles.css";
+
 
 const CapsuleModal = dynamic(
     () => import("@usecapsule/react-sdk").then((mod) => mod.CapsuleModal),
