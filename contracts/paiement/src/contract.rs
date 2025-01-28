@@ -8,7 +8,7 @@ use cw_storage_plus::Bound;
 use crate::{
     msg::{
         CurrentPriceResponse, ExecuteMsg, InstantiateMsg, MessageResponse, QueryMsg,
-        TimeoutStatusResponse, MESSAGES,
+        ReceiverOptions, TimeoutStatusResponse, MESSAGES,
     },
     state::{Config, CONFIG},
     PaiementError, PaiementResult,
@@ -69,10 +69,11 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> P
                 this_message_key,
                 &crate::msg::MessageState {
                     price_paid: price.clone(),
-                    user: receiver
-                        .map(|address| deps.api.addr_validate(&address))
-                        .transpose()?
-                        .unwrap_or(info.sender),
+                    receiver: receiver.unwrap_or(ReceiverOptions {
+                        addr: info.sender.to_string(),
+                        chain: env.block.chain_id,
+                        denom: config.paiement_denom.clone(),
+                    }),
                     time: env.block.time,
                     msg: message,
                 },
@@ -138,7 +139,7 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> PaiementResult<Binary> {
                 Ok::<_, StdError>(MessageResponse {
                     message_id: index,
                     price_paid: response.price_paid,
-                    sender: response.user,
+                    sender: response.receiver,
                     time: response.time,
                     msg: response.msg,
                 })
@@ -150,7 +151,7 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> PaiementResult<Binary> {
                 MessageResponse {
                     message_id,
                     price_paid: response.price_paid,
-                    sender: response.user,
+                    sender: response.receiver,
                     time: response.time,
                     msg: response.msg,
                 }

@@ -16,7 +16,8 @@ pub const PRICE_LIMIT: Option<&str> = Some("3000000"); // 3 ATOM price limit
 pub const MIN_MESSAGES: u32 = 400;
 pub const SECONDS_LIMIT: u64 = 60 * 60; // One hour
 
-pub const TREASURY_ADDR: &str = "neutron17kstwwyxnrpw6jttn4ky0dwrqxs8ykqc5j2gvt";
+pub const TREASURY_ADDR: &str =
+    "neutron1dvlx4249q56z4wrgdn577393vvr5w6vhrkm8eet7ywkeefh3m0dq7ujj2u";
 pub const TREASURY_SHARE: Decimal = Decimal::percent(70);
 
 pub const COSMOS_GOV_ADDR: &str = "neutron1cz3qf94nkectenvan4erylqpx073md7lgsyt8n";

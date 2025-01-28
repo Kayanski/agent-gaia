@@ -1,6 +1,6 @@
 use crate::state::Config;
 use cosmwasm_schema::{cw_serde, QueryResponses};
-use cosmwasm_std::{Addr, Coin, Decimal, Timestamp};
+use cosmwasm_std::{Coin, Decimal, Timestamp};
 use cw_storage_plus::Map;
 
 #[cw_serde]
@@ -19,12 +19,19 @@ pub struct InstantiateMsg {
 }
 
 #[cw_serde]
+pub struct ReceiverOptions {
+    pub addr: String,
+    pub chain: String,
+    pub denom: String,
+}
+
+#[cw_serde]
 #[derive(cw_orch::ExecuteFns)]
 pub enum ExecuteMsg {
     #[cw_orch(payable)]
     Deposit {
         message: String,
-        receiver: Option<String>,
+        receiver: Option<ReceiverOptions>,
     },
 }
 
@@ -66,7 +73,7 @@ pub enum TimeoutStatusResponse {
 pub struct MessageResponse {
     pub message_id: u32,
     pub price_paid: Coin,
-    pub sender: Addr,
+    pub sender: ReceiverOptions,
     pub msg: String,
     pub time: Timestamp,
 }
@@ -74,7 +81,7 @@ pub struct MessageResponse {
 #[cw_serde]
 pub struct MessageState {
     pub price_paid: Coin,
-    pub user: Addr,
+    pub receiver: ReceiverOptions,
     pub msg: String,
     pub time: Timestamp,
 }

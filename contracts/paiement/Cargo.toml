@@ -25,3 +25,19 @@ dotenv = "0.15.0"
 env_logger = "0.10.0"
 clap = { version = "4.3.7", features = ["derive"] }
 anyhow = "1.0.94"
+
+
+## DaoDao
+dao-voting = { git = "https://github.com/Kayanski/dao-contracts", version = "2.6.0" }
+dao-cw-orch = { git = "https://github.com/Kayanski/dao-contracts", version = "2.6.0" }
+dao-pre-propose-base = { git = "https://github.com/Kayanski/dao-contracts", version = "2.6.0" }
+dao-pre-propose-single = { git = "https://github.com/Kayanski/dao-contracts", version = "2.6.0" }
+cosmwasm-std-1 = { package = "cosmwasm-std", version = "1.5.1" }
+cw-orch-1 = { package = "cw-orch", version = "0.24.0", features = ["daemon"] }
+
+sqlx = { version = "0.8.3", features = [
+    "runtime-tokio-native-tls",
+    "postgres",
+    "uuid",
+    "time",
+] }

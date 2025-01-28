@@ -2823,10 +2823,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.1.tgz#28fa185f67daaf7b7a1a8c1d445132c5d979f8bd"
   integrity sha512-fEzPV3hSkSMltkw152tJKNARhOupqbH96MZWyRjNaYZOMIzbrTeQDG+MTc6Mr2pgzFQzFxAfmhGDNP5QK++2ZA==
 
-"@usecapsule/core-components@3.22.0":
-  version "3.22.0"
-  resolved "https://registry.yarnpkg.com/@usecapsule/core-components/-/core-components-3.22.0.tgz#61cb7332e5f3fe494864f6f534f17b9f9f772d90"
-  integrity sha512-89ovHSdmHsD9R9haNTK+g8E42jXsomiFnABb4BWd/BS4w5KoY7TKSl9hm5F7K6zZKS4mzWhBKBlfAMOBcNKN3g==
+"@usecapsule/core-components@3.24.0":
+  version "3.24.0"
+  resolved "https://registry.yarnpkg.com/@usecapsule/core-components/-/core-components-3.24.0.tgz#8beab541da9ed00fdd9f662aa1872c5228101f4b"
+  integrity sha512-ynnKSR1+OzGzZL5b+lNOuAONSugq4pe/c5hT0LVxpuvZu36MjTONGIzbu2obrAhhLGYKS7cv1xLrF8YUBiSdwg==
   dependencies:
     "@stencil/core" "^4.7.0"
     color-blend "^4.0.0"
@@ -2848,15 +2848,15 @@
     libphonenumber-js "1.11.2"
     node-forge "^1.3.1"
 
-"@usecapsule/core-sdk@2.17.0":
-  version "2.17.0"
-  resolved "https://registry.yarnpkg.com/@usecapsule/core-sdk/-/core-sdk-2.17.0.tgz#fa14341430065a7a37cf0998d74987e439ded889"
-  integrity sha512-vrnbGUWKwjdAzQCbMWWFO0KLLlwhcxniPnpaQD9cF/4wehCxhMRPrUZbz7856EoWkaOAQ/togzTjTH0napJ1Og==
+"@usecapsule/core-sdk@2.19.0":
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/@usecapsule/core-sdk/-/core-sdk-2.19.0.tgz#fadd2f85dedb0b0d7d3a3a53cde847257b1b0bfb"
+  integrity sha512-2lrxilKFfoL4btYiGp0K4RNQBDXuDeqfwD23EKWzpJTFscw3dry/tkxdxx6MgDUMW7+Wv2UMngViinCErOlgKw==
   dependencies:
     "@celo/utils" "^8.0.0"
     "@cosmjs/encoding" "^0.32.4"
     "@noble/hashes" "^1.5.0"
-    "@usecapsule/user-management-client" "1.39.0"
+    "@usecapsule/user-management-client" "1.41.0"
     base64url "^3.0.1"
     buffer "6.0.3"
     ethereumjs-util "7.1.5"
@@ -2871,17 +2871,24 @@
   dependencies:
     "@usecapsule/core-sdk" "1.21.0"
 
-"@usecapsule/cosmos-wallet-connectors@^1.17.0":
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/@usecapsule/cosmos-wallet-connectors/-/cosmos-wallet-connectors-1.17.0.tgz#a7e93d9d362946089761470aa3eb7342b5529b45"
-  integrity sha512-Ir8iaz9kUDdZV42M0yhs9GTBJNm1MRWIUMbiHlwUmCr54Vrr7uab8sZhFJd+kzEDRLsaIUzD6hgXDxzWin2bZw==
+"@usecapsule/cosmjs-v0-integration@>=2.17.0":
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/@usecapsule/cosmjs-v0-integration/-/cosmjs-v0-integration-2.19.0.tgz#64c5404b3f177565a406b86e619ca5be7d357829"
+  integrity sha512-O1i6E45Qd9snD0XX2KU4/nNKy44bOxY+KpRAcZ21exp4dSXq6Jm7mzDmQCgFaaLyP97lhts+91Vz3J/vFMnKEw==
   dependencies:
-    "@usecapsule/react-sdk" "4.17.0"
+    "@usecapsule/core-sdk" "2.19.0"
 
-"@usecapsule/graz@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@usecapsule/graz/-/graz-0.2.0.tgz#309ef4b8fccecbf2d7a858e3b58064839a1ed552"
-  integrity sha512-CTBnBHch9bH69liurCFZwT3BJAtPnbL+RM3Yx25Duzxyzmo6+SRRcNjacQnI+ethurfKm4Re+vB92aPtQ6YriQ==
+"@usecapsule/cosmos-wallet-connectors@^1.19.0":
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/@usecapsule/cosmos-wallet-connectors/-/cosmos-wallet-connectors-1.19.0.tgz#fcc67282538da234d868dcf32d88be9ad4413107"
+  integrity sha512-k4IWrnwHnEG+1BZWhoBuXt5xuUpO6zFKBX7Vhh0KduQJcV5Qt/piFFz02qF8LgLViqYEMnxEaSgYdXPlsPt5Nw==
+  dependencies:
+    "@usecapsule/react-sdk" "4.19.0"
+
+"@usecapsule/graz@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@usecapsule/graz/-/graz-0.3.0.tgz#2ea8cb8085dee0b4582a5dd3e3b80cb00f0f0488"
+  integrity sha512-JfT3bnirhxpFM+n1xkj3je/6BNLSylVMTcmgyQuTH2RIAdIkv3pSoNnyDvWCKoPFzh6bbgFK4UMvP/6E9LbCZw==
   dependencies:
     "@cosmsnap/snapper" "0.1.29"
     "@dao-dao/cosmiframe" "0.1.0"
@@ -2890,6 +2897,8 @@
     "@metamask/providers" "12.0.0"
     "@tanstack/react-query" ">=5.0.0"
     "@terra-money/station-connector" "1.1.0"
+    "@usecapsule/cosmjs-v0-integration" ">=2.17.0"
+    "@usecapsule/react-sdk" ">=4.17.0"
     "@vectis/extension-client" "^0.7.2"
     "@walletconnect/modal" "2.7.0"
     "@walletconnect/sign-client" "2.17.2"
@@ -2899,34 +2908,34 @@
     long "4"
     zustand "4.5.2"
 
-"@usecapsule/react-common@1.14.0":
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/@usecapsule/react-common/-/react-common-1.14.0.tgz#485e824218b5730f3d1ba1b5d395b6040da0dc31"
-  integrity sha512-bNNHkKEEzXYsd/p7NGeHHetf7S+Zf2pg3XWAf0EcYUW0U7OpgR3UjuvKyyEyGIzOgTLyraJAEtWK2LrSnqV7PQ==
+"@usecapsule/react-common@1.16.0":
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/@usecapsule/react-common/-/react-common-1.16.0.tgz#99aa6df50720c5a62e966f4e9b82b59a94ef6e32"
+  integrity sha512-bpkVieT9/UgbVoIrLZNYcMqU/IR7vFOfdq7aNmicxu4trAR8aWwV+c5QNHk4XL/qQVX9L7nnY506ektq38kyvA==
   dependencies:
     "@moonpay/moonpay-react" "^1.8.3"
     "@ramp-network/ramp-instant-sdk" "^4.0.5"
     "@stripe/crypto" "^0.0.4"
     "@stripe/stripe-js" "^3.4.0"
-    "@usecapsule/web-sdk" "2.17.0"
+    "@usecapsule/web-sdk" "2.19.0"
     libphonenumber-js "^1.11.1"
     styled-components "^6.1.8"
 
-"@usecapsule/react-components@3.22.0":
-  version "3.22.0"
-  resolved "https://registry.yarnpkg.com/@usecapsule/react-components/-/react-components-3.22.0.tgz#12a3563fdb5293cfe77838efd2052f132c291595"
-  integrity sha512-C9s88R9Mpo5+CKLr/bi8IkEN2vY4OQ+XILLqWxlpCT/GQ6QLhjKe2J+q/myNYo7IzYpbWySwhMrIobG9OdW2zA==
+"@usecapsule/react-components@3.24.0":
+  version "3.24.0"
+  resolved "https://registry.yarnpkg.com/@usecapsule/react-components/-/react-components-3.24.0.tgz#7eaa1a3df3462901538d3658e532db463577e224"
+  integrity sha512-sa/4UVi/4hI5jZzt2SDE/ie4dUCMoyWrtMYa1u8geo+KKFyXC1owV4i7flXx1Y0hN96n5YiW2e67s20cQ9IFaA==
   dependencies:
-    "@usecapsule/core-components" "3.22.0"
+    "@usecapsule/core-components" "3.24.0"
 
-"@usecapsule/react-sdk@4.17.0":
-  version "4.17.0"
-  resolved "https://registry.yarnpkg.com/@usecapsule/react-sdk/-/react-sdk-4.17.0.tgz#4968786e948216850a4b4ab3980c4ddd676c4136"
-  integrity sha512-xiHLxLlyIRm1mQ4gunydbUZufguRhlnKE4JnKmCZyBK+Ua3pnfxEopgEJlIZV8EIiPwAmGDEPwdHxT+IrziM7g==
+"@usecapsule/react-sdk@4.19.0", "@usecapsule/react-sdk@>=4.17.0":
+  version "4.19.0"
+  resolved "https://registry.yarnpkg.com/@usecapsule/react-sdk/-/react-sdk-4.19.0.tgz#96e258a1e9e4bc64973cc5a6d0de4042e135d9e8"
+  integrity sha512-XQ/Ifekvc33OhtB4lRw8BkT0UwPPiMq/lE2FgiyKyOkfAUZtr8ZuLuOQT3cbHK1jCn/iS5JjRRhWHrwxVr5d1A==
   dependencies:
-    "@usecapsule/react-common" "1.14.0"
-    "@usecapsule/react-components" "3.22.0"
-    "@usecapsule/web-sdk" "2.17.0"
+    "@usecapsule/react-common" "1.16.0"
+    "@usecapsule/react-components" "3.24.0"
+    "@usecapsule/web-sdk" "2.19.0"
     date-fns "^3.6.0"
     detect-browser "^5.3.0"
     framer-motion "11.3.28"
@@ -2942,10 +2951,10 @@
     axios "^1.6.3"
     qs "^6.12.0"
 
-"@usecapsule/user-management-client@1.39.0":
-  version "1.39.0"
-  resolved "https://registry.yarnpkg.com/@usecapsule/user-management-client/-/user-management-client-1.39.0.tgz#cc708a5529a8d8d7672bad4e05efa76fd45ad99e"
-  integrity sha512-Eu4QWYOEpToCfV1AFaXNplikCHxtWwor2GrsyPeqF11K7PKA/i6YVqJxpJwzdxGLeaEY0jGbr6imuLSudh0gHg==
+"@usecapsule/user-management-client@1.41.0":
+  version "1.41.0"
+  resolved "https://registry.yarnpkg.com/@usecapsule/user-management-client/-/user-management-client-1.41.0.tgz#e1790491af6e80fb979189e9f924908be4a24f2f"
+  integrity sha512-n7rPLJP8Speq0uRiWEvT/i6PV1hdjsDRwBtMvVBp19Wyf38579FkqqSpwSSZLSotdVg8B1ZOIQFxwfncNSBHBA==
   dependencies:
     axios "^1.6.3"
     libphonenumber-js "1.11.2"
@@ -2964,13 +2973,13 @@
     cbor-web "8.1.0"
     node-forge "1.3.1"
 
-"@usecapsule/web-sdk@2.17.0":
-  version "2.17.0"
-  resolved "https://registry.yarnpkg.com/@usecapsule/web-sdk/-/web-sdk-2.17.0.tgz#42a6643d0f99f94d305a56c511a231e3b37e98d9"
-  integrity sha512-GN/83Rsu99WVFx6vvxzz+Nhzf7oUCJ1GUbA9VltT4DS2prdJy9QfAI2IyyOjgoj9F0LDFJ0panP/JX2pVdJKow==
+"@usecapsule/web-sdk@2.19.0":
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/@usecapsule/web-sdk/-/web-sdk-2.19.0.tgz#f8549b67f6fe645254f5082770a7d83f4e93c9ab"
+  integrity sha512-/Cinstc6CwnmkJn+fmL9M19J8S5P93ojD783phKpZqeEgILxz+Pcw+orpaF+cloMlDBqd68GXZNRFATV+0913Q==
   dependencies:
-    "@usecapsule/core-sdk" "2.17.0"
-    "@usecapsule/user-management-client" "1.39.0"
+    "@usecapsule/core-sdk" "2.19.0"
+    "@usecapsule/user-management-client" "1.41.0"
     assert "^2.1.0"
     base64url "3.0.1"
     buffer "6.0.3"

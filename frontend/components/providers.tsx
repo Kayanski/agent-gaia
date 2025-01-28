@@ -39,6 +39,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       }} > */}
       <CapsuleCosmosProvider
         chains={[ACTIVE_NETWORK.chain]}
+        shouldUseSuggestChainAndConnect={true}
 
         chainsConfig={{
           [ACTIVE_NETWORK.chain.chainId]: {
@@ -53,7 +54,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
         onSwitchChain={chainId => {
           setChainId(chainId);
         }}
-        multiChain
         walletConnect={{ options: { projectId: 'c93bd3533007ae84dec279c3a67e9f46' } }}
       >
         <CapsuleProvider>
