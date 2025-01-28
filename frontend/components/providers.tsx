@@ -7,6 +7,7 @@ import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
 import { ToastContainer } from 'react-toastify';
 import { CapsuleCosmosProvider, keplrWallet, leapWallet } from '@usecapsule/cosmos-wallet-connectors';
 import { CapsuleProvider } from "./capsule";
+import capsule from "./capsuleClient"; // or wherever your capsule instance is exported
 
 // Graz
 const queryClient = new QueryClient();
@@ -40,7 +41,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <CapsuleCosmosProvider
         chains={[ACTIVE_NETWORK.chain]}
         shouldUseSuggestChainAndConnect={true}
-
+        capsule={capsule}
         chainsConfig={{
           [ACTIVE_NETWORK.chain.chainId]: {
             gas: {

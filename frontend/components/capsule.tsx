@@ -1,8 +1,9 @@
 "use client"
-import CapsuleClient, { Environment, OAuthMethod } from "@usecapsule/react-sdk";
+import { OAuthMethod } from "@usecapsule/react-sdk";
 import dynamic from "next/dynamic";
 import React from "react";
 import "@usecapsule/react-sdk/styles.css";
+import capsule from "./capsuleClient"; // or wherever your capsule instance is exported
 
 
 const CapsuleModal = dynamic(
@@ -10,8 +11,6 @@ const CapsuleModal = dynamic(
     { ssr: false }
 );
 
-const capsuleClient = new CapsuleClient(Environment.BETA, process.env.NEXT_PUBLIC_CAPSULE_API_KEY);
-capsuleClient.cosmosPrefix = "neutron";
 
 export const capsuleContext = React.createContext({
     setModalState: (a: boolean) => { console.warn('context not provided:', a) },
@@ -30,9 +29,9 @@ export function CapsuleProvider({ children }: {
             modalState: isModalOpen
         }}>
             <CapsuleModal
-                capsule={capsuleClient}
+                capsule={capsule}
                 isOpen={isModalOpen}
-                logo={"https://agentgaia.xyz/gaia-pp.png"}
+                logo={"/gaia-pp-small.jpg"}
                 onClose={() => setIsModalOpen(false)}
                 theme={{ "backgroundColor": "#ffffff" }}
                 oAuthMethods={[OAuthMethod.GOOGLE]}
