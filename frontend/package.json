@@ -22,7 +22,7 @@
     "@keplr-wallet/types": "^0.12.163",
     "@leapwallet/cosmos-social-login-capsule-provider": "^0.0.44",
     "@usecapsule/core-sdk": "2.19.0",
-    "@usecapsule/cosmos-wallet-connectors": "^1.19.0",
+    "@usecapsule/cosmos-wallet-connectors": "1.19.0-dev.1",
     "@usecapsule/graz": "^0.3.0",
     "@usecapsule/user-management-client": "1.41.0",
     "@usecapsule/react-sdk": "4.19.0",
