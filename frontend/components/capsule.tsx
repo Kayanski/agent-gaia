@@ -21,7 +21,7 @@ export function CapsuleProvider({ children }: {
     children?: React.ReactNode
 }) {
 
-    const [isModalOpen, setIsModalOpen] = React.useState(true);
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
 
     return <>
         <capsuleContext.Provider value={{
