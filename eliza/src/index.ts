@@ -29,6 +29,7 @@ import { DirectClient } from './client';
 import net from "net";
 import { TGameState, TGameStateResponse, TGameStatus, UniqueWalletResponse } from "./queries/gameState";
 import { StructuredMessage } from "./llm/types";
+import { acceptAction, rejectAction } from "./actions";
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
@@ -479,6 +480,7 @@ export async function startAgent(
 
         // start assigned clients
         runtime.clients = await initializeClients(character, runtime);
+        runtime.actions = [acceptAction, rejectAction];
 
         // add to container
         nextClient.registerAgent(runtime);
@@ -531,7 +533,6 @@ export const startAgentFromActiveNetwork = async () => {
         // wrap it so we don't have to inject directClient later
         return startAgent(character, directClient);
     };
-
     directClient.start(serverPort);
 
     if (serverPort !== parseInt(settings.SERVER_PORT || "3000")) {

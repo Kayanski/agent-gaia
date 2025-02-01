@@ -1,6 +1,6 @@
 {
   "name": "GAIA",
-  "modelProvider": "anthropic",
+  "modelProvider": "venice",
   "clients": [
     "direct"
   ],

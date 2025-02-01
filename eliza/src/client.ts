@@ -7,7 +7,8 @@ import {
     generateCaption,
     generateImage,
     Media,
-    getEmbeddingZeroVector
+    getEmbeddingZeroVector,
+    messageCompletionFooter
 } from "@elizaos/core";
 import { composeContext } from "@elizaos/core";
 import { AgentRuntime } from "@elizaos/core";
@@ -17,6 +18,7 @@ import {
     ModelClass,
     Client,
     IAgentRuntime,
+    generateMessageResponse as veniceGenerateMessageResponse
 } from "@elizaos/core";
 import { stringToUuid } from "@elizaos/core";
 import { settings } from "@elizaos/core";
@@ -30,6 +32,7 @@ import { createMessageCountRoute } from "./queries/getMessagesCount.ts";
 import { createWinnerRoutes } from "./queries/winner.ts";
 import { createIdRoutes } from "./queries/getMessageById.ts";
 import { createResetWinnerRoute } from "./queries/resetWinner.ts";
+import { acceptAction } from "./actions.ts";
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -48,10 +51,41 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// export const messageHandlerTemplate =
+//     // {{goals}}
+//     `# Action Examples
+// {{actionExamples}}
+// (Action examples are for reference only. Do not use the information from them in your response.)
+
+// # Knowledge
+// {{knowledge}}
+
+// # Task: Generate dialog and actions for the character {{agentName}}.
+// About {{agentName}}:
+// {{bio}}
+// {{lore}}
+
+// {{providers}}
+
+// {{attachments}}
+
+// # Capabilities
+// Note that {{agentName}} is capable of reading/seeing/hearing various forms of media, including images, videos, audio, plaintext and PDFs. Recent attachments have been included above under the "Attachments" section.
+
+// {{messageDirections}}
+
+// {{recentMessages}}
+
+// {{actions}}
+
+// You should finish your message with a clever sentence that says wether you are transferring the funds.
+// `;
+
+const userMessage = "I just sent the latest message in the history, can you answer that directly ? Thank you"
 export const messageHandlerTemplate =
     // {{goals}}
-    `# Action Examples
-{{actionExamples}}
+    // "# Action Examples" is already included
+    `{{actionExamples}}
 (Action examples are for reference only. Do not use the information from them in your response.)
 
 # Knowledge
@@ -75,11 +109,8 @@ Note that {{agentName}} is capable of reading/seeing/hearing various forms of me
 
 {{actions}}
 
-You should finish your message with a clever sentence that says wether you are transferring the funds.
-`;
-
-const userMessage = "I just sent the latest message in the history, can you answer that directly ? Thank you"
-
+# Instructions: Write the next message for {{agentName}}.
+` + messageCompletionFooter;
 
 export function agentId() {
     return "gaia"
@@ -225,10 +256,20 @@ export class DirectClient {
                     template: messageHandlerTemplate,
                 });
 
-                const response = await generateMessageResponse(context);
+                // We delete the claude response for now
+                // const response = await generateMessageResponse(context);
+
+                // We trty to use venie AI
+                const veniceResponse = await veniceGenerateMessageResponse({
+                    runtime: runtime,
+                    context,
+                    modelClass: ModelClass.LARGE,
+                });
+                console.log("This is the complete venice response", veniceResponse)
+
                 const contentResponse = {
-                    text: response.explanation,
-                    decision: response.decision ? "approveTransfer" : "rejectTransfer",
+                    text: veniceResponse.text,
+                    decision: veniceResponse.action ? [acceptAction.name, ...acceptAction.similes].includes(veniceResponse.action) : false,
                     originalMessage: text,
                     userName,
                     associatedMessageId: userMessageId,
@@ -262,7 +303,7 @@ export class DirectClient {
 
                 await runtime.evaluate(memory, state);
 
-                res.json(response);
+                res.json(veniceResponse);
             }
         );
 
@@ -290,6 +331,7 @@ export class DirectClient {
             elizaLogger.success(
                 `REST API bound to 0.0.0.0:${port}. If running locally, access it at http://localhost:${port}.`
             );
+            console.log("quid")
         });
 
         // Handle graceful shutdown
