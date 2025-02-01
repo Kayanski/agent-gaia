@@ -1,9 +1,12 @@
 {
   "neutron-1": {
-    "code_ids": {},
+    "code_ids": {
+      "paiement": 3081
+    },
     "default": {
       "gaia-dao-address": "neutron1dvlx4249q56z4wrgdn577393vvr5w6vhrkm8eet7ywkeefh3m0dq7ujj2u",
-      "gaia-dao-pre-proposal": "neutron1cpamhhmwepdw2rzww8gfz73w4jpltgu458em5vl9nzfqm6mmzzuqfnve75"
+      "gaia-dao-pre-proposal": "neutron1cpamhhmwepdw2rzww8gfz73w4jpltgu458em5vl9nzfqm6mmzzuqfnve75",
+      "paiement": "neutron19mdfu8gkcawwzwe29hvkjmvjm6eeg8psp9hg0k6893eutj68jcqq5hcv7y"
     }
   },
   "pion-1": {
