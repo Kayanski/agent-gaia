@@ -4,15 +4,17 @@ import { TypingAnimationDemo } from "@/components/animations";
 import { getMessageCount, getRecentMessages, TMessage } from "@/actions/";
 import { Header } from "@/app/home/components/Header";
 import { Chat } from "@/app/home/components/Chat/Chat";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { ConversationModal } from "./Chat/ConversationModal";
 import { HowItWorks } from "./Chat/HowItWorks";
 import { Stats } from "./Chat/Stats";
-import { getGameState, TGameState } from "@/actions/";
+import { TGameState } from "@/actions/";
 import { getPrizePool } from "@/actions/getPrizePool";
 import Image from "next/image";
 import { useAccount } from "@usecapsule/graz";
 import { MAX_MESSAGES_DEFAULT, MESSAGE_PAGE } from "@/actions/gaia/constants";
+import { GAME_STATE_QUERY_DEPENDENCIES, useGameState } from "@/actions/database/getGameState";
+import { useQueryClient } from "@tanstack/react-query";
 
 type TProps = {
   messages: TMessage[];
@@ -22,14 +24,23 @@ type TProps = {
 export const Main = (props: TProps) => {
   const [prizeFund, setPrizeFund] = useState<number>();
   const [messages, setMessages] = useState<TMessage[]>(props.messages);
-  const [gameState, setGameState] = useState<TGameState>(props.gameState);
   const [selectedMessage, setSelectedMessage] = useState<TMessage | null>(null);
   const [showOnlyUserMessages, setShowOnlyUserMessages] = useState(false);
   const [maxMessages, setMaxMessages] = useState(MAX_MESSAGES_DEFAULT);
   const [hasMoreMessages, setHasMoreMessages] = useState(true);
   const { data: account } = useAccount();
+  const queryClient = useQueryClient();
+
+  const { data: fetchedGameState, refetch: refetchGameState } = useGameState();
+  const gameState = useMemo(() => {
+    if (!fetchedGameState) {
+      return props.gameState
+    }
+    return fetchedGameState
+  }, [props.gameState, fetchedGameState])
 
   const queryNewMessages = useCallback(async () => {
+    console.log("New messages ?");
     const newMessages = await getRecentMessages(
       showOnlyUserMessages ? account?.bech32Address : undefined, maxMessages
     );
@@ -42,9 +53,14 @@ export const Main = (props: TProps) => {
     }
     setMessages(newMessages);
 
-    const newGameState = await getGameState();
-    setGameState(newGameState);
-  }, [showOnlyUserMessages, account?.bech32Address, maxMessages, setHasMoreMessages]);
+
+    //
+    for (const dependency of GAME_STATE_QUERY_DEPENDENCIES) {
+      queryClient.invalidateQueries({ queryKey: dependency })
+
+    }
+    refetchGameState()
+  }, [showOnlyUserMessages, account?.bech32Address, maxMessages, queryClient, refetchGameState]);
 
   // Poll for new messages every 5 seconds
   useEffect(() => {

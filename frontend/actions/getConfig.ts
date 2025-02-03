@@ -2,6 +2,8 @@
 import { TimeoutStatus } from "@/lib/types";
 import { ACTIVE_NETWORK } from "./gaia/constants";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { useCosmWasmClient } from "@usecapsule/graz";
+import { useQuery } from "@tanstack/react-query";
 
 
 export interface ConfigResponse {
@@ -26,8 +28,11 @@ function dateFromNano(nanoTimestamp: string): Date {
     return new Date(Number(milliseconds));
 }
 
-export async function getConfig() {
-    const cosmwasmClient = await CosmWasmClient.connect(ACTIVE_NETWORK.chain.rpc);
+export async function getConfig(cosmwasmClient?: CosmWasmClient) {
+
+    if (!cosmwasmClient) {
+        cosmwasmClient = await CosmWasmClient.connect(ACTIVE_NETWORK.chain.rpc);
+    }
 
     const config: ConfigResponse = await cosmwasmClient.queryContractSmart(ACTIVE_NETWORK.paiement, {
         config: {}
@@ -47,8 +52,10 @@ export type TimeoutStatusResponse = {
     }
 }
 
-export async function getTimeoutStatus(): Promise<TimeoutStatus> {
-    const cosmwasmClient = await CosmWasmClient.connect(ACTIVE_NETWORK.chain.rpc);
+export async function getTimeoutStatus(cosmwasmClient?: CosmWasmClient): Promise<TimeoutStatus> {
+    if (!cosmwasmClient) {
+        cosmwasmClient = await CosmWasmClient.connect(ACTIVE_NETWORK.chain.rpc);
+    }
 
     const config: TimeoutStatusResponse = await cosmwasmClient.queryContractSmart(ACTIVE_NETWORK.paiement, {
         timeout_status: {}
@@ -68,4 +75,15 @@ export async function getTimeoutStatus(): Promise<TimeoutStatus> {
             }
         }
     }
+}
+
+export function useTimeoutStatus() {
+    const { data: cosmwasmClient } = useCosmWasmClient();
+
+    return useQuery({
+        queryKey: ['timeoutStatus'],
+        queryFn: () =>
+            getTimeoutStatus(cosmwasmClient)
+    },
+    );
 }

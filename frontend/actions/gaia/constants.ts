@@ -35,9 +35,6 @@ const MAINNET = {
     transferCost: 1000,
     character: "GAIA"
 }
-
-console.log(MAINNET)
-
 export const POOL_INFORMATION_TESTNET = {
     poolToUSDC: "neutron18c8qejysp4hgcfuxdpj4wf29mevzwllz5yh8uayjxamwtrs0n9fshq9vtv",
     USDC: "ibc/B559A80D62249C8AA07A380E2A2BEA6E5CA9A6F079C912C3A9E9B494105E4F81",

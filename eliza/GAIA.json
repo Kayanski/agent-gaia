@@ -112,11 +112,5 @@
     "Witty",
     "Sardonic",
     "Clever"
-  ],
-  "settings": {
-    "model": "claude-3-5-sonnet-2024102",
-    "voice": {
-      "model": ""
-    }
-  }
+  ]
 }

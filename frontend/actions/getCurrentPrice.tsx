@@ -1,5 +1,7 @@
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { ACTIVE_NETWORK, POOL_INFORMATION } from "./gaia/constants";
+import { useQuery } from "@tanstack/react-query";
+import { useCosmWasmClient } from "@usecapsule/graz";
 
 
 export interface CurrentPriceResponse {
@@ -9,8 +11,10 @@ export interface CurrentPriceResponse {
     }
 }
 
-export async function getCurrentPrice() {
-    const cosmwasmClient = await CosmWasmClient.connect(ACTIVE_NETWORK.chain.rpc);
+export async function getCurrentPrice(cosmwasmClient?: CosmWasmClient) {
+    if (!cosmwasmClient) {
+        cosmwasmClient = await CosmWasmClient.connect(ACTIVE_NETWORK.chain.rpc);
+    }
 
     const price: CurrentPriceResponse = await cosmwasmClient.queryContractSmart(ACTIVE_NETWORK.paiement, {
         current_price: {}
@@ -21,11 +25,26 @@ export async function getCurrentPrice() {
     }
 }
 
-export async function getTokenPrice() {
-    const networkCosmwasmClient = await CosmWasmClient.connect(ACTIVE_NETWORK.chain.rpc);
-    const poolCosmwasmClient = await CosmWasmClient.connect(POOL_INFORMATION.chain.rpc);
+export function useCurrentPrice() {
+    const { data: cosmwasmClient } = useCosmWasmClient();
 
-    const paiementPrice: CurrentPriceResponse = await networkCosmwasmClient.queryContractSmart(ACTIVE_NETWORK.paiement, {
+    return useQuery({
+        queryKey: ['currentPrice'],
+        queryFn: () =>
+            getCurrentPrice(cosmwasmClient)
+    },
+    );
+}
+
+export async function getTokenPrice(cosmwasmClient?: CosmWasmClient, poolCosmwasmClient?: CosmWasmClient) {
+    if (!cosmwasmClient) {
+        cosmwasmClient = await CosmWasmClient.connect(ACTIVE_NETWORK.chain.rpc);
+    }
+    if (!poolCosmwasmClient) {
+        poolCosmwasmClient = await CosmWasmClient.connect(POOL_INFORMATION.chain.rpc);
+    }
+
+    const paiementPrice: CurrentPriceResponse = await cosmwasmClient.queryContractSmart(ACTIVE_NETWORK.paiement, {
         current_price: {}
     })
 
@@ -49,4 +68,18 @@ export async function getTokenPrice() {
         }
     });
     return parseInt(beliefPrice.return_amount) / quote
+}
+
+export function useTokenPrice() {
+    const { data: poolCosmWasmClient } = useCosmWasmClient({
+        chainId: POOL_INFORMATION.chain.chainId
+    });
+    const { data: cosmwasmClient } = useCosmWasmClient();
+
+    return useQuery({
+        queryKey: ['tokenPrice'],
+        queryFn: () =>
+            getTokenPrice(cosmwasmClient, poolCosmWasmClient)
+    },
+    );
 }
