@@ -31,7 +31,7 @@ export function useCurrentPrice() {
     return useQuery({
         queryKey: ['currentPrice'],
         queryFn: () =>
-            getCurrentPrice(cosmwasmClient)
+            getCurrentPrice(cosmwasmClient),
     },
     );
 }

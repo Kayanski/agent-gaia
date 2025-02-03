@@ -31,6 +31,7 @@ const MAINNET = {
         ...mainnetChains.neutron, feeCurrencies: [
             { ...mainnetChains.neutron.feeCurrencies[1], coinGeckoId: 'cosmos-hub' },
         ],
+        rpc: "https://rpc-lb.neutron.org"
     },
     transferCost: 1000,
     character: "GAIA"
