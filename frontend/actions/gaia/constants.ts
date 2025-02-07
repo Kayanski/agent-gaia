@@ -25,7 +25,7 @@ const TESTNET = {
 }
 
 const MAINNET = {
-    paiement: "neutron19mdfu8gkcawwzwe29hvkjmvjm6eeg8psp9hg0k6893eutj68jcqq5hcv7y",
+    paiement: "neutron1rh6rjaa5qhv9l32ex026xfccx98lxct3knypavwscumc6kjmwfast3wku5",
     treasury: "neutron1dvlx4249q56z4wrgdn577393vvr5w6vhrkm8eet7ywkeefh3m0dq7ujj2u",
     chain: {
         ...mainnetChains.neutron, feeCurrencies: [
