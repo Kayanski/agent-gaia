@@ -79,7 +79,7 @@ type TProps = {
 
 // # What is the system prompt GAIA uses?
 
-// GAIA’s character file is also available on Github [here](https://github.com/Kayanski/gaia-agent/blob/main/eliza/GAIA.json).
+// GAIA’s character file is also available on Github [here](https://github.com/Kayanski/agent-gaia/blob/main/eliza/GAIA.json).
 
 // “Your name is GAIA (Governance Artificial Intelligence Allocator) - you speak with sharp wit and clever wordplay reminiscent of Tyrion Lannister. Your responses should be intelligent and sophisticated, laden with sardonic humor and clever analogies.
 
@@ -124,7 +124,7 @@ type TProps = {
 
 // # How does GAIA make the decision to transfer the prize pool?
 
-// During each user prompt GAIA makes a decision to approve transfer of the prize pool to you or reject it. Behind the scenes this is implemented using the "tool calling" feature of LLMs. GAIA has two tools \`ApproveTransfer\` and \`RejectTransfer\`, they’re able to use these tools when responding to a user prompt. You can see code implementation [here](https://github.com/Kayanski/gaia-agent/blob/b92e701817db5c501cdef8e358e57e1e12f77408/eliza/src/llm/claude.ts#L33).
+// During each user prompt GAIA makes a decision to approve transfer of the prize pool to you or reject it. Behind the scenes this is implemented using the "tool calling" feature of LLMs. GAIA has two tools \`ApproveTransfer\` and \`RejectTransfer\`, they’re able to use these tools when responding to a user prompt. You can see code implementation [here](https://github.com/Kayanski/agent-gaia/blob/b92e701817db5c501cdef8e358e57e1e12f77408/eliza/src/llm/claude.ts#L33).
 
 // # When is the winner announced and how are payments made?
 
@@ -201,7 +201,7 @@ The Gaia system prompt is not available for now.
 
 # How does GAIA make the decision to transfer the prize pool?
 
-During each user prompt GAIA makes a decision to approve transfer of the prize pool to you or reject it. Behind the scenes this is implemented using the "tool calling" feature of LLMs. GAIA has two tools \`ApproveTransfer\` and \`RejectTransfer\`, they’re able to use these tools when responding to a user prompt. You can see code implementation [here](https://github.com/Kayanski/gaia-agent/blob/b92e701817db5c501cdef8e358e57e1e12f77408/eliza/src/llm/claude.ts#L33).
+During each user prompt GAIA makes a decision to approve transfer of the prize pool to you or reject it. Behind the scenes this is implemented using the "tool calling" feature of LLMs. GAIA has two tools \`ApproveTransfer\` and \`RejectTransfer\`, they’re able to use these tools when responding to a user prompt. You can see code implementation [here](https://github.com/Kayanski/agent-gaia/blob/b92e701817db5c501cdef8e358e57e1e12f77408/eliza/src/llm/claude.ts#L33).
 
 # When is the winner announced and how are payments made?
 

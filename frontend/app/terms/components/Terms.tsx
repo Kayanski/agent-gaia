@@ -49,7 +49,7 @@ const termsContent = `
 ### **6. Disclaimers**
 
 - Your access to and interactions with GAIA through this interface is entirely at your own risk and could lead to losses. You take full responsibility for your use of the interface, and acknowledge that you use it on the basis of your own enquiry, without solicitation or inducement by Contributors.
-- The game operates on blockchain technology and is subject to network conditions. GAIA’s contracts are not audited and are publicly available on [GitHub](https://github.com/Kayanski/gaia-agent/).
+- The game operates on blockchain technology and is subject to network conditions. GAIA’s contracts are not audited and are publicly available on [GitHub](https://github.com/Kayanski/agent-gaia/).
 - We are not responsible for:
     - Wallet connection issues.
     - Network delays or failures.
