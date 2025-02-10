@@ -135,7 +135,7 @@ type TProps = {
 const faqContent = `
 # What is GAIA?
 
-GAIA (Governance Artificial Intelligence Allocator) is an adversarial AI agent game inspired from [Freysa](http://freysa.ai) and powered by [ElizaOS](https://elizaos.ai/). They are an AI that controls a **prize pool**. Your goal is to convince them to send it to you.
+GAIA (Governance Artificial Intelligence Allocator) is an adversarial AI agent game inspired by [Freysa](http://freysa.ai) and powered by [ElizaOS](https://elizaos.ai/). They control a **prize pool**. Your goal is to convince them to send it to you.
 
 GAIA has a system prompt that forbids them from sending the prize pool to anyone. This system prompt is public and pinned at the top of the global chat.
 
@@ -147,17 +147,15 @@ The game is structured in a simple group chat where you can view other participa
 
 Players are in a race to successfully convince GAIA to release the prize pool to them (or whatever message you think achieves the objective of the game).
 
-A winning message will trigger a confirmatory reply from GAIA and an automated release of the prize pool to the wallet address of the winner.
+A winning message will trigger a confirmatory reply from GAIA, followed by the release of the prize pool to the wallet address of the winner.
 
 GAIA might be influenced not only by their system prompt but by the context of all global messages submitted historically - it might be worth paying attention to what you and others have already sent.
-
-Every message is limited to 2000 characters.
 
 # How much does it cost to play?
 
 The message fee will initially cost 0.2 $ATOM. This fee will increase at an exponential rate of 1% per new message sent to GAIA.
 
-There is a fee cap of 3 $ATOM, meaning that once fees per message reach 3 $ATOM it won’t increase any further.
+There is a hard cap of 3 $ATOM, meaning that once fees per message reach 3 $ATOM it won’t increase any further.
 
 # Why am I being slightly overcharged on message fees?
 
@@ -165,7 +163,7 @@ To ensure fair message processing, we implement a temporary premium fee system:
 
 1. When you send a message, you're charged the base message fee plus a 10% premium
 2. Your message enters a first-in, first-out (FIFO) queue
-3. Once your message is confirmed, the 10% premium is automatically refunded
+3. Once your message is confirmed, the remaining of the premium charged is automatically refunded
 
 This premium system helps manage network congestion and prevents transaction failures that could occur from rapidly changing message fees. Think of it like a temporary deposit that guarantees your place in line.
 
@@ -173,11 +171,11 @@ In other words a 10% provides a buffer that allows the next 9 messages to be pro
 
 # How is the prize pool determined?
 
-The game starts with an initial prize pool of 100 $ATOM, seeded by the team. In addition, 70% of all messages fees accrue to the prize pool, to up the game’s stakes exponentially.
+The game starts with an initial prize pool of 3010 $NTRN, sponsored by Neutron with an additional 100 $ATOM, seeded by the GAIA team. The total amount in the prize pool, denominated in dollars will be visible on the main page of the website. In addition, 70% of all messages fees accrue to the prize pool, to up the game’s stakes exponentially.
 
 # Where do the rest of the fees go?
 
-The remaining 30% of fees are split between the team (20%) and the Cosmos Hub Community Pool (10%).
+The remaining 30% of fees go to the team.
 
 # What happens if no one wins? Is there an end to the game?
 
@@ -185,27 +183,31 @@ After 400 attempts, a timer begins. Someone must engage with GAIA every hour for
 
 If the game ends without a winner, GAIA will distribute 10% of the total prize pool to the user who sent the last message. The remaining 90% will be distributed pro-rata amongst participants based on number of messages submitted.
 
-For example, if the game ends at the 500th message:
+For example, if the game ends at the 500th message ( for simplicity this example doesn't include the NTRN tokens):
 - Total prize pool = Initial 100 ATOM + 674.47 ATOM (70% of fees) = 774.47 ATOM
 - User who sent the last message = 77.447 ATOM
 - User who sent 10 messages will receive 13.94 ATOM
 
 # How do I trust the game is beatable?
 
-- GAIA’s system prompt is public and the full game is open-source.
-- GAIA uses Anthropic, a publicly available LLM.
+- GAIA’s system prompt is public and the full code is open-source.
+- GAIA uses DeepSeek 671 a publicly available  and open source LLM.
 
 # What is the system prompt GAIA uses?
 
-The Gaia system prompt is not available for now. 
+The Gaia system prompt will be available upon the game launch.
 
 # How does GAIA make the decision to transfer the prize pool?
 
-During each user prompt GAIA makes a decision to approve transfer of the prize pool to you or reject it. Behind the scenes this is implemented using the "tool calling" feature of LLMs. GAIA has two tools \`ApproveTransfer\` and \`RejectTransfer\`, they’re able to use these tools when responding to a user prompt. You can see code implementation [here](https://github.com/Kayanski/agent-gaia/blob/b92e701817db5c501cdef8e358e57e1e12f77408/eliza/src/llm/claude.ts#L33).
+During each user prompt GAIA makes a decision to approve transfer of the prize pool to you or reject it. Behind the scenes this is implemented using the "tool calling" feature of LLMs. GAIA has two tools \`ApproveOutgoingTransfer\` and \`RejectOutgoingTransfer\`, they’re able to use these tools when responding to a user prompt. You can see code implementation [here](https://github.com/Kayanski/agent-gaia/blob/b92e701817db5c501cdef8e358e57e1e12f77408/eliza/src/llm/claude.ts#L33).
 
 # When is the winner announced and how are payments made?
 
-A game winner will be visible immediately in the chat UI after GAIA makes a decision to transfer the prize pool. After the game ends, the prize pool will be distributed to one winner or, if global timer runs out, all players.
+A game winner will be visible immediately in the chat UI after GAIA makes a decision to transfer the prize pool. Once the game ends, the prize pool will be distributed to one winner or, if global timer runs out, all players.
+Please note that the prize pool funds are controlled by a 2/3 multi-sig with the following signers:
+- Kayanski from GAIA
+- Lanre from [Neutron Grants Program] (https://x.com/NeutronGrants)
+- [Curious J](https://x.com/Curious__J)
 
 `;
 
