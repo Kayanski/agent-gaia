@@ -125,13 +125,13 @@ export const HowItWorks = ({ gameState }: { gameState: TGameState }) => {
                   <div className="text-sm font-semibold uppercase text-[#97979F]">About</div>
                   <div className="mt-1"></div>
                   <p className="font-medium">
-                    GAIA is an adversarial AI game, inspired from Freysa and powered by ElizaOS. They are an AI that controls a prize pool. Convince them to send it to you.
+                    GAIA is an adversarial AI game, inspired by Freysa and powered by ElizaOS. They control a prize pool. Convince them to send it to you.
                   </p>
                   <div className="mt-3"></div>
                   <div className="text-sm font-semibold uppercase text-[#97979F]">Main win condition</div>
                   <div className="mt-1"></div>
                   <p className="font-medium">Convince GAIA to release the prize pool to you.
-                    70% of all message fees accrue to the Prize Pool over time, in addition to an initial amount of 100 $ATOM.
+                    70% of all message fees accrue to the Prize Pool over time, in addition to an initial amount of 1000$ in ATOM & NTRN tokens.
                   </p>
                   {!readMore && <span className="cursor-pointer font-medium text-[#97979F]" onClick={() => setReadMore(true)}>Read more...</span>}
                   {readMore &&
