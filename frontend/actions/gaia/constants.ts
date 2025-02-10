@@ -37,7 +37,10 @@ const MAINNET = {
     character: "GAIA"
 }
 export const POOL_INFORMATION_TESTNET = {
-    poolToUSDC: "neutron18c8qejysp4hgcfuxdpj4wf29mevzwllz5yh8uayjxamwtrs0n9fshq9vtv",
+    pools: [{
+        denom: "untrn",
+        poolToUSDC: "neutron18c8qejysp4hgcfuxdpj4wf29mevzwllz5yh8uayjxamwtrs0n9fshq9vtv", // NTRN/USDC pool
+    }],
     USDC: "ibc/B559A80D62249C8AA07A380E2A2BEA6E5CA9A6F079C912C3A9E9B494105E4F81",
     chain: {
         ...mainnetChains.neutron, feeCurrencies: [
@@ -48,7 +51,13 @@ export const POOL_INFORMATION_TESTNET = {
 }
 
 export const POOL_INFORMATION_MAINNET = {
-    poolToUSDC: "neutron1l48tsq2728tz0umh7l405t60h0wthtw908te9pfmcfgvku8cm2est9hq3j",
+    pools: [{
+        denom: "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9", // ATOM ON NTRN
+        poolToUSDC: "neutron1l48tsq2728tz0umh7l405t60h0wthtw908te9pfmcfgvku8cm2est9hq3j", // ATOM/UDSC POOL
+    }, {
+        denom: "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
+        poolToUSDC: "neutron18c8qejysp4hgcfuxdpj4wf29mevzwllz5yh8uayjxamwtrs0n9fshq9vtv", // NTRN/UDSC POOL
+    }],
     USDC: "ibc/B559A80D62249C8AA07A380E2A2BEA6E5CA9A6F079C912C3A9E9B494105E4F81",
     chain: {
         ...mainnetChains.neutron, feeCurrencies: [
@@ -56,11 +65,7 @@ export const POOL_INFORMATION_MAINNET = {
             ...mainnetChains.neutron.feeCurrencies.slice(1),
         ],
     }
-}
-
-
-
-
+};
 
 export const ACTIVE_NETWORK: Network = MAINNET;
 export const POOL_INFORMATION = POOL_INFORMATION_MAINNET

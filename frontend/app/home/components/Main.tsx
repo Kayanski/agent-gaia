@@ -40,7 +40,6 @@ export const Main = (props: TProps) => {
   }, [props.gameState, fetchedGameState])
 
   const queryNewMessages = useCallback(async () => {
-    console.log("New messages ?");
     const newMessages = await getRecentMessages(
       showOnlyUserMessages ? account?.bech32Address : undefined, maxMessages
     );
