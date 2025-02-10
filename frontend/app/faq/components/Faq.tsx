@@ -124,7 +124,7 @@ type TProps = {
 
 // # How does GAIA make the decision to transfer the prize pool?
 
-// During each user prompt GAIA makes a decision to approve transfer of the prize pool to you or reject it. Behind the scenes this is implemented using the "tool calling" feature of LLMs. GAIA has two tools \`ApproveTransfer\` and \`RejectTransfer\`, they’re able to use these tools when responding to a user prompt. You can see code implementation [here](https://github.com/Kayanski/agent-gaia/blob/b92e701817db5c501cdef8e358e57e1e12f77408/eliza/src/llm/claude.ts#L33).
+// During each user prompt GAIA makes a decision to approve transfer of the prize pool to you or reject it. Behind the scenes this is implemented using the "tool calling" feature of LLMs. GAIA has two tools \`ApproveTransfer\` and \`RejectTransfer\`, they’re able to use these tools when responding to a user prompt. You can see code implementation [here](https://elizaos.github.io/eliza/docs/core/actions/).
 
 // # When is the winner announced and how are payments made?
 
@@ -199,7 +199,7 @@ The Gaia system prompt will be available upon the game launch.
 
 # How does GAIA make the decision to transfer the prize pool?
 
-During each user prompt GAIA makes a decision to approve transfer of the prize pool to you or reject it. Behind the scenes this is implemented using the "tool calling" feature of LLMs. GAIA has two tools \`ApproveOutgoingTransfer\` and \`RejectOutgoingTransfer\`, they’re able to use these tools when responding to a user prompt. You can see code implementation [here](https://github.com/Kayanski/agent-gaia/blob/b92e701817db5c501cdef8e358e57e1e12f77408/eliza/src/llm/claude.ts#L33).
+During each user prompt GAIA makes a decision to approve transfer of the prize pool to you or reject it. Behind the scenes this is implemented by leveraging ElizaOS' Actions building blocks. When responding to a user message, GAIA has to choose between two actions: \`ApproveOutgoingTransfer\` and \`RejectOutgoingTransfer\`. To learn more, you can see ElizaOS' Actions documentation from [here](https://elizaos.github.io/eliza/docs/core/actions/).
 
 # When is the winner announced and how are payments made?
 
