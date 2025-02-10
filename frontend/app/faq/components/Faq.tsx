@@ -205,8 +205,8 @@ During each user prompt GAIA makes a decision to approve transfer of the prize p
 
 A game winner will be visible immediately in the chat UI after GAIA makes a decision to transfer the prize pool. Once the game ends, the prize pool will be distributed to one winner or, if global timer runs out, all players.
 Please note that the prize pool funds are controlled by a 2/3 multi-sig with the following signers:
-- Kayanski from GAIA
-- Lanre from [Neutron Grants Program] (https://x.com/NeutronGrants)
+- Kayanski from the GAIA team
+- [Lanre from Neutron](https://x.com/NeutronGrants)
 - [Curious J](https://x.com/Curious__J)
 
 `;
