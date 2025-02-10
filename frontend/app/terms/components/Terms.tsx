@@ -33,16 +33,16 @@ const termsContent = `
 
 ### **4. Prize Pool**
 
-- The initial prize pool starts at 100 $ATOM.
-- 70% of all message fees contribute to the prize pool
-- The remaining fees are split between the team ( 20%) and the Hub’s Community Pool ( 10%)
+- The initial prize pool starts with 100 $ATOM & 3150 $NTRN.
+- 70% of all message fees contribute to the growth of the prize pool
+- The remaining fees go to the team
 - Prize distribution in case of no winner:
     - 10% to the last participant.
     - 90% distributed proportionally among all participants based on number of messages.
 
 ### **5. Game Rules**
 
-- Messages are limited to 1000 characters.
+- Messages are limited to 2000 characters.
 - After 400 attempts, the timer mechanism activates.
 - Once the timer is activated, one message per hour is required to keep the game active.
 
@@ -55,6 +55,7 @@ const termsContent = `
     - Network delays or failures.
     - Lost or failed transactions.
     - External wallet or blockchain-related issues.
+    - Force majeur events.
 
 ### **7. Intellectual Property**
 
@@ -82,7 +83,7 @@ const termsContent = `
 
 ### **11. Contact**
 
-- For questions about these terms, please contact us through official channels on Telegram and X.
+- For questions about these terms, please contact us through official channels on Telegram or X.
 `;
 
 export const Terms = ({ gameState: initialGameState }: TProps) => {
