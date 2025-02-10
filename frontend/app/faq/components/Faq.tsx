@@ -207,7 +207,7 @@ A game winner will be visible immediately in the chat UI after GAIA makes a deci
 Please note that the prize pool funds are controlled by a 2/3 multi-sig with the following signers:
 - Kayanski from GAIA
 - Lanre from [Neutron Grants Program] (https://x.com/NeutronGrants)
-- [Curtious J](https://x.com/Curious__J)
+- [Curious J](https://x.com/Curious__J)
 
 `;
 
