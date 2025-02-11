@@ -7,8 +7,11 @@ export interface Network {
     paiement: string,
     treasury: string
     chain: typeof testnetChains.neutrontestnet,
-    transferCost: number,
-    character: string
+    character: string,
+    ibcChains: {
+        chainId: string,
+        priceDenom: string
+    }[]
 }
 
 const TESTNET = {
@@ -20,12 +23,11 @@ const TESTNET = {
             ...testnetChains.neutrontestnet.feeCurrencies.slice(1),
         ],
     },
-    transferCost: 1000,
     character: "GAIA"
 }
 
 const MAINNET = {
-    paiement: "neutron1c3psrc23y2kyu4r73m3ypppgrvty08e046lsgu2xlh0shjawhv9qldtmej",
+    paiement: "neutron1g9revc7ehm0p3dmvadk2zcph0trneyq70kl8sh6j2t55hqtfpyfqnd9ujn",
     treasury: "neutron1dvlx4249q56z4wrgdn577393vvr5w6vhrkm8eet7ywkeefh3m0dq7ujj2u",
     chain: {
         ...mainnetChains.neutron, feeCurrencies: [
@@ -33,9 +35,13 @@ const MAINNET = {
         ],
         rpc: "https://rpc-lb.neutron.org"
     },
-    transferCost: 1000,
+    ibcChains: [{
+        chainId: "cosmoshub-4",
+        priceDenom: "uatom"
+    }],
     character: "GAIA"
 }
+
 export const POOL_INFORMATION_TESTNET = {
     pools: [{
         denom: "untrn",

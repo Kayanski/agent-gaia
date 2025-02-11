@@ -18,6 +18,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+
       {/* <GrazProvider grazOptions={{
         chains: [ACTIVE_NETWORK.chain],
         chainsConfig: {

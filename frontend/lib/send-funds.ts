@@ -17,10 +17,8 @@ export async function sendTreasuryTo(winnerAddress: string) {
 
     const paiementPrice = await getCurrentPrice();
     const totalBalance = await cosmwasmClient.getBalance(accounts[0].address, paiementPrice.price.denom);
-    let availableBalanceAmount = BigInt(totalBalance.amount);
-    if (paiementPrice.price.denom == feeCurrencies.coinMinimalDenom) {
-        availableBalanceAmount -= BigInt(ACTIVE_NETWORK.transferCost);
-    }
+    const availableBalanceAmount = BigInt(totalBalance.amount);
+
 
     await cosmwasmClient.sendTokens(accounts[0].address, winnerAddress, [{
         denom: paiementPrice.price.denom,

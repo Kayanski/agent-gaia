@@ -61,7 +61,7 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> P
         ExecuteMsg::Deposit { message, receiver } => {
             // We make sure it's still possible to send messages
             config.assert_time_limit(&env)?;
-            let (price, reimbursement_msgs) = config.assert_paiement(info.clone())?;
+            let (price, mut reimbursement_msgs) = config.assert_paiement(info.clone())?;
             let this_message_key = config.next_payment_key;
 
             MESSAGES.save(

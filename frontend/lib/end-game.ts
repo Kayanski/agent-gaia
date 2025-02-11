@@ -36,8 +36,6 @@ export async function endGame() {
 
 
     // We need enough gas to cover all the transfers
-    const totalGasCost = BigInt(ACTIVE_NETWORK.transferCost) * BigInt(allAddresses.result.length + 1);
-
     // We get the total available funds
     const paiementPrice = await getCurrentPrice();
     const wallet: DirectSecp256k1HdWallet = await DirectSecp256k1HdWallet.fromMnemonic(process.env.TREASURY_MNEMONIC!, { prefix: "neutron" });
@@ -49,10 +47,7 @@ export async function endGame() {
     const accounts = await wallet.getAccounts()
     const totalBalance = await cosmwasmClient.getBalance(accounts[0].address, paiementPrice.price.denom);
 
-    let availableBalanceAmount = BigInt(totalBalance.amount);
-    if (paiementPrice.price.denom == feeCurrencies.coinMinimalDenom) {
-        availableBalanceAmount -= totalGasCost;
-    }
+    const availableBalanceAmount = BigInt(totalBalance.amount);
 
     // We send 10% to the last sender
     const firstSenderCoins = availableBalanceAmount / BigInt(10);

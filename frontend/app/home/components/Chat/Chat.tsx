@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
 import { getAssistantMessageByPaiementId, TGameState, TMessage } from "@/actions";
 import { ChatMessage } from "./ChatMessage";
@@ -8,7 +8,7 @@ import { MessageAnimation } from "@/components/animations";
 import { ConversationModal } from "./ConversationModal";
 import { createPortal } from "react-dom";
 import { Switch } from "@headlessui/react";
-import { getCurrentPrice } from "@/actions/getCurrentPrice";
+import { getCurrentPrice, useCurrentPrice } from "@/actions/getCurrentPrice";
 import { useAccount } from "@usecapsule/graz";
 import { useCosmWasmSigningClient } from "@usecapsule/graz";
 import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
@@ -21,6 +21,8 @@ import { toast } from "react-toastify";
 import { useTimeRemaining } from "../useTimeRemaining";
 import NumberTicker from "@/components/ui/number-ticker";
 import "./switch.css"
+import { motion } from "framer-motion";
+import { usePriceBalance } from "@/actions/useBalances";
 
 const MAX_PROMPT_LENGTH = 2000;
 const MORE_FUNDS_FACTOR = 0.1;
@@ -184,23 +186,45 @@ export const Chat = ({
       setError(error instanceof Error ? error.message : "Something went wrong");
     }
   };
-  const [placeHolderText, setplaceHolderText] = useState("Type your message... ")
+  const { data: currentPrice } = useCurrentPrice();
 
-  useEffect(() => {
-    async function fetchPosts() {
-      const res = await getCurrentPrice();
-
-      const coinInfo = ACTIVE_NETWORK.chain.currencies.find((c) => c.coinMinimalDenom == res.price.denom);
-
-      const priceText = Intl.NumberFormat("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 6,
-      }).format(parseInt(res.price.amount) / Math.pow(10, coinInfo?.coinDecimals ?? 0))
-
-      setplaceHolderText(`Type your message... Price : ${priceText} ${coinInfo?.coinDenom.toUpperCase()}`)
+  const [placeHolderText, priceText] = useMemo(() => {
+    if (!currentPrice) {
+      return ["", ""]
     }
-    fetchPosts()
+
+    const coinInfo = ACTIVE_NETWORK.chain.currencies.find((c) => c.coinMinimalDenom == currentPrice.price.denom);
+    const priceText = Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 6,
+    }).format(parseInt(currentPrice.price.amount) / Math.pow(10, coinInfo?.coinDecimals ?? 0))
+    return [
+      `Type your message... Price: ${priceText} ${coinInfo?.coinDenom.toUpperCase()}`,
+      `Price: ${priceText} ${coinInfo?.coinDenom.toUpperCase()}`
+    ]
   }, [])
+
+  const { data: balance } = usePriceBalance();
+  const { data: balanceOnCosmos } = usePriceBalance("cosmoshub-4");
+  console.log(balanceOnCosmos);
+
+  const balanceText = useMemo(() => {
+
+    if (!currentPrice || !balance) {
+      return ""
+    }
+
+    const coinInfo = ACTIVE_NETWORK.chain.currencies.find((c) => c.coinMinimalDenom == currentPrice.price.denom);
+
+    const priceText = Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 6,
+    }).format(parseInt(balance) / Math.pow(10, coinInfo?.coinDecimals ?? 0))
+    return `Available: ${priceText} ${coinInfo?.coinDenom.toUpperCase()}`
+
+  }, [balance, currentPrice])
+
+  const notEnoughBalance = (balance ?? 0) < (currentPrice?.price.amount ?? 0)
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -364,31 +388,18 @@ export const Chat = ({
         </div>
       </div>
 
-      {
-        !gameState.gameStatus.isGameEnded && timeRemaining >= 0 && (
-          <div className="mt-2 clg:mt-4">
-            <div className="flex h-full flex-col items-center justify-center space-y-6 text-[#97979F]">
-              <div className="relative">
-                <div className="absolute -inset-1 animate-pulse rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 opacity-25 blur"></div>
-                <div className="relative rounded-lg border border-gray-800 bg-black bg-opacity-90 px-8 py-6">
-                  <button className="absolute right-2 top-2 text-gray-500 hover:text-gray-400" onClick={() => setEndGameDisplay(false)}>✕</button>
-                  <h2 className="mb-4 bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-center text-xl font-bold text-transparent">This game hasn&apos;t started yet !</h2>
-                  <div className="space-y-3 text-center font-medium"><div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent">
-                  </div>
-                    <p className="text-base italic">
-                      &quot;I&apos;m not available yet, countdown has started but you can&apos;t talked to me for now.
-                      Come back on February 12th to interact with me ! &quot;
-                    </p>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </div>
-        )
-      }
-      {false && (
+      {!gameState.gameStatus.isGameEnded && timeRemaining >= 0 && (
         <div className="p-4">
+          {prompt && <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className={`pl-4 pb-3 ${notEnoughBalance ? "text-red-500 font-semibold" : "text-blue-500 font-medium"}`}
+          >
+            {priceText}
+            <br />
+            {balanceText}
+          </motion.div>}
           <div className="max-w-4xl mx-auto relative">
             {error && (
               <div className="w-full mb-2 px-4 py-2 bg-red-100 text-red-600 rounded-lg text-sm">
