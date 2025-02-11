@@ -105,5 +105,8 @@
     "Witty",
     "Sardonic",
     "Clever"
-  ]
+  ],
+  "settings": {
+    "ragKnowledge": false
+  }
 }
