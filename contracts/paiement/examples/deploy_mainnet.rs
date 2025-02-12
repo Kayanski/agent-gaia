@@ -15,6 +15,7 @@ pub const INITIAL_MULTIPLIER: Decimal = Decimal::percent(1);
 pub const PRICE_LIMIT: Option<&str> = Some("3000000"); // 3 ATOM price limit
 pub const MIN_MESSAGES: u32 = 400;
 pub const SECONDS_LIMIT: u64 = 60 * 60; // One hour
+pub const CHAR_LIMIT: u128 = 2_000;
 
 pub const TREASURY_ADDR: &str =
     "neutron1dvlx4249q56z4wrgdn577393vvr5w6vhrkm8eet7ywkeefh3m0dq7ujj2u";
@@ -25,8 +26,6 @@ pub const KAYANSKI_SHARE: Decimal = Decimal::percent(15);
 
 pub const MALEK_ADDR: &str = "neutron1la0mxx0cp7se7uvvrjuuhdfulv4mgst5r96x0c";
 pub const MALEK_SHARE: Decimal = Decimal::percent(15);
-
-pub const CHAR_LIMIT: u128 = 2_000;
 
 pub fn main() -> anyhow::Result<()> {
     dotenv::dotenv()?;

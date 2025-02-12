@@ -202,11 +202,9 @@ export const Chat = ({
       `Type your message... Price: ${priceText} ${coinInfo?.coinDenom.toUpperCase()}`,
       `Price: ${priceText} ${coinInfo?.coinDenom.toUpperCase()}`
     ]
-  }, [])
+  }, [currentPrice])
 
   const { data: balance } = usePriceBalance();
-  const { data: balanceOnCosmos } = usePriceBalance("cosmoshub-4");
-  console.log(balanceOnCosmos);
 
   const balanceText = useMemo(() => {
 
