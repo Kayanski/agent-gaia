@@ -1,6 +1,7 @@
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
     coin, coins, ensure, ensure_eq, Addr, BankMsg, Coin, Decimal, Env, MessageInfo, Timestamp,
+    Uint128,
 };
 use cw_storage_plus::Item;
 
@@ -16,6 +17,7 @@ pub struct Config {
     pub last_message_timestamp: Timestamp,
     pub price_limit: Option<Decimal>,
     pub time_limit: TimeLimit,
+    pub char_limit: Uint128,
 }
 
 impl Config {

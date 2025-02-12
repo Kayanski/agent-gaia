@@ -20,14 +20,13 @@ pub const TREASURY_ADDR: &str =
     "neutron1dvlx4249q56z4wrgdn577393vvr5w6vhrkm8eet7ywkeefh3m0dq7ujj2u";
 pub const TREASURY_SHARE: Decimal = Decimal::percent(70);
 
-pub const COSMOS_GOV_ADDR: &str = "neutron1cz3qf94nkectenvan4erylqpx073md7lgsyt8n";
-pub const COSMOS_GOV_SHARE: Decimal = Decimal::percent(10);
+pub const KAYANSKI_ADDR: &str = "neutron1ay3785eqz0cyeptv2hhgd86clv7x9zg98g2840";
+pub const KAYANSKI_SHARE: Decimal = Decimal::percent(15);
 
-pub const KAYANSKI_ADDR: &str = "neutron1cz3qf94nkectenvan4erylqpx073md7lgsyt8n";
-pub const KAYANSKI_SHARE: Decimal = Decimal::percent(10);
+pub const MALEK_ADDR: &str = "neutron1la0mxx0cp7se7uvvrjuuhdfulv4mgst5r96x0c";
+pub const MALEK_SHARE: Decimal = Decimal::percent(15);
 
-pub const MALEK_ADDR: &str = "neutron1hm988d2gre5stxc3cd99xs9vjg8cqdx94vmu4c";
-pub const MALEK_SHARE: Decimal = Decimal::percent(10);
+pub const CHAR_LIMIT: u128 = 2_000;
 
 pub fn main() -> anyhow::Result<()> {
     dotenv::dotenv()?;
@@ -43,7 +42,6 @@ pub fn main() -> anyhow::Result<()> {
             multiplier: INITIAL_MULTIPLIER,
             shares: vec![
                 (TREASURY_ADDR.to_string(), TREASURY_SHARE),
-                (COSMOS_GOV_ADDR.to_string(), COSMOS_GOV_SHARE),
                 (MALEK_ADDR.to_string(), MALEK_SHARE),
                 (KAYANSKI_ADDR.to_string(), KAYANSKI_SHARE),
             ],
@@ -52,6 +50,7 @@ pub fn main() -> anyhow::Result<()> {
                 min_messages: MIN_MESSAGES,
                 seconds_limit: SECONDS_LIMIT, // One hour
             },
+            char_limit: CHAR_LIMIT.into(),
         },
         Some(&chain.sender_addr()),
         &[],

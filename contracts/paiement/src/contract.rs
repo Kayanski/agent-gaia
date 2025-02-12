@@ -48,6 +48,7 @@ pub fn instantiate(
             price_limit: msg.price_limit,
             time_limit: msg.time_limit,
             last_message_timestamp: env.block.time,
+            char_limit: msg.char_limit,
         },
     )?;
     Ok(Response::new())
@@ -61,8 +62,11 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> P
         ExecuteMsg::Deposit { message, receiver } => {
             // We make sure it's still possible to send messages
             config.assert_time_limit(&env)?;
-            let (price, mut reimbursement_msgs) = config.assert_paiement(info.clone())?;
+            let (price, reimbursement_msgs) = config.assert_paiement(info.clone())?;
             let this_message_key = config.next_payment_key;
+            if message.len() > config.char_limit.u128() as usize {
+                return Err(PaiementError::MessageTooLong {});
+            }
 
             MESSAGES.save(
                 deps.storage,

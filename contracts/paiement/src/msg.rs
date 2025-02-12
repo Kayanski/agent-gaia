@@ -1,6 +1,6 @@
 use crate::state::Config;
 use cosmwasm_schema::{cw_serde, QueryResponses};
-use cosmwasm_std::{Coin, Decimal, Timestamp};
+use cosmwasm_std::{Coin, Decimal, Timestamp, Uint128};
 use cw_storage_plus::Map;
 
 #[cw_serde]
@@ -16,6 +16,7 @@ pub struct InstantiateMsg {
     pub shares: Vec<(String, Decimal)>,
     pub price_limit: Option<Decimal>,
     pub time_limit: TimeLimit,
+    pub char_limit: Uint128,
 }
 
 #[cw_serde]

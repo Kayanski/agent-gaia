@@ -22,6 +22,7 @@ fn reimbursement() -> anyhow::Result<()> {
                 min_messages: 400,
                 seconds_limit: 60 * 60,
             },
+            char_limit: 2_000u128.into(),
         },
         None,
         &[],

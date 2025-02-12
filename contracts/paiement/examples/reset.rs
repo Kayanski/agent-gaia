@@ -24,6 +24,7 @@ pub const KAYANSKI_SHARE: Decimal = Decimal::percent(15);
 pub const MALEK_ADDR: &str = "neutron1la0mxx0cp7se7uvvrjuuhdfulv4mgst5r96x0c";
 pub const MALEK_SHARE: Decimal = Decimal::percent(15);
 
+pub const CHAR_LIMIT: u128 = 2_000;
 pub fn main() -> anyhow::Result<()> {
     dotenv::dotenv()?;
     env_logger::init();
@@ -45,6 +46,7 @@ pub fn main() -> anyhow::Result<()> {
                 min_messages: 100,
                 seconds_limit: 60 * 60, // One hour
             },
+            char_limit: CHAR_LIMIT.into(),
         },
         Some(&chain.sender_addr()),
         &[],

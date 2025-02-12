@@ -24,6 +24,9 @@ pub enum PaiementError {
 
     #[error("Game Ended")]
     GameEnded {},
+
+    #[error("Message too long")]
+    MessageTooLong {},
 }
 
 pub type PaiementResult<T = Response> = Result<T, PaiementError>;
