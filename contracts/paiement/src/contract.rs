@@ -102,7 +102,7 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> P
             config.current_price *= Decimal::one() + config.multiplier; // We update the price
                                                                         // We limit the price
             if let Some(price_limit) = config.price_limit {
-                config.current_price = config.current_price.max(price_limit);
+                config.current_price = config.current_price.min(price_limit);
             }
             config.next_payment_key += 1;
             config.last_message_timestamp = env.block.time;
