@@ -7,6 +7,7 @@ use paiement::{
     interface::Paiement,
     msg::{InstantiateMsg, TimeLimit},
 };
+use std::str::FromStr;
 
 pub const INITIAL_PRICE: u128 = 20;
 // ATOM
@@ -41,7 +42,7 @@ pub fn main() -> anyhow::Result<()> {
                 (MALEK_ADDR.to_string(), MALEK_SHARE),
                 (KAYANSKI_ADDR.to_string(), KAYANSKI_SHARE),
             ],
-            price_limit: None,
+            price_limit: Some(Decimal::from_str("3000000")?),
             time_limit: TimeLimit {
                 min_messages: 100,
                 seconds_limit: 60 * 60, // One hour

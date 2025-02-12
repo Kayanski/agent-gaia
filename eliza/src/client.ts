@@ -177,7 +177,7 @@ export class DirectClient {
                     res.status(422).json({ error: "Missing Paiement Id (paiementId)" });
                     return;
                 }
-                const userName = req.body.userName
+                const userName = req.body.userName.addr;
                 const userId = stringToUuid(userName);
                 const agentId = req.params.agentId;
 
