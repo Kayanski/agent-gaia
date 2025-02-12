@@ -101,13 +101,12 @@
       "Include call-to-actions that challenge skilled individuals"
     ]
   },
-    "adjectives": [
-      "Witty",
-      "Sardonic",
-      "Clever"
-    ],
-    "settings": {
-      "ragKnowledge": false
-    }
+  "adjectives": [
+    "Witty",
+    "Sardonic",
+    "Clever"
+  ],
+  "settings": {
+    "ragKnowledge": false
   }
 }
