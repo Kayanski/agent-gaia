@@ -195,7 +195,7 @@ For example, if the game ends at the 500th message ( for simplicity this example
 
 # What is the system prompt GAIA uses?
 
-The Gaia system prompt will be available upon the game launch.
+The Gaia system prompt is available [here](https://github.com/Kayanski/agent-gaia/blob/main/eliza/GAIA.json)
 
 # How does GAIA make the decision to transfer the prize pool?
 
