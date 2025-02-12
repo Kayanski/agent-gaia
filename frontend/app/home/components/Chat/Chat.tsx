@@ -117,7 +117,7 @@ export const Chat = ({
       const sendDataUpdate = async () => {
         const response = await triggerDataUpdate();
 
-        if (!response.success) {
+        if (!response || !response.success) {
           throw new Error(`The data updating backend is failing to update : ${JSON.stringify(response)}`);
         }
       }
