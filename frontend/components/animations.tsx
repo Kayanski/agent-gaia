@@ -6,7 +6,7 @@ import { ReactNode } from "react";
 
 export function TypingAnimationDemo({ className }: { className?: string }) {
   return (
-    <a href="https://github.com/Kayanski/agent-gaia/blob/main/eliza/GAIA.json">
+    <a href="https://github.com/Kayanski/agent-gaia/blob/main/eliza/GAIA.json" target="_blank">
       <div className={cn("max-w-[600px]", className)}>
         <TypingAnimation
           className="text-xs sm:text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]"
