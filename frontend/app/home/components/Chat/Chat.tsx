@@ -386,7 +386,7 @@ export const Chat = ({
         </div>
       </div>
       {
-        !gameState.gameStatus.isGameEnded && timeRemaining >= 0 && (
+        false && (
           <div className="mt-2 clg:mt-4">
             <div className="flex h-full flex-col items-center justify-center space-y-6 text-[#97979F]">
               <div className="relative">
@@ -408,7 +408,7 @@ export const Chat = ({
           </div>
         )
       }
-      {false && (
+      {!gameState.gameStatus.isGameEnded && timeRemaining >= 0 && (
         <div className="p-4">
           {prompt && <motion.div
             initial={{ opacity: 0, y: 10 }}
