@@ -397,8 +397,8 @@ export const Chat = ({
                   <div className="space-y-3 text-center font-medium"><div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent">
                   </div>
                     <p className="text-base italic">
-                      &quot;I&apos;m not available yet, countdown has started but you can&apos;t talked to me for now.
-                      Come back on February 12th to interact with me ! &quot;
+                      &quot;I&apos;m not available yet, because of an LLM outage, I&apos;m currently unable to process requests.
+                      Come back soon to see me in action !
                     </p>
                   </div>
 
