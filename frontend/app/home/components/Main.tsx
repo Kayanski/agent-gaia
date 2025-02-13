@@ -11,7 +11,7 @@ import { Stats } from "./Chat/Stats";
 import { TGameState } from "@/actions/";
 import { getPrizePool } from "@/actions/getPrizePool";
 import Image from "next/image";
-import { useAccount } from "@usecapsule/graz";
+import { useAccount } from "graz";
 import { MAX_MESSAGES_DEFAULT, MESSAGE_PAGE } from "@/actions/gaia/constants";
 import { GAME_STATE_QUERY_DEPENDENCIES, useGameState } from "@/actions/database/getGameState";
 import { useQueryClient } from "@tanstack/react-query";

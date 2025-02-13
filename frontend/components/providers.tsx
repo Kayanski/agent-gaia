@@ -1,25 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
 import { ToastContainer } from 'react-toastify';
-import { CapsuleCosmosProvider, keplrWallet, leapWallet } from '@usecapsule/cosmos-wallet-connectors';
-import { CapsuleProvider } from "./capsule";
-import capsule from "./capsuleClient"; // or wherever your capsule instance is exported
+// import { CapsuleCosmosProvider, keplrWallet, leapWallet } from '@usecapsule/cosmos-wallet-connectors';
+// import { CapsuleProvider } from "./capsule";
+// import capsule from "./capsuleClient"; // or wherever your capsule instance is exported
+import { GrazProvider } from "graz";
 
 // Graz
 const queryClient = new QueryClient();
 
 // End Graz
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [chainId, setChainId] = useState<string>(ACTIVE_NETWORK.chain.chainId);
+  // const [chainId, setChainId] = useState<string>(ACTIVE_NETWORK.chain.chainId);
 
   return (
     <QueryClientProvider client={queryClient}>
 
-      {/* <GrazProvider grazOptions={{
+      <GrazProvider grazOptions={{
         chains: [ACTIVE_NETWORK.chain],
         chainsConfig: {
           [ACTIVE_NETWORK.chain.chainId]: {
@@ -34,12 +35,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
             projectId: "c93bd3533007ae84dec279c3a67e9f46"
           }
         },
-        capsuleConfig: {
-          apiKey: process.env.NEXT_PUBLIC_CAPSULE_API_KEY,
-          env: process.env.NEXT_PUBLIC_CAPSULE_ENV as any,
-        },
-      }} > */}
-      <CapsuleCosmosProvider
+      }} >
+        {/* <CapsuleCosmosProvider
         chains={[ACTIVE_NETWORK.chain]}
         shouldUseSuggestChainAndConnect={true}
         capsule={capsule}
@@ -57,13 +54,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
           setChainId(chainId);
         }}
         walletConnect={{ options: { projectId: 'c93bd3533007ae84dec279c3a67e9f46' } }}
-      >
-        <CapsuleProvider>
-          {children}
-        </CapsuleProvider>
-      </CapsuleCosmosProvider>
-      <ToastContainer />
-      {/* </GrazProvider > */}
+      > */}
+        {/* <CapsuleProvider> */}
+        {children}
+        {/* </CapsuleProvider> */}
+        {/* </CapsuleCosmosProvider> */}
+        <ToastContainer />
+      </GrazProvider >
     </QueryClientProvider>
   );
 }

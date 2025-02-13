@@ -2,7 +2,7 @@
 import { ACTIVE_NETWORK, POOL_INFORMATION } from "./gaia/constants";
 import { getTokenPrice, useAllTokenPrices, useCurrentPrice } from "./getCurrentPrice";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { useCosmWasmClient } from "@usecapsule/graz";
+import { useCosmWasmClient } from "graz";
 import { useQuery } from "@tanstack/react-query";
 
 

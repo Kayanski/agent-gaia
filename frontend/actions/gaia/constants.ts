@@ -1,4 +1,4 @@
-import { mainnetChains, testnetChains } from "@usecapsule/graz/chains";
+import { mainnetChains, testnetChains } from "graz/chains";
 
 
 export const MAX_MESSAGES_DEFAULT = 10;

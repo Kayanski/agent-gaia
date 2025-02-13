@@ -1,4 +1,4 @@
-import { useAccount, useCosmWasmClient } from "@usecapsule/graz";
+import { useAccount, useCosmWasmClient } from "graz";
 import { useCurrentPrice } from "./getCurrentPrice";
 import { ACTIVE_NETWORK } from "./gaia/constants";
 import { useQuery } from "@tanstack/react-query";

@@ -2,7 +2,7 @@
 import { TimeoutStatus } from "@/lib/types";
 import { ACTIVE_NETWORK } from "./gaia/constants";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { useCosmWasmClient } from "@usecapsule/graz";
+import { useCosmWasmClient } from "graz";
 import { useQuery } from "@tanstack/react-query";
 
 
