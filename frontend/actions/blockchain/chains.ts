@@ -3,6 +3,10 @@ import { mainnetChains, testnetChains } from "graz/chains";
 
 export const MAX_MESSAGES_DEFAULT = 10;
 export const MESSAGE_PAGE = 10;
+export enum IbcChainType {
+    COSMOS,
+    PFM,
+}
 export interface Network {
     paiement: string,
     treasury: string
@@ -13,6 +17,7 @@ export interface Network {
         priceDenom: string,
         sourceChannel: string,
         targetChannel: string
+        type: IbcChainType
     }[]
 }
 
@@ -39,10 +44,20 @@ const MAINNET = {
     },
     // https://github.com/cosmos/chain-registry/blob/master/neutron/assetlist.json
     ibcChains: [{
-        sourceChannel: "channel-569",
-        targetChannel: "channel-1",
+        sourceChannel: "channel-569", // On cosmoshub
+        targetChannel: "channel-1", // On neutron
         chain: mainnetChains.cosmoshub,
-        priceDenom: "uatom"
+        priceDenom: "uatom",
+        type: IbcChainType.COSMOS
+    }, {
+        sourceChannel: "channel-0", // On Osmosis
+        targetChannel: "channel-141", // On cosmos
+        chain: {
+            ...mainnetChains.osmosis,
+            feeCurrencies: [mainnetChains.osmosis.feeCurrencies.find((c) => c.coinDenom == "osmo")],
+        },
+        priceDenom: "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+        type: IbcChainType.PFM
     }],
     character: "GAIA"
 }

@@ -9,9 +9,9 @@ import { ConversationModal } from "./ConversationModal";
 import { createPortal } from "react-dom";
 import { Switch } from "@headlessui/react";
 import { getCurrentPrice, useAllTokenPrices, useCurrentPrice } from "@/actions/getCurrentPrice";
-import { useAccount } from "graz";
+import { useAccount, useCosmWasmClient } from "graz";
 import { useCosmWasmSigningClient } from "graz";
-import { ACTIVE_NETWORK } from "@/actions/blockchain/chains";
+import { ACTIVE_NETWORK, IbcChainType } from "@/actions/blockchain/chains";
 import { coins } from "@cosmjs/proto-signing";
 import { getUserMessageByPaiementId } from "@/actions";
 import pRetry from 'p-retry';
@@ -26,6 +26,7 @@ import { usePriceBalance } from "@/actions/useBalances";
 import { useChosenChainStore } from "@/components/wallet";
 import { MsgTransferEncodeObject, Event } from "@cosmjs/stargate";
 import { MsgTransfer } from "cosmjs-types/ibc/applications/transfer/v1/tx";
+import { mainnetChains } from "graz/chains";
 
 
 const MAX_PROMPT_LENGTH = 2000;
@@ -71,8 +72,9 @@ export const Chat = ({
   >(null);
   const [textareaHeight, setTextareaHeight] = useState(40);
   const { chain: chosenChain, } = useChosenChainStore();
-  const { data: cosmosClient } = useCosmWasmSigningClient({ chainId: chosenChain.chainId });
-  const { data: neutronTMClient } = useCosmWasmSigningClient({ chainId: ACTIVE_NETWORK.chain.chainId });
+  const { data: cosmwasmClient } = useCosmWasmSigningClient({ chainId: chosenChain.chainId });
+  const { data: neutronClient } = useCosmWasmClient({ chainId: ACTIVE_NETWORK.chain.chainId });
+  const { data: cosmosClient } = useCosmWasmClient({ chainId: mainnetChains.cosmoshub.chainId });
 
   const { data: account } = useAccount({ chainId: chosenChain.chainId });
   const [shouldFetchMore, setShouldFetchMore] = useState(false);
@@ -89,7 +91,7 @@ export const Chat = ({
 
   const handleSend = async () => {
     try {
-      if (!account || !account.bech32Address || !cosmosClient || !neutronTMClient) {
+      if (!account || !account.bech32Address || !cosmwasmClient || !neutronClient) {
         setError("Please connect your wallet first");
         return;
       }
@@ -114,7 +116,7 @@ export const Chat = ({
       let paiementId: string | undefined;
       if (chosenChain.chainId == ACTIVE_NETWORK.chain.chainId) {
         // For the native chain 
-        transactionResult = await cosmosClient.execute(account.bech32Address, ACTIVE_NETWORK.paiement, {
+        transactionResult = await cosmwasmClient.execute(account.bech32Address, ACTIVE_NETWORK.paiement, {
           deposit: {
             message: prompt,
           }
@@ -131,9 +133,8 @@ export const Chat = ({
         }
         // 10 minutes timeout
         const timeoutTimestamp = (Date.now() + 10 * 60 * 1000) * 1_000_000; // nanoseconds
-
-        // We create a beautiful memo
-        const memo = {
+        // We create a beautiful last memo
+        const neutronMemo = {
           wasm: {
             contract: ACTIVE_NETWORK.paiement,
             msg: {
@@ -149,58 +150,164 @@ export const Chat = ({
           }
         }
 
-        const msg: MsgTransferEncodeObject = {
-          typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
-          value: MsgTransfer.fromPartial({
-            sourcePort: "transfer",
-            sourceChannel: ibcChain.sourceChannel,
-            token: {
-              denom: ibcChain.priceDenom,
-              amount: price.amount
-            },
-            sender: account.bech32Address,
-            receiver: ACTIVE_NETWORK.paiement,
-            timeoutTimestamp: BigInt(timeoutTimestamp),
-            memo: JSON.stringify(memo)
-          }),
-        };
-        transactionResult = await cosmosClient.signAndBroadcast(account.bech32Address, [msg], "auto")
+        if (ibcChain.type == IbcChainType.COSMOS) {
 
-        toast("Transaction successfully executed. Waiting on IBC transfer.")
+          const msg: MsgTransferEncodeObject = {
+            typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
+            value: MsgTransfer.fromPartial({
+              sourcePort: "transfer",
+              sourceChannel: ibcChain.sourceChannel,
+              token: {
+                denom: ibcChain.priceDenom,
+                amount: price.amount
+              },
+              sender: account.bech32Address,
+              receiver: ACTIVE_NETWORK.paiement,
+              timeoutTimestamp: BigInt(timeoutTimestamp),
+              memo: JSON.stringify(neutronMemo)
+            }),
+          };
+          transactionResult = await cosmwasmClient.signAndBroadcast(account.bech32Address, [msg], "auto")
 
-        // We await transaction confirm on the remote chain
-        const ibcPacketSequence = transactionResult.events
-          .find((e) => e.type === "send_packet")
-          ?.attributes.find((attr) => attr.key === "packet_sequence")?.value;
+          toast("Transaction successfully executed. Waiting on IBC transfer.")
 
-        if (!ibcPacketSequence) throw new Error("Failed to retrieve IBC packet sequence");
+          // We await transaction confirm on the remote chain
+          const ibcPacketSequence = transactionResult.events
+            .find((e) => e.type === "send_packet")
+            ?.attributes.find((attr) => attr.key === "packet_sequence")?.value;
 
-        const hasReceivedSuccessReceive = async () => {
-          const response = await neutronTMClient.searchTx([{
-            key: "recv_packet.packet_dst_port",
-            value: "transfer"
-          }, {
-            key: "recv_packet.packet_dst_channel",
-            value: ibcChain.targetChannel
-          }, {
+          if (!ibcPacketSequence) throw new Error("Failed to retrieve IBC packet sequence");
 
-            key: "recv_packet.packet_sequence",
-            value: parseInt(ibcPacketSequence)
-          }])
-          if (!response || response.length == 0) {
-            throw new Error(`The transaction is still not received on ${ACTIVE_NETWORK.chain.chainId}`);
+          const hasReceivedSuccessReceive = async () => {
+            const response = await neutronClient.searchTx([{
+              key: "recv_packet.packet_dst_port",
+              value: "transfer"
+            }, {
+              key: "recv_packet.packet_dst_channel",
+              value: ibcChain.targetChannel
+            }, {
+
+              key: "recv_packet.packet_sequence",
+              value: parseInt(ibcPacketSequence)
+            }])
+            if (!response || response.length == 0) {
+              throw new Error(`The transaction is still not received on ${ACTIVE_NETWORK.chain.chainId}`);
+            }
+
+            const value = response[0].events.filter((e) => e.type == "wasm").map((e) => e.attributes).flat().find((a) => a.key == "paiement-id")?.value;
+            if (value === undefined) {
+              throw new Error(`No matching attributes found in response`);
+            }
+            toast("Transaction received on GAIA's chain")
+            return value
+
+          };
+          // Look for events on the chain with the paiement contract
+          paiementId = await pRetry(hasReceivedSuccessReceive, { retries: 50, minTimeout: 200 })
+        } else {
+          if (!cosmosClient) {
+            setError("Please connect your wallet first");
+            return
+          }
+          // We have a PFM packet, we need to follow multiple transactions
+          // 10 minutes timeout
+          const timeoutTimestamp = (Date.now() + 10 * 60 * 1000) * 1_000_000; // nanoseconds
+
+          // We create a beautiful memo
+          const totalMemo = {
+            "forward": {
+              "receiver": ACTIVE_NETWORK.paiement,
+              "port": "transfer",
+              "channel": ACTIVE_NETWORK.ibcChains.find((c) => c.chain.chainId = mainnetChains.cosmoshub.chainId)?.sourceChannel,
+              "timeout": "10m",
+              "retries": 2,
+              "next": neutronMemo
+            }
           }
 
-          const value = response[0].events.filter((e) => e.type == "wasm").map((e) => e.attributes).flat().find((a) => a.key == "paiement-id")?.value;
-          if (value === undefined) {
-            throw new Error(`No matching attributes found in response`);
-          }
-          toast("Transaction received on GAIA's chain")
-          return value
 
-        };
-        // Look for events on the chain with the paiement contract
-        paiementId = await pRetry(hasReceivedSuccessReceive, { retries: 50, minTimeout: 200 })
+          const msg: MsgTransferEncodeObject = {
+            typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
+            value: MsgTransfer.fromPartial({
+              sourcePort: "transfer",
+              sourceChannel: ibcChain.sourceChannel,
+              token: {
+                denom: ibcChain.priceDenom,
+                amount: price.amount
+              },
+              sender: account.bech32Address,
+              receiver: "pfm",
+              timeoutTimestamp: BigInt(timeoutTimestamp),
+              memo: JSON.stringify(totalMemo)
+            }),
+          };
+          transactionResult = await cosmwasmClient.signAndBroadcast(account.bech32Address, [msg], "auto")
+
+          toast("Transaction successfully executed. Waiting on IBC transfer.")
+
+          // We await transaction confirm on the remote chain
+          const ibcPacketSequence = transactionResult.events
+            .find((e) => e.type === "send_packet")
+            ?.attributes.find((attr) => attr.key === "packet_sequence")?.value;
+
+          if (!ibcPacketSequence) throw new Error("Failed to retrieve IBC packet sequence");
+
+          const hasCosmosReceivedSuccessReceive = async () => {
+            const response = await cosmosClient.searchTx([{
+              key: "recv_packet.packet_dst_port",
+              value: "transfer"
+            }, {
+              key: "recv_packet.packet_dst_channel",
+              value: ibcChain.targetChannel
+            }, {
+
+              key: "recv_packet.packet_sequence",
+              value: parseInt(ibcPacketSequence)
+            }])
+            if (!response || response.length == 0) {
+              throw new Error(`The transaction is still not received on ${mainnetChains.cosmoshub.chainId}`);
+            }
+            const secondIbcPacketSequence = response.map((c) => c.events).flat()
+              .find((e) => e.type === "send_packet")
+              ?.attributes.find((attr) => attr.key === "packet_sequence")?.value;
+            if (secondIbcPacketSequence === undefined) {
+              throw new Error(`No second packet sent on cosmos hub`);
+            }
+            toast("Transaction received on GAIA's chain")
+            return secondIbcPacketSequence
+
+          };
+          // Look for events on the chain with the paiement contract
+          const secondIbcPacketSequence = await pRetry(hasCosmosReceivedSuccessReceive, { retries: 50, minTimeout: 200 })
+
+          const hasReceivedSuccessReceive = async () => {
+            const response = await neutronClient.searchTx([{
+              key: "recv_packet.packet_dst_port",
+              value: "transfer"
+            }, {
+              key: "recv_packet.packet_dst_channel",
+              value: ACTIVE_NETWORK.ibcChains.find((c) => c.chain.chainId == mainnetChains.cosmoshub.chainId)?.targetChannel ?? ""
+            }, {
+
+              key: "recv_packet.packet_sequence",
+              value: parseInt(secondIbcPacketSequence)
+            }])
+
+            if (!response || response.length == 0) {
+              throw new Error(`The transaction is still not received on ${ACTIVE_NETWORK.chain.chainId}`);
+            }
+
+            const value = response[0].events.filter((e) => e.type == "wasm").map((e) => e.attributes).flat().find((a) => a.key == "paiement-id")?.value;
+            if (value === undefined) {
+              throw new Error(`No matching attributes found in response`);
+            }
+            toast("Transaction received on GAIA's chain")
+            return value
+
+          };
+          // Look for events on the chain with the paiement contract
+          paiementId = await pRetry(hasReceivedSuccessReceive, { retries: 50, minTimeout: 200 })
+        }
       }
 
       // Write the contract with Graz

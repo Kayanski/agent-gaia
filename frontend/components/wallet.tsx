@@ -7,7 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from 'next/image'
 import { ChevronDown, Power, X } from "lucide-react";
 import { create } from 'zustand';
-import { CHAIN_COLORS, CHAIN_ICONS } from "@/actions/blockchain/metadata";
+import { CHAIN_ICONS } from "@/actions/blockchain/metadata";
 
 
 interface ChosenChainState {
@@ -121,7 +121,7 @@ export function WalletModal({ closeModal, isOpen }) {
                                 className="w-full p-4 flex items-center justify-between rounded-xl border border-gray-200 hover:border-blue-500 transition-all duration-200"
                             >
                                 <div className="flex items-center space-x-3">
-                                    <div className={`flex-shrink-0 ${CHAIN_COLORS[chosenChain.chainId]}`}>
+                                    <div className={`flex-shrink-0`}>
                                         <Image src={CHAIN_ICONS[chosenChain.chainId]} width={ICON_SIZE} height={ICON_SIZE} alt={chosenChain.chainName}></Image>
                                     </div>
                                     <span className="font-medium  capitalize">{chosenChain.chainName}</span>
@@ -143,7 +143,7 @@ export function WalletModal({ closeModal, isOpen }) {
                                             className={`w-full p-3 flex items-center space-x-3 hover:bg-gray-50 transition-colors
                           ${chain.chainId === chosenChain.chainId ? 'bg-blue-50' : ''}`}
                                         >
-                                            <div className={`flex-shrink-0 ${CHAIN_COLORS[chain.chainId]}`}>
+                                            <div className={`flex-shrink-0`}>
                                                 <Image src={CHAIN_ICONS[chain.chainId]} width={ICON_SIZE} height={ICON_SIZE} alt={chosenChain.chainName}></Image>
                                             </div>
                                             <span className="font-medium capitalize" >{chain.chainName}</span>
