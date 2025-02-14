@@ -54,7 +54,17 @@ const MAINNET = {
         targetChannel: "channel-141", // On cosmos
         chain: {
             ...mainnetChains.osmosis,
-            feeCurrencies: [mainnetChains.osmosis.feeCurrencies.find((c) => c.coinDenom == "osmo")],
+            feeCurrencies: [{ // manual because the osmosis object doesn't have the same structure at all
+                coinDenom: "osmo",
+                coinMinimalDenom: "uosmo",
+                coinDecimals: 6,
+                coinGeckoId: "osmosis",
+                gasPriceStep: {
+                    low: 0.0025,
+                    average: 0.025,
+                    high: 0.04
+                }
+            }],
         },
         priceDenom: "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
         type: IbcChainType.PFM

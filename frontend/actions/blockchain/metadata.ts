@@ -5,9 +5,3 @@ export const CHAIN_ICONS = {
     "cosmoshub-4": "/cosmos.svg",
     [mainnetChains.osmosis.chainId]: "/osmo.svg"
 }
-
-export const CHAIN_COLORS = {
-    "neutron-1": "black",
-    "cosmoshub-4": "green",
-    [mainnetChains.osmosis.chainId]: "bg-purple-200"
-}
