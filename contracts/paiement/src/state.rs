@@ -1,7 +1,7 @@
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    coin, coins, ensure, ensure_eq, Addr, BankMsg, Coin, CosmosMsg, Decimal, Deps, Env, IbcMsg,
-    IbcTimeout, MessageInfo, Timestamp, Uint128,
+    coin, coins, ensure, ensure_eq, Addr, BankMsg, Coin, CosmosMsg, Decimal, Deps, Env,
+    MessageInfo, Timestamp, Uint128,
 };
 use cw_storage_plus::{Item, Map};
 
@@ -46,8 +46,8 @@ impl Config {
 
     pub fn assert_paiement(
         &self,
-        deps: Deps,
-        env: &Env,
+        _deps: Deps,
+        _env: &Env,
         info: MessageInfo,
         receiver: &Option<ReceiverOptions>,
     ) -> PaiementResult<(Coin, Option<CosmosMsg>)> {
@@ -84,7 +84,7 @@ impl Config {
             return Ok((price, None));
         }
         // No refunds for IBC, neutron prevents that with ack_fee and timeout_fee
-        let send_funds_back_msg = if let Some(receiver) = receiver {
+        let send_funds_back_msg = if let Some(_receiver) = receiver {
             None
             // CosmosMsg::Ibc(IbcMsg::Transfer {
             //     channel_id: TRANSFER_CHANNEL_IDS.load(deps.storage, receiver.chain.clone())?,

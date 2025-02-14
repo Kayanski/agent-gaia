@@ -72,17 +72,10 @@ pub enum TimeoutStatusResponse {
 }
 
 #[cw_serde]
-pub struct StorageReceiverOptions {
-    pub addr: String,
-    pub chain: String,
-    pub denom: String,
-}
-
-#[cw_serde]
 pub struct MessageResponse {
     pub message_id: u32,
     pub price_paid: Coin,
-    pub sender: StorageReceiverOptions,
+    pub sender: ReceiverOptions,
     pub msg: String,
     pub time: Timestamp,
 }
@@ -90,7 +83,7 @@ pub struct MessageResponse {
 #[cw_serde]
 pub struct MessageState {
     pub price_paid: Coin,
-    pub receiver: StorageReceiverOptions,
+    pub receiver: ReceiverOptions,
     pub msg: String,
     pub time: Timestamp,
 }

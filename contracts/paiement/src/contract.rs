@@ -8,7 +8,7 @@ use cw_storage_plus::Bound;
 use crate::{
     msg::{
         CurrentPriceResponse, ExecuteMsg, InstantiateMsg, MessageResponse, MigrateMsg, QueryMsg,
-        StorageReceiverOptions, TimeoutStatusResponse, MESSAGES,
+        ReceiverOptions, TimeoutStatusResponse, MESSAGES,
     },
     state::{Config, CONFIG, TRANSFER_CHANNEL_IDS},
     PaiementError, PaiementResult,
@@ -78,17 +78,11 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> P
                 this_message_key,
                 &crate::msg::MessageState {
                     price_paid: price.clone(),
-                    receiver: receiver
-                        .map(|r| StorageReceiverOptions {
-                            addr: r.addr,
-                            chain: r.chain,
-                            denom: r.denom,
-                        })
-                        .unwrap_or(StorageReceiverOptions {
-                            addr: info.sender.to_string(),
-                            chain: env.block.chain_id,
-                            denom: config.paiement_denom.clone(),
-                        }),
+                    receiver: receiver.unwrap_or(ReceiverOptions {
+                        addr: info.sender.to_string(),
+                        chain: env.block.chain_id,
+                        denom: config.paiement_denom.clone(),
+                    }),
                     time: env.block.time,
                     msg: message,
                 },
