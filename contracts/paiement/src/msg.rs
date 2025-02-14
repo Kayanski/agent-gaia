@@ -92,5 +92,5 @@ pub const MESSAGES: Map<u32, MessageState> = Map::new("messages");
 
 #[cw_serde]
 pub struct MigrateMsg {
-    pub channel_ids: Vec<(String, String)>, // Vec of chain-id -> channel-id on current chain side
+    pub new_price: Uint128,
 }

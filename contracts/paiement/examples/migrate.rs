@@ -9,10 +9,10 @@ pub fn main() -> anyhow::Result<()> {
 
     let paiement = Paiement::new(chain.clone());
 
-    // paiement.upload()?;
+    paiement.upload()?;
     paiement.migrate(
         &MigrateMsg {
-            channel_ids: vec![("cosmoshub-4".to_string(), "channel-1".to_string())],
+            new_price: 100_000u128.into(),
         },
         paiement.code_id()?,
     )?;

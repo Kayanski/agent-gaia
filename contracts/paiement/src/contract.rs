@@ -188,8 +188,9 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> PaiementResult<Binary> {
 
 #[cfg_attr(not(feature = "library"), cosmwasm_std::entry_point)]
 pub fn migrate(deps: DepsMut, _env: Env, msg: MigrateMsg) -> PaiementResult {
-    for (chain_id, channel) in msg.channel_ids {
-        TRANSFER_CHANNEL_IDS.save(deps.storage, chain_id, &channel)?;
-    }
+    let mut config = CONFIG.load(deps.storage)?;
+    config.current_price = Decimal::from_ratio(msg.new_price, 1u128);
+    config.multiplier = Decimal::zero();
+    CONFIG.save(deps.storage, &config)?;
     Ok(Response::new())
 }

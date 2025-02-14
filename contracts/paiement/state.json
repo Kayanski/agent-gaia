@@ -1,7 +1,7 @@
 {
   "neutron-1": {
     "code_ids": {
-      "paiement": 3161
+      "paiement": 3162
     },
     "default": {
       "gaia-dao-address": "neutron1dvlx4249q56z4wrgdn577393vvr5w6vhrkm8eet7ywkeefh3m0dq7ujj2u",
