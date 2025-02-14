@@ -2,26 +2,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-import { WalletModal } from "./wallet";
+import { useChosenChainStore, WalletModal } from "./wallet";
 import Modal from 'react-modal';
-import { useAccount, useDisconnect } from "graz";
+import { useAccount } from "graz";
 import { useScreenMediaQuery } from "@/lib/useMediaQuery";
 import Image from "next/image";
 import { toast } from "react-toastify";
 // import { capsuleContext } from "./capsule";
 
-Modal.setAppElement('#body');
-
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-  },
-};
 function shortenBech32Address(address, visibleLengthStart = 2, visibleLengthEnd = 4) {
   const delimiterIndex = address.indexOf('1');
   if (delimiterIndex === -1) {
@@ -58,18 +46,16 @@ export function CosmosWallet() {
   }
 
   const { isLargeDevice, isExtraLargeDevice } = useScreenMediaQuery();
-  const { disconnect } = useDisconnect();
   // const { setModalState } = useContext(capsuleContext);
 
-  const { data: account } = useAccount();
+  const { chain: chosenChain, } = useChosenChainStore();
+
+
+  const { data: account } = useAccount({ chainId: chosenChain.chainId });
   return (
     <>
       <div className="flex flex-row lg:flex-col gap-2 items-center">
         <Button onClick={() => {
-          if (account?.bech32Address) {
-            disconnect()
-            return
-          }
           // setModalState(true)
           setIsOpen(true)
         }} variant={"full"} color="blue" className="rounded">
@@ -77,15 +63,7 @@ export function CosmosWallet() {
         </Button>
         {(isLargeDevice || isExtraLargeDevice) && !!account?.bech32Address && <WalletAddress address={account?.bech32Address} />}
       </div>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        style={customStyles}
-
-        contentLabel="Example Modal"
-      >
-        <WalletModal closeModal={closeModal} />
-      </Modal>
+      <WalletModal closeModal={closeModal} isOpen={modalIsOpen} />
 
     </>
   );
@@ -104,4 +82,3 @@ export function ConnectWallet() {
     </div>
   );
 }
-

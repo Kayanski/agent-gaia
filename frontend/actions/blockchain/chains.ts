@@ -9,7 +9,7 @@ export interface Network {
     chain: typeof testnetChains.neutrontestnet,
     character: string,
     ibcChains: {
-        chainId: string,
+        chain: typeof testnetChains.neutrontestnet,
         priceDenom: string
     }[]
 }
@@ -36,7 +36,7 @@ const MAINNET = {
         rpc: "https://rpc-lb.neutron.org"
     },
     ibcChains: [{
-        chainId: "cosmoshub-4",
+        chain: mainnetChains.cosmoshub,
         priceDenom: "uatom"
     }],
     character: "GAIA"
@@ -75,3 +75,9 @@ export const POOL_INFORMATION_MAINNET = {
 
 export const ACTIVE_NETWORK: Network = MAINNET;
 export const POOL_INFORMATION = POOL_INFORMATION_MAINNET
+
+export function useAvailableChains() {
+
+
+    return [ACTIVE_NETWORK.chain, ...ACTIVE_NETWORK.ibcChains.map((c) => c.chain)]
+}

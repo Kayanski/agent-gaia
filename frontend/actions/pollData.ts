@@ -1,7 +1,7 @@
 "use server"
 
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate';
-import { ACTIVE_NETWORK } from './gaia/constants';
+import { ACTIVE_NETWORK } from './blockchain/chains';
 import { MessageResponse, queryMessages } from '@/services/blockchain/cosmos';
 import { sendTreasuryTo } from '@/lib/send-funds';
 import { getHighestPaiementId } from './database/getMessageById';

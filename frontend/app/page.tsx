@@ -1,4 +1,4 @@
-import { MAX_MESSAGES_DEFAULT } from "@/actions/gaia/constants";
+import { MAX_MESSAGES_DEFAULT } from "@/actions/blockchain/chains";
 import { getGameState } from "@/actions/";
 import { getRecentMessages } from "@/actions/";
 import { Main } from "@/app/home/components/Main";

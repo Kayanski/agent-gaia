@@ -1,4 +1,4 @@
-import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
+import { ACTIVE_NETWORK } from "@/actions/blockchain/chains";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { GasPrice } from "@cosmjs/stargate";

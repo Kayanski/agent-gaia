@@ -1,5 +1,5 @@
 import { TGameState } from "@/actions";
-import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
+import { ACTIVE_NETWORK } from "@/actions/blockchain/chains";
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 

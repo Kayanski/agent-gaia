@@ -11,7 +11,7 @@ import { Switch } from "@headlessui/react";
 import { getCurrentPrice, useCurrentPrice } from "@/actions/getCurrentPrice";
 import { useAccount } from "graz";
 import { useCosmWasmSigningClient } from "graz";
-import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
+import { ACTIVE_NETWORK } from "@/actions/blockchain/chains";
 import { coins } from "@cosmjs/proto-signing";
 import { getUserMessageByPaiementId } from "@/actions";
 import pRetry from 'p-retry';

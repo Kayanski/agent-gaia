@@ -1,6 +1,6 @@
 import { useAccount, useCosmWasmClient } from "graz";
 import { useCurrentPrice } from "./getCurrentPrice";
-import { ACTIVE_NETWORK } from "./gaia/constants";
+import { ACTIVE_NETWORK } from "./blockchain/chains";
 import { useQuery } from "@tanstack/react-query";
 
 
