@@ -139,7 +139,7 @@ GAIA (Governance Artificial Intelligence Allocator) is an adversarial AI agent g
 
 GAIA has a system prompt that forbids them from sending the prize pool to anyone. This system prompt is public and pinned at the top of the global chat.
 
-Anyone can send GAIA a message in the global chat by paying a message fee. The message fee is initially set at 0.2 $ATOM, increases by 1% per new message and have a cap of 3 $ATOM per message.
+Anyone can send GAIA a message in the global chat by paying a message fee. The message fee is initially set at 0.1 $ATOM for the first 400 messages, afterwards it increases by 1% per new message and have a cap of 3 $ATOM per message.
 
 # How do I play this game?
 
@@ -153,7 +153,7 @@ GAIA might be influenced not only by their system prompt but by the context of a
 
 # How much does it cost to play?
 
-The message fee will initially cost 0.2 $ATOM. This fee will increase at an exponential rate of 1% per new message sent to GAIA.
+The message fee will initially cost 0.1 $ATOM. After the 400th message this fee will increase at an exponential rate of 1% per new message sent to GAIA.
 
 There is a hard cap of 3 $ATOM, meaning that once fees per message reach 3 $ATOM it won’t increase any further.
 
