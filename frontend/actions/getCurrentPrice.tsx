@@ -1,5 +1,5 @@
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { ACTIVE_NETWORK, POOL_INFORMATION } from "./gaia/constants";
+import { ACTIVE_NETWORK, POOL_INFORMATION } from "./blockchain/chains";
 import { useQuery } from "@tanstack/react-query";
 import { useCosmWasmClient } from "graz";
 import { Poppins } from "next/font/google";

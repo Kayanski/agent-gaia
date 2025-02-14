@@ -1,6 +1,6 @@
 "use server"
 
-import { ACTIVE_NETWORK } from "./gaia/constants";
+import { ACTIVE_NETWORK } from "./blockchain/chains";
 
 export async function resetWinner() {
     await (await fetch(`${process.env.API_URL}/${ACTIVE_NETWORK.character}/resetWinner`, {

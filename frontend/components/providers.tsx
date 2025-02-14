@@ -3,7 +3,7 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
+import { ACTIVE_NETWORK } from "@/actions/blockchain/chains";
 import { ToastContainer } from 'react-toastify';
 // import { CapsuleCosmosProvider, keplrWallet, leapWallet } from '@usecapsule/cosmos-wallet-connectors';
 // import { CapsuleProvider } from "./capsule";
@@ -21,7 +21,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>
 
       <GrazProvider grazOptions={{
-        chains: [ACTIVE_NETWORK.chain],
+        chains: [ACTIVE_NETWORK.chain, ...ACTIVE_NETWORK.ibcChains.map((c) => c.chain)],
         chainsConfig: {
           [ACTIVE_NETWORK.chain.chainId]: {
             gas: {
@@ -29,6 +29,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
               denom: ACTIVE_NETWORK.chain.feeCurrencies[0].coinMinimalDenom,
             },
           },
+          ...ACTIVE_NETWORK.ibcChains.reduce((a, chain) => ({
+            ...a, [chain.chain.chainId]: {
+              gas: {
+                price: chain.chain.feeCurrencies[0].gasPriceStep.average.toString(),
+                denom: chain.chain.feeCurrencies[0].coinMinimalDenom,
+              }
+            }
+          }), {})
         },
         walletConnect: {
           options: {

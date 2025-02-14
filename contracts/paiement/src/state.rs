@@ -1,11 +1,14 @@
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    coin, coins, ensure, ensure_eq, Addr, BankMsg, Coin, Decimal, Env, MessageInfo, Timestamp,
-    Uint128,
+    coin, coins, ensure, ensure_eq, Addr, BankMsg, Coin, CosmosMsg, Decimal, Deps, Env,
+    MessageInfo, Timestamp, Uint128,
 };
-use cw_storage_plus::Item;
+use cw_storage_plus::{Item, Map};
 
-use crate::{msg::TimeLimit, PaiementError, PaiementResult};
+use crate::{
+    msg::{ReceiverOptions, TimeLimit},
+    PaiementError, PaiementResult,
+};
 
 #[cw_serde]
 pub struct Config {
@@ -41,7 +44,13 @@ impl Config {
             .plus_seconds(self.time_limit.seconds_limit)
     }
 
-    pub fn assert_paiement(&self, info: MessageInfo) -> PaiementResult<(Coin, Option<BankMsg>)> {
+    pub fn assert_paiement(
+        &self,
+        _deps: Deps,
+        _env: &Env,
+        info: MessageInfo,
+        receiver: &Option<ReceiverOptions>,
+    ) -> PaiementResult<(Coin, Option<CosmosMsg>)> {
         let price = coin(
             self.current_price.to_uint_floor().u128(),
             self.paiement_denom.clone(),
@@ -74,15 +83,27 @@ impl Config {
         if funds_difference.is_zero() {
             return Ok((price, None));
         }
-
-        Ok((
-            price,
-            Some(BankMsg::Send {
+        // No refunds for IBC, neutron prevents that with ack_fee and timeout_fee
+        let send_funds_back_msg = if let Some(_receiver) = receiver {
+            None
+            // CosmosMsg::Ibc(IbcMsg::Transfer {
+            //     channel_id: TRANSFER_CHANNEL_IDS.load(deps.storage, receiver.chain.clone())?,
+            //     to_address: receiver.addr.clone(),
+            //     amount: coin(funds_difference.into(), &info.funds[0].denom),
+            //     timeout: IbcTimeout::with_timestamp(env.block.time.plus_minutes(10)),
+            //     memo: None, // No memo needed for transfer here
+            // })
+        } else {
+            Some(CosmosMsg::Bank(BankMsg::Send {
                 to_address: info.sender.to_string(),
                 amount: coins(funds_difference.into(), &info.funds[0].denom),
-            }),
-        ))
+            }))
+        };
+
+        Ok((price, send_funds_back_msg))
     }
 }
 
 pub const CONFIG: Item<Config> = Item::new("config");
+// Map from origin chain name to channel id
+pub const TRANSFER_CHANNEL_IDS: Map<String, String> = Map::new("channel_ids");

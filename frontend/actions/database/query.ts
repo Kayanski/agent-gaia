@@ -1,5 +1,5 @@
 import { asyncAction } from "@/lib/utils";
-import { ACTIVE_NETWORK } from "../gaia/constants";
+import { ACTIVE_NETWORK } from "../blockchain/chains";
 import { ApiRoute } from "@/lib/types";
 
 

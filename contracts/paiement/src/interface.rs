@@ -1,10 +1,10 @@
 use cw_orch::{interface, prelude::*};
 
-use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
+use crate::msg::{ExecuteMsg, InstantiateMsg, MigrateMsg, QueryMsg};
 
 pub const CONTRACT_ID: &str = "paiement";
 
-#[interface(InstantiateMsg, ExecuteMsg, QueryMsg, Empty, id = CONTRACT_ID)]
+#[interface(InstantiateMsg, ExecuteMsg, QueryMsg, MigrateMsg, id = CONTRACT_ID)]
 pub struct Paiement;
 
 impl<Chain> Uploadable for Paiement<Chain> {

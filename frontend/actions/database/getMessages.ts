@@ -1,5 +1,5 @@
 import { parseElizaMemoryToTMessage, Role } from "@/lib/utils";
-import { MAX_MESSAGES_DEFAULT } from "@/actions/gaia/constants";
+import { MAX_MESSAGES_DEFAULT } from "@/actions/blockchain/chains";
 import { queryApi } from "./query";
 import { MemoryWithWinnerAndUserName } from "@/lib/types";
 

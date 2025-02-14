@@ -1,5 +1,6 @@
 import { TGameState } from "@/actions";
-import { ACTIVE_NETWORK } from "@/actions/gaia/constants";
+import { ACTIVE_NETWORK } from "@/actions/blockchain/chains";
+import { useAllTokenPrices } from "@/actions/getCurrentPrice";
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 
@@ -7,10 +8,13 @@ interface StatsProps {
   gameState: TGameState | undefined
   className?: string;
 }
+const DECIMAL_PLACES = 2;
 
 export const Stats = ({ gameState,
   className,
 }: StatsProps) => {
+
+  const { data: tokenPrices } = useAllTokenPrices();
 
   const priceText = useMemo(() => {
     if (!gameState) {
@@ -24,8 +28,15 @@ export const Stats = ({ gameState,
       maximumFractionDigits: 6,
     }).format(parseInt(gameState.messagePrice.amount) / Math.pow(10, coinInfo?.coinDecimals ?? 0))
 
-    return `${priceText} ${coinInfo?.coinDenom.toUpperCase()}`
-  }, [gameState?.messagePrice, gameState])
+    const tokenPrice = tokenPrices?.find((price) => price.denom == gameState.messagePrice.denom)
+    const value = tokenPrice ? tokenPrice.price * parseInt(gameState.messagePrice.amount) / Math.pow(10, 6) : undefined;
+    const tokenPriceText = value ? ` ($${Intl.NumberFormat("en-US", {
+      minimumFractionDigits: DECIMAL_PLACES,
+      maximumFractionDigits: DECIMAL_PLACES,
+    }).format(Number(value.toFixed(DECIMAL_PLACES)))})` : "";
+
+    return `${priceText} ${coinInfo?.coinDenom.toUpperCase()}${tokenPriceText} `
+  }, [gameState, tokenPrices])
 
 
   return (

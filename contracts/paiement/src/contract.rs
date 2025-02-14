@@ -7,10 +7,10 @@ use cw_storage_plus::Bound;
 
 use crate::{
     msg::{
-        CurrentPriceResponse, ExecuteMsg, InstantiateMsg, MessageResponse, QueryMsg,
+        CurrentPriceResponse, ExecuteMsg, InstantiateMsg, MessageResponse, MigrateMsg, QueryMsg,
         ReceiverOptions, TimeoutStatusResponse, MESSAGES,
     },
-    state::{Config, CONFIG},
+    state::{Config, CONFIG, TRANSFER_CHANNEL_IDS},
     PaiementError, PaiementResult,
 };
 
@@ -51,6 +51,10 @@ pub fn instantiate(
             char_limit: msg.char_limit,
         },
     )?;
+    for (chain_id, channel) in msg.channel_ids {
+        TRANSFER_CHANNEL_IDS.save(deps.storage, chain_id, &channel)?;
+    }
+
     Ok(Response::new())
 }
 
@@ -62,7 +66,8 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> P
         ExecuteMsg::Deposit { message, receiver } => {
             // We make sure it's still possible to send messages
             config.assert_time_limit(&env)?;
-            let (price, reimbursement_msgs) = config.assert_paiement(info.clone())?;
+            let (price, reimbursement_msgs) =
+                config.assert_paiement(deps.as_ref(), &env, info.clone(), &receiver)?;
             let this_message_key = config.next_payment_key;
             if message.len() > config.char_limit.u128() as usize {
                 return Err(PaiementError::MessageTooLong {});
@@ -179,4 +184,13 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> PaiementResult<Binary> {
             to_json_binary(&response).map_err(Into::into)
         }
     }
+}
+
+#[cfg_attr(not(feature = "library"), cosmwasm_std::entry_point)]
+pub fn migrate(deps: DepsMut, _env: Env, msg: MigrateMsg) -> PaiementResult {
+    let mut config = CONFIG.load(deps.storage)?;
+    config.current_price = Decimal::from_ratio(msg.new_price, 1u128);
+    config.multiplier = Decimal::zero();
+    CONFIG.save(deps.storage, &config)?;
+    Ok(Response::new())
 }

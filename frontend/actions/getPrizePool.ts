@@ -1,5 +1,5 @@
 
-import { ACTIVE_NETWORK, POOL_INFORMATION } from "./gaia/constants";
+import { ACTIVE_NETWORK, POOL_INFORMATION } from "./blockchain/chains";
 import { getTokenPrice, useAllTokenPrices, useCurrentPrice } from "./getCurrentPrice";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { useCosmWasmClient } from "graz";

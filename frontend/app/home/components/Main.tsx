@@ -12,7 +12,7 @@ import { TGameState } from "@/actions/";
 import { getPrizePool } from "@/actions/getPrizePool";
 import Image from "next/image";
 import { useAccount } from "graz";
-import { MAX_MESSAGES_DEFAULT, MESSAGE_PAGE } from "@/actions/gaia/constants";
+import { MAX_MESSAGES_DEFAULT, MESSAGE_PAGE } from "@/actions/blockchain/chains";
 import { GAME_STATE_QUERY_DEPENDENCIES, useGameState } from "@/actions/database/getGameState";
 import { useQueryClient } from "@tanstack/react-query";
 

@@ -11,16 +11,20 @@
         "deposit": {
           "type": "object",
           "required": [
-            "message_hash"
+            "message"
           ],
           "properties": {
-            "message_hash": {
+            "message": {
               "type": "string"
             },
             "receiver": {
-              "type": [
-                "string",
-                "null"
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/ReceiverOptions"
+                },
+                {
+                  "type": "null"
+                }
               ]
             }
           },
@@ -29,5 +33,27 @@
       },
       "additionalProperties": false
     }
-  ]
+  ],
+  "definitions": {
+    "ReceiverOptions": {
+      "type": "object",
+      "required": [
+        "addr",
+        "chain",
+        "denom"
+      ],
+      "properties": {
+        "addr": {
+          "type": "string"
+        },
+        "chain": {
+          "type": "string"
+        },
+        "denom": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
 }

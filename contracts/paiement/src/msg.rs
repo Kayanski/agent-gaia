@@ -17,6 +17,7 @@ pub struct InstantiateMsg {
     pub price_limit: Option<Decimal>,
     pub time_limit: TimeLimit,
     pub char_limit: Uint128,
+    pub channel_ids: Vec<(String, String)>, // Vec of chain-id -> channel-id on current chain side
 }
 
 #[cw_serde]
@@ -88,3 +89,8 @@ pub struct MessageState {
 }
 
 pub const MESSAGES: Map<u32, MessageState> = Map::new("messages");
+
+#[cw_serde]
+pub struct MigrateMsg {
+    pub new_price: Uint128,
+}
