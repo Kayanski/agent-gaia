@@ -191,6 +191,5 @@ pub fn migrate(deps: DepsMut, _env: Env, msg: MigrateMsg) -> PaiementResult {
     for (chain_id, channel) in msg.channel_ids {
         TRANSFER_CHANNEL_IDS.save(deps.storage, chain_id, &channel)?;
     }
-
     Ok(Response::new())
 }

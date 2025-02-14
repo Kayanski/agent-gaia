@@ -1,10 +1,34 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Array_of_MessageResponse",
-  "type": "array",
-  "items": {
-    "$ref": "#/definitions/MessageResponse"
+  "title": "MessageResponse",
+  "type": "object",
+  "required": [
+    "message_id",
+    "msg",
+    "price_paid",
+    "sender",
+    "time"
+  ],
+  "properties": {
+    "message_id": {
+      "type": "integer",
+      "format": "uint32",
+      "minimum": 0.0
+    },
+    "msg": {
+      "type": "string"
+    },
+    "price_paid": {
+      "$ref": "#/definitions/Coin"
+    },
+    "sender": {
+      "$ref": "#/definitions/ReceiverOptions"
+    },
+    "time": {
+      "$ref": "#/definitions/Timestamp"
+    }
   },
+  "additionalProperties": false,
   "definitions": {
     "Coin": {
       "type": "object",
@@ -18,36 +42,6 @@
         },
         "denom": {
           "type": "string"
-        }
-      },
-      "additionalProperties": false
-    },
-    "MessageResponse": {
-      "type": "object",
-      "required": [
-        "message_id",
-        "msg",
-        "price_paid",
-        "sender",
-        "time"
-      ],
-      "properties": {
-        "message_id": {
-          "type": "integer",
-          "format": "uint32",
-          "minimum": 0.0
-        },
-        "msg": {
-          "type": "string"
-        },
-        "price_paid": {
-          "$ref": "#/definitions/Coin"
-        },
-        "sender": {
-          "$ref": "#/definitions/ReceiverOptions"
-        },
-        "time": {
-          "$ref": "#/definitions/Timestamp"
         }
       },
       "additionalProperties": false
