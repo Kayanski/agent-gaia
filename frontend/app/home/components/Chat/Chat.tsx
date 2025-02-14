@@ -9,7 +9,7 @@ import { ConversationModal } from "./ConversationModal";
 import { createPortal } from "react-dom";
 import { Switch } from "@headlessui/react";
 import { getCurrentPrice, useCurrentPrice } from "@/actions/getCurrentPrice";
-import { useAccount, useStargateSigningClient, useTendermintClient } from "graz";
+import { useAccount } from "graz";
 import { useCosmWasmSigningClient } from "graz";
 import { ACTIVE_NETWORK } from "@/actions/blockchain/chains";
 import { coins } from "@cosmjs/proto-signing";
@@ -24,10 +24,8 @@ import "./switch.css"
 import { motion } from "framer-motion";
 import { usePriceBalance } from "@/actions/useBalances";
 import { useChosenChainStore } from "@/components/wallet";
-import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
-import { DeliverTxResponse, MsgTransferEncodeObject, Event, setupIbcExtension, QueryClient } from "@cosmjs/stargate";
+import { MsgTransferEncodeObject, Event } from "@cosmjs/stargate";
 import { MsgTransfer } from "cosmjs-types/ibc/applications/transfer/v1/tx";
-import { neutron } from "graz/chains";
 
 
 const MAX_PROMPT_LENGTH = 2000;
@@ -672,8 +670,3 @@ export const Chat = ({
     </div >
   );
 };
-
-// Helper function to convert Uint8Array to string
-function toUtf8(data: Uint8Array): string {
-  return new TextDecoder().decode(data);
-}

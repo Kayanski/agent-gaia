@@ -2,7 +2,7 @@
 'use client'
 
 import { ACTIVE_NETWORK, useAvailableChains } from "@/actions/blockchain/chains";
-import { getAvailableWallets, useAccount, useActiveChainIds, useConnect, useDisconnect, useSuggestChainAndConnect, WalletType } from "graz";
+import { getAvailableWallets, useAccount, useConnect, useDisconnect, useSuggestChainAndConnect, WalletType } from "graz";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from 'next/image'
 import { ChevronDown, Power, X } from "lucide-react";
@@ -44,7 +44,6 @@ export function WalletModal({ closeModal, isOpen }) {
     const { data: account } = useAccount()
     const wallets = getAvailableWallets();
     const { disconnect } = useDisconnect();
-    const chains = useActiveChainIds();
     const allChains = useAvailableChains();
     const { chain: chosenChain, setChain } = useChosenChainStore();
     const { connect } = useConnect()
