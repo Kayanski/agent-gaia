@@ -16,7 +16,7 @@ export function usePriceBalance(chainId?: string) {
     if (chainId == ACTIVE_NETWORK.chain.chainId) {
         denom = price?.price.denom
     } else {
-        denom = ACTIVE_NETWORK.ibcChains.find((chain) => chain.chainId == chainId)?.priceDenom
+        denom = ACTIVE_NETWORK.ibcChains.find((chain) => chain.chain.chainId == chainId)?.priceDenom
     }
 
     const { data: cosmwasmClient } = useCosmWasmClient({ chainId });

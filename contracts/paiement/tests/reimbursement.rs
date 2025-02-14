@@ -23,6 +23,7 @@ fn reimbursement() -> anyhow::Result<()> {
                 seconds_limit: 60 * 60,
             },
             char_limit: 2_000u128.into(),
+            channel_ids: vec![],
         },
         None,
         &[],

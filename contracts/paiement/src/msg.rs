@@ -17,6 +17,7 @@ pub struct InstantiateMsg {
     pub price_limit: Option<Decimal>,
     pub time_limit: TimeLimit,
     pub char_limit: Uint128,
+    pub channel_ids: Vec<(String, String)>, // Vec of chain-id -> channel-id on current chain side
 }
 
 #[cw_serde]
@@ -71,10 +72,17 @@ pub enum TimeoutStatusResponse {
 }
 
 #[cw_serde]
+pub struct StorageReceiverOptions {
+    pub addr: String,
+    pub chain: String,
+    pub denom: String,
+}
+
+#[cw_serde]
 pub struct MessageResponse {
     pub message_id: u32,
     pub price_paid: Coin,
-    pub sender: ReceiverOptions,
+    pub sender: StorageReceiverOptions,
     pub msg: String,
     pub time: Timestamp,
 }
@@ -82,9 +90,14 @@ pub struct MessageResponse {
 #[cw_serde]
 pub struct MessageState {
     pub price_paid: Coin,
-    pub receiver: ReceiverOptions,
+    pub receiver: StorageReceiverOptions,
     pub msg: String,
     pub time: Timestamp,
 }
 
 pub const MESSAGES: Map<u32, MessageState> = Map::new("messages");
+
+#[cw_serde]
+pub struct MigrateMsg {
+    pub channel_ids: Vec<(String, String)>, // Vec of chain-id -> channel-id on current chain side
+}

@@ -29,6 +29,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
               denom: ACTIVE_NETWORK.chain.feeCurrencies[0].coinMinimalDenom,
             },
           },
+          ...ACTIVE_NETWORK.ibcChains.reduce((a, chain) => ({
+            ...a, [chain.chain.chainId]: {
+              gas: {
+                price: chain.chain.feeCurrencies[0].gasPriceStep.average.toString(),
+                denom: chain.chain.feeCurrencies[0].coinMinimalDenom,
+              }
+            }
+          }), {})
         },
         walletConnect: {
           options: {

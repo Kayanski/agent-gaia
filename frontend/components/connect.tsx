@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 import { useChosenChainStore, WalletModal } from "./wallet";
-import Modal from 'react-modal';
 import { useAccount } from "graz";
 import { useScreenMediaQuery } from "@/lib/useMediaQuery";
 import Image from "next/image";

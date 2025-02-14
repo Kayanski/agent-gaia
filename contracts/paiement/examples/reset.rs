@@ -48,6 +48,7 @@ pub fn main() -> anyhow::Result<()> {
                 seconds_limit: 60 * 60, // One hour
             },
             char_limit: CHAR_LIMIT.into(),
+            channel_ids: vec![],
         },
         Some(&chain.sender_addr()),
         &[],

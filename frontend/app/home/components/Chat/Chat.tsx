@@ -9,7 +9,7 @@ import { ConversationModal } from "./ConversationModal";
 import { createPortal } from "react-dom";
 import { Switch } from "@headlessui/react";
 import { getCurrentPrice, useCurrentPrice } from "@/actions/getCurrentPrice";
-import { useAccount } from "graz";
+import { useAccount, useStargateSigningClient, useTendermintClient } from "graz";
 import { useCosmWasmSigningClient } from "graz";
 import { ACTIVE_NETWORK } from "@/actions/blockchain/chains";
 import { coins } from "@cosmjs/proto-signing";
@@ -23,6 +23,12 @@ import NumberTicker from "@/components/ui/number-ticker";
 import "./switch.css"
 import { motion } from "framer-motion";
 import { usePriceBalance } from "@/actions/useBalances";
+import { useChosenChainStore } from "@/components/wallet";
+import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
+import { DeliverTxResponse, MsgTransferEncodeObject, Event, setupIbcExtension, QueryClient } from "@cosmjs/stargate";
+import { MsgTransfer } from "cosmjs-types/ibc/applications/transfer/v1/tx";
+import { neutron } from "graz/chains";
+
 
 const MAX_PROMPT_LENGTH = 2000;
 const MORE_FUNDS_FACTOR = 0.1;
@@ -52,7 +58,6 @@ export const Chat = ({
   const [prompt, setPrompt] = useState("");
   const [status, setStatus] = useState<TransactionStatus>("idle");
   const [error, setError] = useState<string>("");
-  const { data: account } = useAccount();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<string | null>(null);
   const firstMessageRef = useRef<string | null>(null);
@@ -65,7 +70,11 @@ export const Chat = ({
     string | null
   >(null);
   const [textareaHeight, setTextareaHeight] = useState(40);
-  const { data: cosmosClient } = useCosmWasmSigningClient();
+  const { chain: chosenChain, } = useChosenChainStore();
+  const { data: cosmosClient } = useCosmWasmSigningClient({ chainId: chosenChain.chainId });
+  const { data: neutronTMClient } = useCosmWasmSigningClient({ chainId: ACTIVE_NETWORK.chain.chainId });
+
+  const { data: account } = useAccount({ chainId: chosenChain.chainId });
   const [shouldFetchMore, setShouldFetchMore] = useState(false);
   const [endGameDisplay, setEndGameDisplay] = useState(true);
 
@@ -80,7 +89,7 @@ export const Chat = ({
 
   const handleSend = async () => {
     try {
-      if (!account || !account.bech32Address || !cosmosClient) {
+      if (!account || !account.bech32Address || !cosmosClient || !neutronTMClient) {
         setError("Please connect your wallet first");
         return;
       }
@@ -97,21 +106,109 @@ export const Chat = ({
 
       price.amount = Math.trunc((parseInt(price.amount) * (1 + MORE_FUNDS_FACTOR))).toString();
 
+      // We change the fundss sending behavior depending on the currently connected chain
+      let transactionResult: {
+        events: readonly Event[];
+        readonly transactionHash: string;
+      };
+      let paiementId: string | undefined;
+      if (chosenChain.chainId == ACTIVE_NETWORK.chain.chainId) {
+        // For the native chain 
+        transactionResult = await cosmosClient.execute(account.bech32Address, ACTIVE_NETWORK.paiement, {
+          deposit: {
+            message: prompt,
+          }
+        }, "auto", undefined, coins(price.amount, price.denom));
+        toast("Transaction successfully executed")
+        paiementId = transactionResult.events.filter((e) => e.type == "wasm").map((e) => e.attributes).flat().find((a) => a.key == "paiement-id")?.value;
+
+
+      } else {
+        // We find the ibc chain
+        const ibcChain = ACTIVE_NETWORK.ibcChains.find((c) => c.chain.chainId == chosenChain.chainId);
+        if (!ibcChain) {
+          throw `Unknown chain when sending funds ${chosenChain.chainId}`
+        }
+        // 10 minutes timeout
+        const timeoutTimestamp = (Date.now() + 10 * 60 * 1000) * 1_000_000; // nanoseconds
+
+        // We create a beautiful memo
+        const memo = {
+          wasm: {
+            contract: ACTIVE_NETWORK.paiement,
+            msg: {
+              deposit: {
+                message: prompt,
+                receiver: {
+                  addr: account.bech32Address,
+                  chain: chosenChain.chainId,
+                  denom: ibcChain.priceDenom,
+                }
+              }
+            }
+          }
+        }
+
+        const msg: MsgTransferEncodeObject = {
+          typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
+          value: MsgTransfer.fromPartial({
+            sourcePort: "transfer",
+            sourceChannel: ibcChain.sourceChannel,
+            token: {
+              denom: ibcChain.priceDenom,
+              amount: price.amount
+            },
+            sender: account.bech32Address,
+            receiver: ACTIVE_NETWORK.paiement,
+            timeoutTimestamp: BigInt(timeoutTimestamp),
+            memo: JSON.stringify(memo)
+          }),
+        };
+        transactionResult = await cosmosClient.signAndBroadcast(account.bech32Address, [msg], "auto")
+
+        toast("Transaction successfully executed. Waiting on IBC transfer.")
+
+        // We await transaction confirm on the remote chain
+        const ibcPacketSequence = transactionResult.events
+          .find((e) => e.type === "send_packet")
+          ?.attributes.find((attr) => attr.key === "packet_sequence")?.value;
+
+        if (!ibcPacketSequence) throw new Error("Failed to retrieve IBC packet sequence");
+
+        const hasReceivedSuccessReceive = async () => {
+          const response = await neutronTMClient.searchTx([{
+            key: "recv_packet.packet_dst_port",
+            value: "transfer"
+          }, {
+            key: "recv_packet.packet_dst_channel",
+            value: ibcChain.targetChannel
+          }, {
+
+            key: "recv_packet.packet_sequence",
+            value: parseInt(ibcPacketSequence)
+          }])
+          if (!response || response.length == 0) {
+            throw new Error(`The transaction is still not received on ${ACTIVE_NETWORK.chain.chainId}`);
+          }
+
+          const value = response[0].events.filter((e) => e.type == "wasm").map((e) => e.attributes).flat().find((a) => a.key == "paiement-id")?.value;
+          if (value === undefined) {
+            throw new Error(`No matching attributes found in response`);
+          }
+          toast("Transaction received on GAIA's chain")
+          return value
+
+        };
+        // Look for events on the chain with the paiement contract
+        paiementId = await pRetry(hasReceivedSuccessReceive, { retries: 50, minTimeout: 200 })
+      }
 
       // Write the contract with Graz
-      const transactionResult = await cosmosClient.execute(account.bech32Address, ACTIVE_NETWORK.paiement, {
-        deposit: {
-          message: prompt,
-        }
-      }, "auto", undefined, coins(price.amount, price.denom));
-      const paiementId = transactionResult.events.filter((e) => e.type == "wasm").map((e) => e.attributes).flat().find((a) => a.key == "paiement-id")?.value;
       if (!paiementId) {
         setError(`There was an issue decoding the transaction, please contact support with the following transaction hash ${transactionResult.transactionHash}`);
         return;
       }
       const parsedPaiementId = parseInt(paiementId)
-
-      toast("Transaction successfully executed")
 
       // We send a request for data update and retry if it fails
       const sendDataUpdate = async () => {
@@ -123,7 +220,7 @@ export const Chat = ({
       }
       await pRetry(sendDataUpdate, {
         retries: 3, onFailedAttempt: () => {
-          console.log("one failed attemp at sending data update")
+          console.log("one failed attempt at sending data update")
         }
       }) // We make sure the backend is updating our data
 
@@ -204,7 +301,7 @@ export const Chat = ({
     ]
   }, [currentPrice])
 
-  const { data: balance } = usePriceBalance();
+  const { data: balance } = usePriceBalance(chosenChain.chainId);
 
   const balanceText = useMemo(() => {
 
@@ -222,7 +319,12 @@ export const Chat = ({
 
   }, [balance, currentPrice])
 
-  const notEnoughBalance = (balance ?? 0) < (currentPrice?.price.amount ?? 0)
+  const notEnoughBalance = useMemo(() => {
+    if (!currentPrice?.price.amount || !balance) {
+      return true
+    }
+    return parseInt(balance) < parseInt(currentPrice?.price.amount)
+  }, [balance, currentPrice?.price.amount]);
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -570,3 +672,8 @@ export const Chat = ({
     </div >
   );
 };
+
+// Helper function to convert Uint8Array to string
+function toUtf8(data: Uint8Array): string {
+  return new TextDecoder().decode(data);
+}
