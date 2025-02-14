@@ -1,3 +1,6 @@
+use std::str::FromStr;
+
+use cosmwasm_std::Decimal;
 use cw_orch::{daemon::Daemon, prelude::*};
 use networks::NEUTRON_1;
 use paiement::{interface::Paiement, msg::MigrateMsg};
@@ -12,7 +15,7 @@ pub fn main() -> anyhow::Result<()> {
     paiement.upload()?;
     paiement.migrate(
         &MigrateMsg {
-            new_price: 100_000u128.into(),
+            new_multiplier: Decimal::from_str("0.01")?,
         },
         paiement.code_id()?,
     )?;

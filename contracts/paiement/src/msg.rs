@@ -92,5 +92,5 @@ pub const MESSAGES: Map<u32, MessageState> = Map::new("messages");
 
 #[cw_serde]
 pub struct MigrateMsg {
-    pub new_price: Uint128,
+    pub new_multiplier: Decimal,
 }

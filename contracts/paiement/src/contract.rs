@@ -104,8 +104,11 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> P
                 }
             });
 
-            config.current_price *= Decimal::one() + config.multiplier; // We update the price
-                                                                        // We limit the price
+            if !config.is_timer_inactive() {
+                config.current_price *= Decimal::one() + config.multiplier; // We update the price
+            }
+
+            // We limit the price
             if let Some(price_limit) = config.price_limit {
                 config.current_price = config.current_price.min(price_limit);
             }
@@ -189,8 +192,7 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> PaiementResult<Binary> {
 #[cfg_attr(not(feature = "library"), cosmwasm_std::entry_point)]
 pub fn migrate(deps: DepsMut, _env: Env, msg: MigrateMsg) -> PaiementResult {
     let mut config = CONFIG.load(deps.storage)?;
-    config.current_price = Decimal::from_ratio(msg.new_price, 1u128);
-    config.multiplier = Decimal::zero();
+    config.multiplier = msg.new_multiplier;
     CONFIG.save(deps.storage, &config)?;
     Ok(Response::new())
 }
