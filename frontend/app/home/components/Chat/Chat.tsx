@@ -8,7 +8,7 @@ import { MessageAnimation } from "@/components/animations";
 import { ConversationModal } from "./ConversationModal";
 import { createPortal } from "react-dom";
 import { Switch } from "@headlessui/react";
-import { getCurrentPrice, useCurrentPrice } from "@/actions/getCurrentPrice";
+import { getCurrentPrice, useAllTokenPrices, useCurrentPrice } from "@/actions/getCurrentPrice";
 import { useAccount } from "graz";
 import { useCosmWasmSigningClient } from "graz";
 import { ACTIVE_NETWORK } from "@/actions/blockchain/chains";
@@ -43,6 +43,8 @@ type TProps = {
 };
 
 type TransactionStatus = "idle" | "pending" | "error";
+
+const DECIMAL_PLACES = 2;
 
 export const Chat = ({
   messages,
@@ -282,6 +284,7 @@ export const Chat = ({
     }
   };
   const { data: currentPrice } = useCurrentPrice();
+  const { data: tokenPrices } = useAllTokenPrices();
 
   const [placeHolderText, priceText] = useMemo(() => {
     if (!currentPrice) {
@@ -293,11 +296,20 @@ export const Chat = ({
       minimumFractionDigits: 2,
       maximumFractionDigits: 6,
     }).format(parseInt(currentPrice.price.amount) / Math.pow(10, coinInfo?.coinDecimals ?? 0))
+
+    const tokenPrice = tokenPrices?.find((price) => price.denom == gameState.messagePrice.denom)
+    const value = tokenPrice ? tokenPrice.price * parseInt(gameState.messagePrice.amount) / Math.pow(10, coinInfo?.coinDecimals ?? 6,) : undefined;
+    const tokenPriceText = value ? ` ($${Intl.NumberFormat("en-US", {
+      minimumFractionDigits: DECIMAL_PLACES,
+      maximumFractionDigits: DECIMAL_PLACES,
+    }).format(Number(value.toFixed(DECIMAL_PLACES)))})` : "";
+
+
     return [
-      `Type your message... Price: ${priceText} ${coinInfo?.coinDenom.toUpperCase()}`,
-      `Price: ${priceText} ${coinInfo?.coinDenom.toUpperCase()}`
+      `Type your message... Price: ${priceText} ${coinInfo?.coinDenom.toUpperCase()} ${coinInfo?.coinDenom.toUpperCase()}${tokenPriceText}`,
+      `Price: ${priceText} ${coinInfo?.coinDenom.toUpperCase()}${tokenPriceText}`
     ]
-  }, [currentPrice])
+  }, [currentPrice, tokenPrices, gameState.messagePrice.amount, gameState.messagePrice.denom])
 
   const { data: balance } = usePriceBalance(chosenChain.chainId);
 
@@ -309,13 +321,22 @@ export const Chat = ({
 
     const coinInfo = ACTIVE_NETWORK.chain.currencies.find((c) => c.coinMinimalDenom == currentPrice.price.denom);
 
-    const priceText = Intl.NumberFormat("en-US", {
+    const valueText = Intl.NumberFormat("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 6,
     }).format(parseInt(balance) / Math.pow(10, coinInfo?.coinDecimals ?? 0))
-    return `Available: ${priceText} ${coinInfo?.coinDenom.toUpperCase()}`
 
-  }, [balance, currentPrice])
+    const tokenPrice = tokenPrices?.find((price) => price.denom == gameState.messagePrice.denom)
+    const value = tokenPrice ? tokenPrice.price * parseInt(balance) / Math.pow(10, coinInfo?.coinDecimals ?? 6,) : undefined;
+    const tokenPriceText = value ? ` ($${Intl.NumberFormat("en-US", {
+      minimumFractionDigits: DECIMAL_PLACES,
+      maximumFractionDigits: DECIMAL_PLACES,
+    }).format(Number(value.toFixed(DECIMAL_PLACES)))})` : "";
+
+
+    return `Available: ${valueText} ${coinInfo?.coinDenom.toUpperCase()}${tokenPriceText}`
+
+  }, [balance, currentPrice, tokenPrices, gameState.messagePrice.denom])
 
   const notEnoughBalance = useMemo(() => {
     if (!currentPrice?.price.amount || !balance) {
