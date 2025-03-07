@@ -14,6 +14,5 @@ export async function changeJSON(formData: FormData) {
 
     const fileString = Buffer.from(await file.arrayBuffer()).toString();
     const fileJson = JSON.parse(fileString);
-    console.log(fileJson)
     await insertAiFileIntoDB(fileJson, db)
 }

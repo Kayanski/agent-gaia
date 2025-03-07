@@ -456,7 +456,7 @@ export const Chat = ({
 
 
     return [
-      `Type your message... Price: ${priceText} ${coinInfo?.coinDenom.toUpperCase()} ${coinInfo?.coinDenom.toUpperCase()}${tokenPriceText}`,
+      `Type your message... Price: ${priceText} ${coinInfo?.coinDenom.toUpperCase()} ${tokenPriceText}`,
       `Price: ${priceText} ${coinInfo?.coinDenom.toUpperCase()}${tokenPriceText}`
     ]
   }, [currentPrice, tokenPrices, gameState.messagePrice.amount, gameState.messagePrice.denom])
