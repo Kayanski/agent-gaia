@@ -63,13 +63,11 @@ class NextClient {
 
     async init() {
         if (this.isInited) {
-            console.log("Not running init for client")
             return
         }
-        console.log("running init for client")
         this.db = await initializeDatabase()
-        const charactersArg = process.env.GAIA_FILE!;
-        const characters = await loadCharacters(charactersArg);
+        const charactersArg = process.env.CHARACTERS!;
+        const characters = await loadCharacters(charactersArg, this.db);
 
         try {
             for (const character of characters) {
@@ -83,7 +81,6 @@ class NextClient {
             "Run `pnpm start:client` to start the client and visit the outputted URL (http://localhost:5173) to chat with your agents. When running multiple agents, use client with different port `SERVER_PORT=3001 pnpm start:client`"
         );
         this.isInited = true
-        console.log("is inited init for client")
     }
 
     getRuntime(agentId: string) {
@@ -101,8 +98,6 @@ class NextClient {
     }
 
     public async post(bodyUserName: any, agentId: string, text: string, paiementId: number, attachments: Media[]) {
-
-        console.log(bodyUserName, agentId, text, paiementId, attachments)
 
         const userName = bodyUserName.addr;
         const userId = stringToUuid(userName);
@@ -166,7 +161,6 @@ class NextClient {
             context,
             modelClass: ModelClass.MEDIUM,
         });
-        console.log("This is the complete ai response", aiResponse)
 
         const contentResponse = {
             text: aiResponse.text,
@@ -268,11 +262,7 @@ class NextClient {
         for (const [, runtime] of this.agents) {
             await runtime.stop()
         }
-        console.log(this.db)
     }
-
-
-
 
     // createGameStateRoutes(this.app, this.agents)
     // createRecentMessagesRoute(this.app, this.agents)

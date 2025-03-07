@@ -4,7 +4,6 @@ import { parseElizaMemoryToTMessage, Role } from "@/lib/utils";
 import { MAX_MESSAGES_DEFAULT } from "@/actions/blockchain/chains";
 import { MemoryWithWinnerAndUserName } from "@/lib/types";
 import { Account, Memory, stringToUuid } from "@elizaos/core";
-import { PostgresDatabaseAdapter } from "@elizaos/adapter-postgres";
 
 export interface TMessage {
     content: string,

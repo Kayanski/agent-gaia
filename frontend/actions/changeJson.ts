@@ -1,18 +1,19 @@
 "use server"
 
-import path from "path"
-import fs from "fs"
+import { insertAiFileIntoDB } from "./ai/helpers";
+import PostgresDatabaseAdapter from "@elizaos/adapter-postgres";
 
+const db = new PostgresDatabaseAdapter({
+    connectionString: process.env.POSTGRES_URL,
+    parseInputs: true,
+});
 export async function changeJSON(formData: FormData) {
     const data = formData;
     const file = data.get('file') as File;
 
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    console.log(buffer)
-    const filePath = path.join(process.cwd(), 'public', "Big Tusk.json");
-
-    await fs.writeFile(filePath, buffer, () => { });
-
-    console.log(formData)
+    const fileString = Buffer.from(await file.arrayBuffer()).toString();
+    const fileJson = JSON.parse(fileString);
+    console.log(fileJson)
+    await insertAiFileIntoDB(fileJson, db)
 }

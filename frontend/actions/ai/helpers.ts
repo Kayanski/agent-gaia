@@ -3,7 +3,6 @@
 
 import { AgentRuntime, CacheManager, CacheStore, Character, Client, DbCacheAdapter, elizaLogger, IAgentRuntime, ICacheManager, IDatabaseAdapter, IDatabaseCacheAdapter, ModelProviderName, settings, validateCharacterConfig } from "@elizaos/core";
 import { PostgresDatabaseAdapter } from "@elizaos/adapter-postgres";
-import path from "path";
 import fs from "fs";
 
 const db = new PostgresDatabaseAdapter({
@@ -27,6 +26,8 @@ export async function initializeDatabase() {
                 elizaLogger.error("Failed to connect to PostgreSQL:", error);
             });
 
+        // TODO, remove after testing
+        await createAiFileDB(db)
         return db;
     } else {
         throw "Couldn't connect to postgres, no POSTGRES_URL env var set"
@@ -263,65 +264,45 @@ const logFetch = async (url: string, options: any) => {
     return fetch(url, options);
 };
 
+export async function insertAiFileIntoDB(content: any, db: PostgresDatabaseAdapter) {
+    validateCharacterConfig(content);
+    const agentName = content.id || content.name;
+    const sql = `INSERT INTO aifile ("agentName", content) VALUES ($1, $2)`
+    await db.query(sql, [agentName, JSON.stringify(content)])
+}
 
+async function createAiFileDB(db: PostgresDatabaseAdapter) {
+    const sql = `CREATE TABLE IF NOT EXISTS aifile(
+        "id" SERIAL PRIMARY KEY,
+        "agentName" TEXT,
+        "content" TEXT
+    );`;
+
+    await db.query(sql)
+}
+
+async function currentDbFile(characterName: string, db: PostgresDatabaseAdapter) {
+    const { rows } = await db.query(`SELECT * FROM aifile WHERE "agentName"=$1 ORDER BY id DESC LIMIT 1`, [characterName]);
+    return rows[0].content
+}
 
 export async function loadCharacters(
-    charactersArg: string
+    charactersArg: string,
+    db: PostgresDatabaseAdapter
 ): Promise<Character[]> {
-    const characterPaths = charactersArg
+    const characters = charactersArg
         ?.split(",")
         .map((filePath) => filePath.trim());
     const loadedCharacters: Character[] = [];
 
-    if (characterPaths?.length > 0) {
-        for (const characterPath of characterPaths) {
+    if (characters?.length > 0) {
+        for (const characterPath of characters) {
 
-            let content: string | null = null;
-            let resolvedPath = "";
 
-            // Try different path resolutions in order
-            console.log()
-            const pathsToTry = [
-                characterPath, // exact path as specified
-                path.resolve(process.cwd(), characterPath), // relative to cwd
-                path.resolve(process.cwd(), "agent", characterPath), // Add this
-                path.resolve(process.cwd(), "public", characterPath), // Add this
-                path.resolve(__dirname, characterPath), // relative to current script
-                path.resolve(
-                    __dirname,
-                    "characters",
-                    path.basename(characterPath)
-                ), // relative to agent/characters
-                path.resolve(
-                    __dirname,
-                    "../characters",
-                    path.basename(characterPath)
-                ), // relative to characters dir from agent
-                path.resolve(
-                    __dirname,
-                    "../../characters",
-                    path.basename(characterPath)
-                ), // relative to project root characters dir
-            ];
-
-            // elizaLogger.info(
-            //     "Trying paths:",
-            //     pathsToTry.map((p) => ({
-            //         path: p,
-            //         exists: fs.existsSync(p),
-            //     }))
-            // );
-
-            for (const tryPath of pathsToTry) {
-                content = tryLoadFile(tryPath);
-                if (content !== null) {
-                    resolvedPath = tryPath;
-                    break;
-                }
-            }
+            const content = await currentDbFile(characterPath, db);
 
             if (content === null) {
-                throw `Error loading character from ${characterPath}: File not found in any of the expected locations (tried ${JSON.stringify(pathsToTry)})`
+                throw `Error loading character from ${characterPath}: in db`
             }
 
             try {
@@ -364,7 +345,7 @@ export async function loadCharacters(
                 //     `Successfully loaded character from: ${resolvedPath}`
                 // );
             } catch (e) {
-                throw `Error parsing character from ${resolvedPath}: ${e}`;
+                throw `Error parsing character from db: ${e}`;
             }
         }
     }
@@ -374,14 +355,4 @@ export async function loadCharacters(
     }
 
     return loadedCharacters;
-}
-
-
-function tryLoadFile(filePath: string): string | null {
-    try {
-        return fs.readFileSync(filePath, "utf8");
-    } catch (e) {
-        elizaLogger.debug(`Error loading file at ${e}`)
-        return null;
-    }
 }
