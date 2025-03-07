@@ -280,6 +280,7 @@ export async function loadCharacters(
             let resolvedPath = "";
 
             // Try different path resolutions in order
+            console.log()
             const pathsToTry = [
                 characterPath, // exact path as specified
                 path.resolve(process.cwd(), characterPath), // relative to cwd
@@ -320,7 +321,7 @@ export async function loadCharacters(
             }
 
             if (content === null) {
-                throw `Error loading character from ${characterPath}: File not found in any of the expected locations`
+                throw `Error loading character from ${characterPath}: File not found in any of the expected locations (tried ${JSON.stringify(pathsToTry)})`
             }
 
             try {
