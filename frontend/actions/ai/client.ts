@@ -37,10 +37,16 @@ function roomId() {
 
 
 export async function sendAiMessage(user: any, message: string) {
-    await client.init();
-    const newMessage = await client.post(user, ACTIVE_NETWORK.character, message, 0, []);
-    await client.stop();
-    return newMessage
+    try {
+        await client.init();
+        const newMessage = await client.post(user, ACTIVE_NETWORK.character, message, 0, []);
+        await client.stop();
+        return newMessage
+    } catch (e) {
+        console.log("There was an error, processing requests")
+        console.log(e)
+        throw "Internal Error 500"
+    }
 }
 
 class NextClient {
@@ -62,7 +68,6 @@ class NextClient {
         }
         console.log("running init for client")
         this.db = await initializeDatabase()
-        await this.db.init();
         const charactersArg = process.env.GAIA_FILE!;
         const characters = await loadCharacters(charactersArg);
 
