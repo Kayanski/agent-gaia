@@ -3,7 +3,6 @@
 
 import { AgentRuntime, CacheManager, CacheStore, Character, Client, DbCacheAdapter, elizaLogger, IAgentRuntime, ICacheManager, IDatabaseAdapter, IDatabaseCacheAdapter, ModelProviderName, settings, validateCharacterConfig } from "@elizaos/core";
 import { PostgresDatabaseAdapter } from "@elizaos/adapter-postgres";
-import fs from "fs";
 
 const db = new PostgresDatabaseAdapter({
     connectionString: process.env.POSTGRES_URL,

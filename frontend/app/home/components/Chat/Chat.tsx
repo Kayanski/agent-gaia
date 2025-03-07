@@ -840,7 +840,7 @@ export const Chat = ({
       {/* TODO : only for testing*/}
       <form onSubmit={handleSubmit} encType="multipart/form-data" className="gap-4 flex items-center">
         <input type="file" name="file" required />
-        <button type="submit">Upload</button>
+        <button type="submit">Change JSON file</button>
         {uploaded && "Upload success  "}
       </form>
       {renderModal()}

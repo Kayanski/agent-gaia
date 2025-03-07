@@ -280,3 +280,4 @@ class NextClient {
 
 
 const client = new NextClient();
+client.init().catch((e) => console.error("Error when initing client", e))
