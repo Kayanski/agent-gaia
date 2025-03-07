@@ -1,6 +1,6 @@
 import { TGameState } from "@/actions";
 import { ACTIVE_NETWORK } from "@/actions/blockchain/chains";
-import { useAllTokenPrices } from "@/actions/getCurrentPrice";
+import { useAllTokenPrices } from "@/actions/blockchain/getCurrentPrice";
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 

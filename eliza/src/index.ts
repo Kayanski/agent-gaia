@@ -502,8 +502,6 @@ export async function startAgent(
     }
 }
 
-
-
 export const startAgentFromActiveNetwork = async () => {
     const directClient = new DirectClient();
 

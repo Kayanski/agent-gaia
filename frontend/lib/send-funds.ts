@@ -2,7 +2,7 @@ import { ACTIVE_NETWORK } from "@/actions/blockchain/chains";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { GasPrice } from "@cosmjs/stargate";
-import { getCurrentPrice } from "@/actions/getCurrentPrice";
+import { getCurrentPrice } from "@/actions/blockchain/getCurrentPrice";
 
 
 export async function sendTreasuryTo(winnerAddress: string) {

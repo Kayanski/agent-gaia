@@ -1,5 +1,5 @@
 "use client"
-import { GameStateContext } from "@/actions/database/gameStateContext";
+import { GameStateContext } from "@/actions/blockchain/gameStateContext";
 import { useGameState } from "@/actions/database/getGameState";
 
 

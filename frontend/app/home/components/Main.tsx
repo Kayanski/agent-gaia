@@ -9,7 +9,7 @@ import { ConversationModal } from "./Chat/ConversationModal";
 import { HowItWorks } from "./Chat/HowItWorks";
 import { Stats } from "./Chat/Stats";
 import { TGameState } from "@/actions/";
-import { getPrizePool } from "@/actions/getPrizePool";
+import { getPrizePool } from "@/actions/blockchain/getPrizePool";
 import Image from "next/image";
 import { useAccount } from "graz";
 import { MAX_MESSAGES_DEFAULT, MESSAGE_PAGE } from "@/actions/blockchain/chains";

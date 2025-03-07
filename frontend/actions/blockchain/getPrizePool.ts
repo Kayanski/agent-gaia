@@ -1,5 +1,5 @@
 
-import { ACTIVE_NETWORK, POOL_INFORMATION } from "./blockchain/chains";
+import { ACTIVE_NETWORK, POOL_INFORMATION } from "./chains";
 import { getTokenPrice, useAllTokenPrices, useCurrentPrice } from "./getCurrentPrice";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { useCosmWasmClient } from "graz";

@@ -7,7 +7,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import Image from "next/image";
 import { useContext } from "react";
-import { GameStateContext } from "@/actions/database/gameStateContext";
+import { GameStateContext } from "@/actions/blockchain/gameStateContext";
 
 type TProps = {
   gameState: TGameState;

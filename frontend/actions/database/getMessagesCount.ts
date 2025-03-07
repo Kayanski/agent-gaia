@@ -1,6 +1,8 @@
 import { queryApi } from "./query";
 
 export async function getMessagesCount(): Promise<number> {
-    const data: number = await queryApi("messagesCount")
+    // TODO: re-enable
+    // const data: number = await queryApi("messagesCount")
+    const data: number = 0;
     return data
 }

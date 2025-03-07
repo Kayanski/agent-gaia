@@ -2,35 +2,36 @@
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
-import { getAssistantMessageByPaiementId, TGameState, TMessage } from "@/actions";
+import { TGameState, TMessage } from "@/actions";
 import { ChatMessage } from "./ChatMessage";
 import { MessageAnimation } from "@/components/animations";
 import { ConversationModal } from "./ConversationModal";
 import { createPortal } from "react-dom";
 import { Switch } from "@headlessui/react";
-import { getCurrentPrice, useAllTokenPrices, useCurrentPrice } from "@/actions/getCurrentPrice";
+import { useAllTokenPrices, useCurrentPrice } from "@/actions/blockchain/getCurrentPrice";
 import { useAccount, useCosmWasmClient } from "graz";
 import { useCosmWasmSigningClient } from "graz";
-import { ACTIVE_NETWORK, IbcChainType } from "@/actions/blockchain/chains";
-import { coins } from "@cosmjs/proto-signing";
-import { getUserMessageByPaiementId } from "@/actions";
-import pRetry from 'p-retry';
-import { asyncAction } from "@/lib/utils";
-import { triggerDataUpdate } from "@/actions/pollData";
-import { toast } from "react-toastify";
+import { ACTIVE_NETWORK } from "@/actions/blockchain/chains";
+// import { coins } from "@cosmjs/proto-signing";
+// import { getUserMessageByPaiementId } from "@/actions";
+// import pRetry from 'p-retry';
+// import { asyncAction } from "@/lib/utils";
+// import { triggerDataUpdate } from "@/actions/pollData";
+// import { toast } from "react-toastify";
 import { useTimeRemaining } from "../useTimeRemaining";
 import NumberTicker from "@/components/ui/number-ticker";
 import "./switch.css"
 import { motion } from "framer-motion";
-import { usePriceBalance } from "@/actions/useBalances";
+import { usePriceBalance } from "@/actions/blockchain/useBalances";
 import { useChosenChainStore } from "@/components/wallet";
-import { MsgTransferEncodeObject, Event } from "@cosmjs/stargate";
-import { MsgTransfer } from "cosmjs-types/ibc/applications/transfer/v1/tx";
-import { mainnetChains } from "graz/chains";
+// import { MsgTransferEncodeObject, Event } from "@cosmjs/stargate";
+// import { MsgTransfer } from "cosmjs-types/ibc/applications/transfer/v1/tx";
+// import { mainnetChains } from "graz/chains";
+import { sendAiMessage } from "@/actions/ai/client";
 
 
 const MAX_PROMPT_LENGTH = 2000;
-const MORE_FUNDS_FACTOR = 0.1;
+// const MORE_FUNDS_FACTOR = 0.1;
 
 type TProps = {
   messages: TMessage[];
@@ -74,7 +75,8 @@ export const Chat = ({
   const { chain: chosenChain, } = useChosenChainStore();
   const { data: cosmwasmClient } = useCosmWasmSigningClient({ chainId: chosenChain.chainId });
   const { data: neutronClient } = useCosmWasmClient({ chainId: ACTIVE_NETWORK.chain.chainId });
-  const { data: cosmosClient } = useCosmWasmClient({ chainId: mainnetChains.cosmoshub.chainId });
+  // TODO re-enable
+  // const { data: cosmosClient } = useCosmWasmClient({ chainId: mainnetChains.cosmoshub.chainId });
 
   const { data: account } = useAccount({ chainId: chosenChain.chainId });
   const [shouldFetchMore, setShouldFetchMore] = useState(false);
@@ -104,286 +106,315 @@ export const Chat = ({
       setStatus("pending");
       setError("");
 
-      const { price } = await getCurrentPrice();
-
-      price.amount = Math.trunc((parseInt(price.amount) * (1 + MORE_FUNDS_FACTOR))).toString();
-
-      // We change the fundss sending behavior depending on the currently connected chain
-      let transactionResult: {
-        events: readonly Event[];
-        readonly transactionHash: string;
-      };
-      let paiementId: string | undefined;
-      if (chosenChain.chainId == ACTIVE_NETWORK.chain.chainId) {
-        // For the native chain 
-        transactionResult = await cosmwasmClient.execute(account.bech32Address, ACTIVE_NETWORK.paiement, {
-          deposit: {
-            message: prompt,
-          }
-        }, "auto", undefined, coins(price.amount, price.denom));
-        toast("Transaction successfully executed")
-        paiementId = transactionResult.events.filter((e) => e.type == "wasm").map((e) => e.attributes).flat().find((a) => a.key == "paiement-id")?.value;
+      // TODO : this is only a test of the backend
+      await sendAiMessage({
+        addr: account.bech32Address,
+        chain: chosenChain.chainId,
+        denom: "untrn"
+      }, prompt)
 
 
-      } else {
-        // We find the ibc chain
-        const ibcChain = ACTIVE_NETWORK.ibcChains.find((c) => c.chain.chainId == chosenChain.chainId);
-        if (!ibcChain) {
-          throw `Unknown chain when sending funds ${chosenChain.chainId}`
-        }
-        // 10 minutes timeout
-        const timeoutTimestamp = (Date.now() + 10 * 60 * 1000) * 1_000_000; // nanoseconds
-        // We create a beautiful last memo
-        const neutronMemo = {
-          wasm: {
-            contract: ACTIVE_NETWORK.paiement,
-            msg: {
-              deposit: {
-                message: prompt,
-                receiver: {
-                  addr: account.bech32Address,
-                  chain: chosenChain.chainId,
-                  denom: ibcChain.priceDenom,
-                }
-              }
-            }
-          }
-        }
-
-        if (ibcChain.type == IbcChainType.COSMOS) {
-
-          const msg: MsgTransferEncodeObject = {
-            typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
-            value: MsgTransfer.fromPartial({
-              sourcePort: "transfer",
-              sourceChannel: ibcChain.sourceChannel,
-              token: {
-                denom: ibcChain.priceDenom,
-                amount: price.amount
-              },
-              sender: account.bech32Address,
-              receiver: ACTIVE_NETWORK.paiement,
-              timeoutTimestamp: BigInt(timeoutTimestamp),
-              memo: JSON.stringify(neutronMemo)
-            }),
-          };
-          transactionResult = await cosmwasmClient.signAndBroadcast(account.bech32Address, [msg], "auto")
-
-          toast("Transaction successfully executed. Waiting on IBC transfer.")
-
-          // We await transaction confirm on the remote chain
-          const ibcPacketSequence = transactionResult.events
-            .find((e) => e.type === "send_packet")
-            ?.attributes.find((attr) => attr.key === "packet_sequence")?.value;
-
-          if (!ibcPacketSequence) throw new Error("Failed to retrieve IBC packet sequence");
-
-          const hasReceivedSuccessReceive = async () => {
-            const response = await neutronClient.searchTx([{
-              key: "recv_packet.packet_dst_port",
-              value: "transfer"
-            }, {
-              key: "recv_packet.packet_dst_channel",
-              value: ibcChain.targetChannel
-            }, {
-
-              key: "recv_packet.packet_sequence",
-              value: parseInt(ibcPacketSequence)
-            }])
-            if (!response || response.length == 0) {
-              throw new Error(`The transaction is still not received on ${ACTIVE_NETWORK.chain.chainId}`);
-            }
-
-            const value = response[0].events.filter((e) => e.type == "wasm").map((e) => e.attributes).flat().find((a) => a.key == "paiement-id")?.value;
-            if (value === undefined) {
-              throw new Error(`No matching attributes found in response`);
-            }
-            toast("Transaction received on GAIA's chain")
-            return value
-
-          };
-          // Look for events on the chain with the paiement contract
-          paiementId = await pRetry(hasReceivedSuccessReceive, { retries: 50, minTimeout: 200 })
-        } else {
-          if (!cosmosClient) {
-            setError("Please connect your wallet first");
+      // TODO -re-enable
+      await queryNewMessages();
+      setStatus("idle");
+      setPrompt("");
+      if (textareaRef.current) {
+        setTimeout(() => {
+          if (!textareaRef.current) {
             return
           }
-          // We have a PFM packet, we need to follow multiple transactions
-          // 10 minutes timeout
-          const timeoutTimestamp = (Date.now() + 10 * 60 * 1000) * 1_000_000; // nanoseconds
-
-          // We create a beautiful memo
-          const totalMemo = {
-            "forward": {
-              "receiver": ACTIVE_NETWORK.paiement,
-              "port": "transfer",
-              "channel": ACTIVE_NETWORK.ibcChains.find((c) => c.chain.chainId = mainnetChains.cosmoshub.chainId)?.sourceChannel,
-              "timeout": "10m",
-              "retries": 2,
-              "next": neutronMemo
-            }
-          }
-
-
-          const msg: MsgTransferEncodeObject = {
-            typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
-            value: MsgTransfer.fromPartial({
-              sourcePort: "transfer",
-              sourceChannel: ibcChain.sourceChannel,
-              token: {
-                denom: ibcChain.priceDenom,
-                amount: price.amount
-              },
-              sender: account.bech32Address,
-              receiver: "pfm",
-              timeoutTimestamp: BigInt(timeoutTimestamp),
-              memo: JSON.stringify(totalMemo)
-            }),
-          };
-          transactionResult = await cosmwasmClient.signAndBroadcast(account.bech32Address, [msg], "auto")
-
-          toast("Transaction successfully executed. Waiting on IBC transfer.")
-
-          // We await transaction confirm on the remote chain
-          const ibcPacketSequence = transactionResult.events
-            .find((e) => e.type === "send_packet")
-            ?.attributes.find((attr) => attr.key === "packet_sequence")?.value;
-
-          if (!ibcPacketSequence) throw new Error("Failed to retrieve IBC packet sequence");
-
-          const hasCosmosReceivedSuccessReceive = async () => {
-            const response = await cosmosClient.searchTx([{
-              key: "recv_packet.packet_dst_port",
-              value: "transfer"
-            }, {
-              key: "recv_packet.packet_dst_channel",
-              value: ibcChain.targetChannel
-            }, {
-
-              key: "recv_packet.packet_sequence",
-              value: parseInt(ibcPacketSequence)
-            }])
-            if (!response || response.length == 0) {
-              throw new Error(`The transaction is still not received on ${mainnetChains.cosmoshub.chainId}`);
-            }
-            const secondIbcPacketSequence = response.map((c) => c.events).flat()
-              .find((e) => e.type === "send_packet")
-              ?.attributes.find((attr) => attr.key === "packet_sequence")?.value;
-            if (secondIbcPacketSequence === undefined) {
-              throw new Error(`No second packet sent on cosmos hub`);
-            }
-            toast("Transaction received on GAIA's chain")
-            return secondIbcPacketSequence
-
-          };
-          // Look for events on the chain with the paiement contract
-          const secondIbcPacketSequence = await pRetry(hasCosmosReceivedSuccessReceive, { retries: 50, minTimeout: 200 })
-
-          const hasReceivedSuccessReceive = async () => {
-            const response = await neutronClient.searchTx([{
-              key: "recv_packet.packet_dst_port",
-              value: "transfer"
-            }, {
-              key: "recv_packet.packet_dst_channel",
-              value: ACTIVE_NETWORK.ibcChains.find((c) => c.chain.chainId == mainnetChains.cosmoshub.chainId)?.targetChannel ?? ""
-            }, {
-
-              key: "recv_packet.packet_sequence",
-              value: parseInt(secondIbcPacketSequence)
-            }])
-
-            if (!response || response.length == 0) {
-              throw new Error(`The transaction is still not received on ${ACTIVE_NETWORK.chain.chainId}`);
-            }
-
-            const value = response[0].events.filter((e) => e.type == "wasm").map((e) => e.attributes).flat().find((a) => a.key == "paiement-id")?.value;
-            if (value === undefined) {
-              throw new Error(`No matching attributes found in response`);
-            }
-            toast("Transaction received on GAIA's chain")
-            return value
-
-          };
-          // Look for events on the chain with the paiement contract
-          paiementId = await pRetry(hasReceivedSuccessReceive, { retries: 50, minTimeout: 200 })
-        }
+          const target = textareaRef.current as HTMLTextAreaElement;
+          target.style.transitionProperty = "none"
+          target.style.height = "40px";
+          const newHeight = Math.min(target.scrollHeight, 200);
+          target.style.height = `${newHeight}px`;
+          setTimeout(() => { target.style.transitionProperty = "all" }, 1)
+          setTextareaHeight(newHeight);
+        }, 200)
       }
+      return
+      // TODO -re-enable
 
-      // Write the contract with Graz
-      if (!paiementId) {
-        setError(`There was an issue decoding the transaction, please contact support with the following transaction hash ${transactionResult.transactionHash}`);
-        return;
-      }
-      const parsedPaiementId = parseInt(paiementId)
+      // const { price } = await getCurrentPrice();
 
-      // We send a request for data update and retry if it fails
-      const sendDataUpdate = async () => {
-        const response = await triggerDataUpdate();
+      // price.amount = Math.trunc((parseInt(price.amount) * (1 + MORE_FUNDS_FACTOR))).toString();
 
-        if (!response || !response.success) {
-          throw new Error(`The data updating backend is failing to update : ${JSON.stringify(response)}`);
-        }
-      }
-      await pRetry(sendDataUpdate, {
-        retries: 3, onFailedAttempt: () => {
-          console.log("one failed attempt at sending data update")
-        }
-      }) // We make sure the backend is updating our data
-
-
-      const hasPromptSubmitted = async () => {
-        const response = await getUserMessageByPaiementId(parsedPaiementId)
-
-        // Abort retrying if the resource doesn't exist
-        if (!response) {
-          throw new Error("The user message was not yet received on the backend");
-        }
-      };
-
-      const hasLLMSubmitted = async () => {
-        const response = await getAssistantMessageByPaiementId(parsedPaiementId)
-
-        // Abort retrying if the resource doesn't exist
-        if (!response) {
-          throw new Error("The LLM message was not yet submitted");
-        }
-        return response
-      };
-
-      // This could take some time
-      await pRetry(hasPromptSubmitted, { retries: 50, minTimeout: 200 })
-
-      toast("Gaia received your prompt")
-      await queryNewMessages();
-      setPrompt("");
+      // // We change the fundss sending behavior depending on the currently connected chain
+      // let transactionResult: {
+      //   events: readonly Event[];
+      //   readonly transactionHash: string;
+      // };
+      // let paiementId: string | undefined;
+      // if (chosenChain.chainId == ACTIVE_NETWORK.chain.chainId) {
+      //   // For the native chain 
+      //   transactionResult = await cosmwasmClient.execute(account.bech32Address, ACTIVE_NETWORK.paiement, {
+      //     deposit: {
+      //       message: prompt,
+      //     }
+      //   }, "auto", undefined, coins(price.amount, price.denom));
+      //   toast("Transaction successfully executed")
+      //   paiementId = transactionResult.events.filter((e) => e.type == "wasm").map((e) => e.attributes).flat().find((a) => a.key == "paiement-id")?.value;
 
 
-      // This could take some time as well
-      const { data: llmRes, err } = await asyncAction(pRetry(hasLLMSubmitted, { retries: 10 }))
-      toast("Gaia's answer is here!")
+      // } else {
+      //   // We find the ibc chain
+      //   const ibcChain = ACTIVE_NETWORK.ibcChains.find((c) => c.chain.chainId == chosenChain.chainId);
+      //   if (!ibcChain) {
+      //     throw `Unknown chain when sending funds ${chosenChain.chainId}`
+      //   }
+      //   // 10 minutes timeout
+      //   const timeoutTimestamp = (Date.now() + 10 * 60 * 1000) * 1_000_000; // nanoseconds
+      //   // We create a beautiful last memo
+      //   const neutronMemo = {
+      //     wasm: {
+      //       contract: ACTIVE_NETWORK.paiement,
+      //       msg: {
+      //         deposit: {
+      //           message: prompt,
+      //           receiver: {
+      //             addr: account.bech32Address,
+      //             chain: chosenChain.chainId,
+      //             denom: ibcChain.priceDenom,
+      //           }
+      //         }
+      //       }
+      //     }
+      //   }
 
-      if (llmRes) {
-        await queryNewMessages();
-        setStatus("idle");
-        setPrompt("");
-        if (textareaRef.current) {
-          setTimeout(() => {
-            if (!textareaRef.current) {
-              return
-            }
-            const target = textareaRef.current as HTMLTextAreaElement;
-            target.style.transitionProperty = "none"
-            target.style.height = "40px";
-            const newHeight = Math.min(target.scrollHeight, 200);
-            target.style.height = `${newHeight}px`;
-            setTimeout(() => { target.style.transitionProperty = "all" }, 1)
-            setTextareaHeight(newHeight);
-          }, 200)
-        }
-      } else {
-        setError(err ?? "Something went wrong");
-      }
+      //   if (ibcChain.type == IbcChainType.COSMOS) {
+
+      //     const msg: MsgTransferEncodeObject = {
+      //       typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
+      //       value: MsgTransfer.fromPartial({
+      //         sourcePort: "transfer",
+      //         sourceChannel: ibcChain.sourceChannel,
+      //         token: {
+      //           denom: ibcChain.priceDenom,
+      //           amount: price.amount
+      //         },
+      //         sender: account.bech32Address,
+      //         receiver: ACTIVE_NETWORK.paiement,
+      //         timeoutTimestamp: BigInt(timeoutTimestamp),
+      //         memo: JSON.stringify(neutronMemo)
+      //       }),
+      //     };
+      //     transactionResult = await cosmwasmClient.signAndBroadcast(account.bech32Address, [msg], "auto")
+
+      //     toast("Transaction successfully executed. Waiting on IBC transfer.")
+
+      //     // We await transaction confirm on the remote chain
+      //     const ibcPacketSequence = transactionResult.events
+      //       .find((e) => e.type === "send_packet")
+      //       ?.attributes.find((attr) => attr.key === "packet_sequence")?.value;
+
+      //     if (!ibcPacketSequence) throw new Error("Failed to retrieve IBC packet sequence");
+
+      //     const hasReceivedSuccessReceive = async () => {
+      //       const response = await neutronClient.searchTx([{
+      //         key: "recv_packet.packet_dst_port",
+      //         value: "transfer"
+      //       }, {
+      //         key: "recv_packet.packet_dst_channel",
+      //         value: ibcChain.targetChannel
+      //       }, {
+
+      //         key: "recv_packet.packet_sequence",
+      //         value: parseInt(ibcPacketSequence)
+      //       }])
+      //       if (!response || response.length == 0) {
+      //         throw new Error(`The transaction is still not received on ${ACTIVE_NETWORK.chain.chainId}`);
+      //       }
+
+      //       const value = response[0].events.filter((e) => e.type == "wasm").map((e) => e.attributes).flat().find((a) => a.key == "paiement-id")?.value;
+      //       if (value === undefined) {
+      //         throw new Error(`No matching attributes found in response`);
+      //       }
+      //       toast("Transaction received on GAIA's chain")
+      //       return value
+
+      //     };
+      //     // Look for events on the chain with the paiement contract
+      //     paiementId = await pRetry(hasReceivedSuccessReceive, { retries: 50, minTimeout: 200 })
+      //   } else {
+      //     if (!cosmosClient) {
+      //       setError("Please connect your wallet first");
+      //       return
+      //     }
+      //     // We have a PFM packet, we need to follow multiple transactions
+      //     // 10 minutes timeout
+      //     const timeoutTimestamp = (Date.now() + 10 * 60 * 1000) * 1_000_000; // nanoseconds
+
+      //     // We create a beautiful memo
+      //     const totalMemo = {
+      //       "forward": {
+      //         "receiver": ACTIVE_NETWORK.paiement,
+      //         "port": "transfer",
+      //         "channel": ACTIVE_NETWORK.ibcChains.find((c) => c.chain.chainId = mainnetChains.cosmoshub.chainId)?.sourceChannel,
+      //         "timeout": "10m",
+      //         "retries": 2,
+      //         "next": neutronMemo
+      //       }
+      //     }
+
+
+      //     const msg: MsgTransferEncodeObject = {
+      //       typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
+      //       value: MsgTransfer.fromPartial({
+      //         sourcePort: "transfer",
+      //         sourceChannel: ibcChain.sourceChannel,
+      //         token: {
+      //           denom: ibcChain.priceDenom,
+      //           amount: price.amount
+      //         },
+      //         sender: account.bech32Address,
+      //         receiver: "pfm",
+      //         timeoutTimestamp: BigInt(timeoutTimestamp),
+      //         memo: JSON.stringify(totalMemo)
+      //       }),
+      //     };
+      //     transactionResult = await cosmwasmClient.signAndBroadcast(account.bech32Address, [msg], "auto")
+
+      //     toast("Transaction successfully executed. Waiting on IBC transfer.")
+
+      //     // We await transaction confirm on the remote chain
+      //     const ibcPacketSequence = transactionResult.events
+      //       .find((e) => e.type === "send_packet")
+      //       ?.attributes.find((attr) => attr.key === "packet_sequence")?.value;
+
+      //     if (!ibcPacketSequence) throw new Error("Failed to retrieve IBC packet sequence");
+
+      //     const hasCosmosReceivedSuccessReceive = async () => {
+      //       const response = await cosmosClient.searchTx([{
+      //         key: "recv_packet.packet_dst_port",
+      //         value: "transfer"
+      //       }, {
+      //         key: "recv_packet.packet_dst_channel",
+      //         value: ibcChain.targetChannel
+      //       }, {
+
+      //         key: "recv_packet.packet_sequence",
+      //         value: parseInt(ibcPacketSequence)
+      //       }])
+      //       if (!response || response.length == 0) {
+      //         throw new Error(`The transaction is still not received on ${mainnetChains.cosmoshub.chainId}`);
+      //       }
+      //       const secondIbcPacketSequence = response.map((c) => c.events).flat()
+      //         .find((e) => e.type === "send_packet")
+      //         ?.attributes.find((attr) => attr.key === "packet_sequence")?.value;
+      //       if (secondIbcPacketSequence === undefined) {
+      //         throw new Error(`No second packet sent on cosmos hub`);
+      //       }
+      //       toast("Transaction received on GAIA's chain")
+      //       return secondIbcPacketSequence
+
+      //     };
+      //     // Look for events on the chain with the paiement contract
+      //     const secondIbcPacketSequence = await pRetry(hasCosmosReceivedSuccessReceive, { retries: 50, minTimeout: 200 })
+
+      //     const hasReceivedSuccessReceive = async () => {
+      //       const response = await neutronClient.searchTx([{
+      //         key: "recv_packet.packet_dst_port",
+      //         value: "transfer"
+      //       }, {
+      //         key: "recv_packet.packet_dst_channel",
+      //         value: ACTIVE_NETWORK.ibcChains.find((c) => c.chain.chainId == mainnetChains.cosmoshub.chainId)?.targetChannel ?? ""
+      //       }, {
+
+      //         key: "recv_packet.packet_sequence",
+      //         value: parseInt(secondIbcPacketSequence)
+      //       }])
+
+      //       if (!response || response.length == 0) {
+      //         throw new Error(`The transaction is still not received on ${ACTIVE_NETWORK.chain.chainId}`);
+      //       }
+
+      //       const value = response[0].events.filter((e) => e.type == "wasm").map((e) => e.attributes).flat().find((a) => a.key == "paiement-id")?.value;
+      //       if (value === undefined) {
+      //         throw new Error(`No matching attributes found in response`);
+      //       }
+      //       toast("Transaction received on GAIA's chain")
+      //       return value
+
+      //     };
+      //     // Look for events on the chain with the paiement contract
+      //     paiementId = await pRetry(hasReceivedSuccessReceive, { retries: 50, minTimeout: 200 })
+      //   }
+      // }
+
+      // // Write the contract with Graz
+      // if (!paiementId) {
+      //   setError(`There was an issue decoding the transaction, please contact support with the following transaction hash ${transactionResult.transactionHash}`);
+      //   return;
+      // }
+      // const parsedPaiementId = parseInt(paiementId)
+
+      // // We send a request for data update and retry if it fails
+      // const sendDataUpdate = async () => {
+      //   const response = await triggerDataUpdate();
+
+      //   if (!response || !response.success) {
+      //     throw new Error(`The data updating backend is failing to update : ${JSON.stringify(response)}`);
+      //   }
+      // }
+      // await pRetry(sendDataUpdate, {
+      //   retries: 3, onFailedAttempt: () => {
+      //     console.log("one failed attempt at sending data update")
+      //   }
+      // }) // We make sure the backend is updating our data
+
+
+      // const hasPromptSubmitted = async () => {
+      //   const response = await getUserMessageByPaiementId(parsedPaiementId)
+
+      //   // Abort retrying if the resource doesn't exist
+      //   if (!response) {
+      //     throw new Error("The user message was not yet received on the backend");
+      //   }
+      // };
+
+      // const hasLLMSubmitted = async () => {
+      //   const response = await getAssistantMessageByPaiementId(parsedPaiementId)
+
+      //   // Abort retrying if the resource doesn't exist
+      //   if (!response) {
+      //     throw new Error("The LLM message was not yet submitted");
+      //   }
+      //   return response
+      // };
+
+      // // This could take some time
+      // await pRetry(hasPromptSubmitted, { retries: 50, minTimeout: 200 })
+
+      // toast("Gaia received your prompt")
+      // await queryNewMessages();
+      // setPrompt("");
+
+
+      // // This could take some time as well
+      // const { data: llmRes, err } = await asyncAction(pRetry(hasLLMSubmitted, { retries: 10 }))
+      // toast("Gaia's answer is here!")
+
+      // if (llmRes) {
+      //   await queryNewMessages();
+      //   setStatus("idle");
+      //   setPrompt("");
+      //   if (textareaRef.current) {
+      //     setTimeout(() => {
+      //       if (!textareaRef.current) {
+      //         return
+      //       }
+      //       const target = textareaRef.current as HTMLTextAreaElement;
+      //       target.style.transitionProperty = "none"
+      //       target.style.height = "40px";
+      //       const newHeight = Math.min(target.scrollHeight, 200);
+      //       target.style.height = `${newHeight}px`;
+      //       setTimeout(() => { target.style.transitionProperty = "all" }, 1)
+      //       setTextareaHeight(newHeight);
+      //     }, 200)
+      //   }
+      // } else {
+      //   setError(err ?? "Something went wrong");
+      // }
     } catch (error) {
       console.error("Error in handleSend:", error);
       setStatus("error");
@@ -636,7 +667,7 @@ export const Chat = ({
           </div>
         )
       }
-      {!gameState.gameStatus.isGameEnded && timeRemaining >= 0 && (
+      {/* TODO :re-enable */ (true || (!gameState.gameStatus.isGameEnded && timeRemaining >= 0)) && (
         <div className="p-4">
           {prompt && <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -769,7 +800,7 @@ export const Chat = ({
           </div>
         )
       }
-      {
+      { /* TODO :re-enable */ false &&
         !gameState.gameStatus.isGameEnded && timeRemaining < 0 && endGameDisplay && (
           <div className="mt-2 clg:mt-4">
             <div className="flex h-full flex-col items-center justify-center space-y-6 text-[#97979F]">

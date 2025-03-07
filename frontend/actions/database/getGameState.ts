@@ -1,32 +1,47 @@
 import { TGameState, TGameStateResponse, UniqueWalletResponse } from "@/lib/types";
 import { queryApi } from "./query";
-import { getCurrentPrice, useCurrentPrice } from "../getCurrentPrice";
-import { getPrizePool, usePrizePool } from "../getPrizePool";
+import { getCurrentPrice, useCurrentPrice } from "../blockchain/getCurrentPrice";
+import { getPrizePool, usePrizePool } from "../blockchain/getPrizePool";
 import { getTimeoutStatus, useTimeoutStatus } from "../getConfig";
 import { useQuery } from "@tanstack/react-query";
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 
 export async function getUniqueWallets(): Promise<number> {
-    const data: UniqueWalletResponse = await queryApi("uniqueWallets")
-    return data.wallets
+    // TODO : re-enable
+    //     const data: UniqueWalletResponse = await queryApi("uniqueWallets")
+    //     return data.wallets
+    return 0
 }
 
 
 export async function getGameState(cosmwasmClient?: CosmWasmClient): Promise<TGameState> {
-    const gameStateResponse: TGameStateResponse = await queryApi("gameState")
+    // TODO : re-enable
+    // const gameStateResponse: TGameStateResponse = await queryApi("gameState")
 
     const messagePrice = await getCurrentPrice(cosmwasmClient);
     const prizeFund = await getPrizePool(cosmwasmClient);
     const timeoutStatus = await getTimeoutStatus(cosmwasmClient);
+    // TODO : re-enable
 
+    // return {
+    //     uniqueWallets: gameStateResponse.uniqueWallets,
+    //     messagesCount: gameStateResponse.messagesCount,
+    //     timeoutStatus,
+    //     gameStatus: gameStateResponse.gameStatus,
+    //     messagePrice: messagePrice.price,
+    //     prizeFund,
+    // }
     return {
-        uniqueWallets: gameStateResponse.uniqueWallets,
-        messagesCount: gameStateResponse.messagesCount,
+        uniqueWallets: 0,
+        messagesCount: 0,
         timeoutStatus,
-        gameStatus: gameStateResponse.gameStatus,
+        gameStatus: {
+            isGameEnded: false, winner: undefined
+        },
         messagePrice: messagePrice.price,
         prizeFund,
     }
+
 }
 
 export const GAME_STATE_QUERY_DEPENDENCIES = [
@@ -44,7 +59,8 @@ export function useGameState() {
     return useQuery({
         queryKey: ['gameState'],
         queryFn: async () => {
-            const gameStateResponse: TGameStateResponse = await queryApi("gameState");
+            // TODO re-enable
+            // const gameStateResponse: TGameStateResponse = await queryApi("gameState");
             if (!messagePrice) {
                 throw "Unexpected un-avaiable message price"
             }
@@ -56,13 +72,16 @@ export function useGameState() {
             }
 
             return {
-                uniqueWallets: gameStateResponse.uniqueWallets,
-                messagesCount: gameStateResponse.messagesCount,
+                uniqueWallets: 0,
+                messagesCount: 0,
                 timeoutStatus,
-                gameStatus: gameStateResponse.gameStatus,
+                gameStatus: {
+                    isGameEnded: false,
+                    winner: undefined
+                },
                 messagePrice: messagePrice.price,
                 prizeFund,
-            }
+            } as TGameState
         },
         enabled: currentPriceFetched && prizePoolFetched && isFetchedTimeoutStatus
     },
