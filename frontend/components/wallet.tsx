@@ -58,7 +58,7 @@ export function WalletModal({ closeModal, isOpen }) {
     }, [account?.bech32Address]);
 
     const [isChainSelectOpen, setIsChainSelectOpen] = useState(false);
-
+    console.log(wallets)
 
     if (!isOpen) return null;
     return (<>{
