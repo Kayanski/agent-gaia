@@ -28,6 +28,7 @@ import { useChosenChainStore } from "@/components/wallet";
 // import { MsgTransfer } from "cosmjs-types/ibc/applications/transfer/v1/tx";
 // import { mainnetChains } from "graz/chains";
 import { sendAiMessage } from "@/actions/ai/client";
+import { changeJSON } from "@/actions/changeJson";
 
 
 const MAX_PROMPT_LENGTH = 2000;
@@ -90,6 +91,17 @@ export const Chat = ({
       handleSend();
     }
   };
+
+  const [uploaded, setUploaded] = useState(false)
+
+  // TODO only for testing
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    setUploaded(false)
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    await changeJSON(formData)
+    setUploaded(true)
+  }, [setUploaded]);
 
   const handleSend = async () => {
     try {
@@ -825,6 +837,12 @@ export const Chat = ({
           </div>
         )
       }
+      {/* TODO : only for testing*/}
+      <form onSubmit={handleSubmit} encType="multipart/form-data" className="gap-4 flex items-center">
+        <input type="file" name="file" required />
+        <button type="submit">Upload</button>
+        {uploaded && "Upload success  "}
+      </form>
       {renderModal()}
     </div >
   );
