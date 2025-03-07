@@ -1,7 +1,7 @@
 "use server"
 
 
-import { AgentRuntime, CacheManager, CacheStore, Character, Client, DbCacheAdapter, elizaLogger, IAgentRuntime, ICacheManager, IDatabaseAdapter, IDatabaseCacheAdapter, ModelProviderName, settings, validateCharacterConfig } from "@elizaos/core";
+import { AgentRuntime, CacheStore, Character, Client, DbCacheAdapter, elizaLogger, IAgentRuntime, ICacheManager, IDatabaseAdapter, IDatabaseCacheAdapter, ModelProviderName, settings, validateCharacterConfig } from "@elizaos/core";
 import { PostgresDatabaseAdapter } from "@elizaos/adapter-postgres";
 
 const db = new PostgresDatabaseAdapter({
@@ -205,7 +205,7 @@ function initializeDbCache(character: Character, db: IDatabaseCacheAdapter) {
     if (!character.id) {
         throw "No id for the character !"
     }
-    const cache = new CacheManager(new DbCacheAdapter(db, character.id));
+    const cache = new DbCacheAdapter(db, character.id);
     return cache;
 }
 
