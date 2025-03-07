@@ -266,7 +266,6 @@ export class DirectClient {
                     context,
                     modelClass: ModelClass.LARGE,
                 });
-                console.log("This is the complete venice response", veniceResponse)
 
                 const contentResponse = {
                     text: veniceResponse.text,
@@ -332,7 +331,6 @@ export class DirectClient {
             elizaLogger.success(
                 `REST API bound to 0.0.0.0:${port}. If running locally, access it at http://localhost:${port}.`
             );
-            console.log("quid")
         });
 
         // Handle graceful shutdown

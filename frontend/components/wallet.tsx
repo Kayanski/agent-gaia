@@ -179,6 +179,7 @@ export function WalletButton({ walletType, img, alt }: { walletType: WalletType,
     return (<button
         key={walletType}
         onClick={() => {
+            console.log(walletType)
             if (walletType == WalletType.KEPLR || walletType == WalletType.LEAP) {
                 suggestAndConnect({ chainInfo: ACTIVE_NETWORK.chain, walletType })
             } else {
