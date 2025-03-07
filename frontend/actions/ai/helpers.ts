@@ -6,13 +6,15 @@ import { PostgresDatabaseAdapter } from "@elizaos/adapter-postgres";
 import path from "path";
 import fs from "fs";
 
+const db = new PostgresDatabaseAdapter({
+    connectionString: process.env.POSTGRES_URL,
+    parseInputs: true,
+});
+
 export async function initializeDatabase() {
     if (process.env.POSTGRES_URL) {
         // elizaLogger.info("Initializing PostgreSQL connection...");
-        const db = new PostgresDatabaseAdapter({
-            connectionString: process.env.POSTGRES_URL,
-            parseInputs: true,
-        });
+
 
         // Test the connection
         await db.init()

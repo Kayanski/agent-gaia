@@ -41,23 +41,26 @@ function roomId() {
         "default-room-" + agentId()
     )
 }
+import { Pool } from 'pg';
 
-async function getDb() {
-    const db = new PostgresDatabaseAdapter({
-        connectionString: process.env.POSTGRES_URL,
-        parseInputs: true,
-    });
-    await db.init();
-    return db;
+let pool: Pool | undefined = undefined;
+
+function getDb() {
+
+    if (!pool) {
+        pool = new Pool({
+            connectionString: process.env.POSTGRES_URL,
+        });
+    }
+    return pool
 }
 function getWinnerMessageIdFromWinnerAssistantMemory(memory: Memory | undefined): string | undefined {
     return memory?.content["associatedMessageId"] as string
 }
-async function getWinnerAssistantMemory(db: PostgresDatabaseAdapter): Promise<Memory | undefined> {
-    const queryResult = await db.query<Memory>(`SELECT * FROM memories WHERE content->>'decision' = 'approveTransfer'::text`)
+async function getWinnerAssistantMemory(): Promise<Memory | undefined> {
+    const queryResult = await getDb().query<Memory>(`SELECT * FROM memories WHERE content->>'decision' = 'approveTransfer'::text`)
     return queryResult.rows[0]
 }
-
 
 export async function localGetRecentMessages(userAddress: string | undefined, max: number) {
     let sql = `SELECT memories.*, accounts.username FROM memories JOIN accounts ON memories."userId" = accounts.id WHERE type = $1 AND "roomId" = $2`;
@@ -80,8 +83,9 @@ export async function localGetRecentMessages(userAddress: string | undefined, ma
     sql += ` LIMIT $${paramCount}`;
     values.push(max);
 
-    const db = await getDb();
-    const { rows } = await db.query(sql, values);
+    const db = getDb();
+    const { rows } = await db.query(sql, values)
+
     const messages: (Memory & Account)[] = rows.map((row) => ({
         ...row,
         content:
@@ -93,7 +97,7 @@ export async function localGetRecentMessages(userAddress: string | undefined, ma
 
     // We add an isWinner field
     // We query the winner message id
-    const winnerAssistantMemory = await getWinnerAssistantMemory(db);
+    const winnerAssistantMemory = await getWinnerAssistantMemory();
     const winnerMessageId = getWinnerMessageIdFromWinnerAssistantMemory(winnerAssistantMemory)
 
     // We query the account userName for each
@@ -122,9 +126,9 @@ export async function getRecentMessages(userAddress: string | undefined, max: nu
 
     // let messages: DbMessage[];
     // if (userAddress) {
-    //     messages = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts WHERE address=$2 ORDER BY id DESC LIMIT $1 `, [max ?? MAX_MESSAGES_DEFAULT, userAddress]) as unknown as DbMessage[];
+    //     messages = await sql(`SELECT ${ MESSAGE_FIELDS } FROM prompts WHERE address = $2 ORDER BY id DESC LIMIT $1 `, [max ?? MAX_MESSAGES_DEFAULT, userAddress]) as unknown as DbMessage[];
     // } else {
-    //     messages = await sql(`SELECT ${MESSAGE_FIELDS} FROM prompts ORDER BY id DESC LIMIT $1 `, [max ?? MAX_MESSAGES_DEFAULT]) as unknown as DbMessage[];
+    //     messages = await sql(`SELECT ${ MESSAGE_FIELDS } FROM prompts ORDER BY id DESC LIMIT $1`, [max ?? MAX_MESSAGES_DEFAULT]) as unknown as DbMessage[];
     // }
     // messages.reverse()
 

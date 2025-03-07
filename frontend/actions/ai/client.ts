@@ -21,6 +21,9 @@ import { createAgent, getTokenForProvider, initializeCache, initializeClients, i
 import { acceptAction, rejectAction } from "./actions";
 import { ACTIVE_NETWORK } from "../blockchain/chains";
 import { messageHandlerTemplate } from "./template";
+import { userInfo } from "os";
+import PostgresDatabaseAdapter from "@elizaos/adapter-postgres";
+
 
 function agentId() {
     return "Big Tusk"
@@ -34,9 +37,7 @@ function roomId() {
 
 
 export async function sendAiMessage(user: any, message: string) {
-    const client = new NextClient()
     await client.init();
-
     const newMessage = await client.post(user, ACTIVE_NETWORK.character, message, 0, []);
     await client.stop();
     return newMessage
@@ -45,13 +46,23 @@ export async function sendAiMessage(user: any, message: string) {
 class NextClient {
     private agents: Map<string, AgentRuntime>; // container management
     private server: any; // Store server instance
+    public db: PostgresDatabaseAdapter;
+    private isInited = false;
 
     constructor() {
         elizaLogger.log("DirectClient constructor");
         this.agents = new Map()
+
     }
 
     async init() {
+        if (this.isInited) {
+            console.log("Not running init for client")
+            return
+        }
+        console.log("running init for client")
+        this.db = await initializeDatabase()
+        await this.db.init();
         const charactersArg = process.env.GAIA_FILE!;
         const characters = await loadCharacters(charactersArg);
 
@@ -66,6 +77,8 @@ class NextClient {
         elizaLogger.log(
             "Run `pnpm start:client` to start the client and visit the outputted URL (http://localhost:5173) to chat with your agents. When running multiple agents, use client with different port `SERVER_PORT=3001 pnpm start:client`"
         );
+        this.isInited = true
+        console.log("is inited init for client")
     }
 
     getRuntime(agentId: string) {
@@ -195,27 +208,21 @@ class NextClient {
     async startAgent(
         character: Character,
     ): Promise<[IDatabaseAdapter & IDatabaseCacheAdapter, AgentRuntime]> {
-        let db: IDatabaseAdapter & IDatabaseCacheAdapter;
         try {
             character.id ??= stringToUuid(character.name);
             character.username ??= character.name;
 
             const token = await getTokenForProvider(character.modelProvider, character);
 
-            db = await initializeDatabase() as IDatabaseAdapter &
-                IDatabaseCacheAdapter;
-
-            await db.init();
-
             const cache = await initializeCache(
                 process.env.CACHE_STORE ?? CacheStore.DATABASE,
                 character,
                 "",
-                db
+                this.db
             ); // "" should be replaced with dir for file system caching. THOUGHTS: might probably make this into an env
             const runtime: AgentRuntime = await createAgent(
                 character,
-                db,
+                this.db,
                 cache,
                 token
             );
@@ -233,7 +240,7 @@ class NextClient {
 
             // report to console
             elizaLogger.debug(`Started ${character.name} as ${runtime.agentId}`);
-            return [db, runtime];
+            return [this.db, runtime];
         } catch (error) {
             elizaLogger.error(
                 `Error starting agent for character ${character.name}:`,
@@ -241,8 +248,8 @@ class NextClient {
             );
             elizaLogger.error(error);
             // @ts-ignore this fails from the original code
-            if (db) {
-                await db.close();
+            if (this.db) {
+                await this.db.close();
             }
             throw error;
         }
@@ -256,7 +263,7 @@ class NextClient {
         for (const [, runtime] of this.agents) {
             await runtime.stop()
         }
-
+        console.log(this.db)
     }
 
 
@@ -275,3 +282,6 @@ class NextClient {
 //     public unregisterAgent(runtime: AgentRuntime) {
 //     this.agents.delete(runtime.agentId);
 // }
+
+
+const client = new NextClient();
