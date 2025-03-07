@@ -18,6 +18,7 @@ cw-storage-plus = "2.0.0"
 cw-orch = { version = "0.27.0", features = ["daemon"] }
 thiserror = { version = "1.0.50" }
 cw-paginate = "2.0.0"
+serde = "1.0.218"
 
 [dev-dependencies]
 
@@ -25,6 +26,8 @@ dotenv = "0.15.0"
 env_logger = "0.10.0"
 clap = { version = "4.3.7", features = ["derive"] }
 anyhow = "1.0.94"
+cosmos-sdk-proto = "0.26.1"
+prost-types = "0.12.3"
 
 
 ## DaoDao
@@ -41,3 +44,5 @@ sqlx = { version = "0.8.3", features = [
     "uuid",
     "time",
 ] }
+serde_json = "1.0.139"
+ibc-proto = "0.51.1"
