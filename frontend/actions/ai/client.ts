@@ -12,7 +12,8 @@ import {
     Character,
     IDatabaseAdapter,
     IDatabaseCacheAdapter,
-    CacheStore
+    CacheStore,
+    ICacheManager
 } from "@elizaos/core";
 import { composeContext } from "@elizaos/core";
 import { AgentRuntime } from "@elizaos/core";
@@ -222,7 +223,7 @@ class NextClient {
             const runtime: AgentRuntime = await createAgent(
                 character,
                 this.db,
-                cache,
+                cache as ICacheManager,
                 token
             );
 
