@@ -1,25 +1,10 @@
 import { mainnetChains, testnetChains } from "graz/chains";
+import { cosmosIbcChain, nobleIbcChain, osmosisIbcChain } from "./ibcChains";
+import { Network } from "./types";
 
 
 export const MAX_MESSAGES_DEFAULT = 10;
 export const MESSAGE_PAGE = 10;
-export enum IbcChainType {
-    COSMOS,
-    PFM,
-}
-export interface Network {
-    paiement: string,
-    treasury: string
-    chain: typeof testnetChains.neutrontestnet,
-    character: string,
-    ibcChains: {
-        chain: typeof testnetChains.neutrontestnet,
-        priceDenom: string,
-        sourceChannel: string,
-        targetChannel: string
-        type: IbcChainType
-    }[]
-}
 
 const TESTNET = {
     paiement: "neutron10xevfckk4ay9whldfcax0kzgrvzv3j6jvde0flhqulszz67xdvlq2pqjxt",
@@ -43,32 +28,7 @@ const MAINNET = {
         rpc: "https://rpc-lb.neutron.org"
     },
     // https://github.com/cosmos/chain-registry/blob/master/neutron/assetlist.json
-    ibcChains: [{
-        sourceChannel: "channel-569", // On cosmoshub
-        targetChannel: "channel-1", // On neutron
-        chain: mainnetChains.cosmoshub,
-        priceDenom: "uatom",
-        type: IbcChainType.COSMOS
-    }, {
-        sourceChannel: "channel-0", // On Osmosis
-        targetChannel: "channel-141", // On cosmos
-        chain: {
-            ...mainnetChains.osmosis,
-            feeCurrencies: [{ // manual because the osmosis object doesn't have the same structure at all
-                coinDenom: "osmo",
-                coinMinimalDenom: "uosmo",
-                coinDecimals: 6,
-                coinGeckoId: "osmosis",
-                gasPriceStep: {
-                    low: 0.0025,
-                    average: 0.025,
-                    high: 0.04
-                }
-            }],
-        },
-        priceDenom: "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-        type: IbcChainType.PFM
-    }],
+    ibcChains: [cosmosIbcChain, osmosisIbcChain, nobleIbcChain],
     character: "GAIA"
 }
 

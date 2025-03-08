@@ -11,7 +11,7 @@ import { Switch } from "@headlessui/react";
 import { getCurrentPrice, useAllTokenPrices, useCurrentPrice } from "@/actions/getCurrentPrice";
 import { useAccount, useCosmWasmClient } from "graz";
 import { useCosmWasmSigningClient } from "graz";
-import { ACTIVE_NETWORK, IbcChainType } from "@/actions/blockchain/chains";
+import { ACTIVE_NETWORK } from "@/actions/blockchain/chains";
 import { coins } from "@cosmjs/proto-signing";
 import { getUserMessageByPaiementId } from "@/actions";
 import pRetry from 'p-retry';
@@ -27,10 +27,12 @@ import { useChosenChainStore } from "@/components/wallet";
 import { MsgTransferEncodeObject, Event } from "@cosmjs/stargate";
 import { MsgTransfer } from "cosmjs-types/ibc/applications/transfer/v1/tx";
 import { mainnetChains } from "graz/chains";
+import { useSkipRoute } from "@/app/skip/useRoute";
+import { IbcChainType } from "@/actions/blockchain/types";
 
 
 const MAX_PROMPT_LENGTH = 2000;
-const MORE_FUNDS_FACTOR = 0.1;
+export const MORE_FUNDS_FACTOR = 0.1;
 
 type TProps = {
   messages: TMessage[];
@@ -82,6 +84,14 @@ export const Chat = ({
 
   const { timeRemaining } = useTimeRemaining({ gameState });
 
+  const sendViaSkip = useSkipRoute({
+    sourceAssetDenom: "uusdc",
+    sourceAssetChainID: chosenChain.chainId,
+  })
+
+
+
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -114,6 +124,7 @@ export const Chat = ({
         readonly transactionHash: string;
       };
       let paiementId: string | undefined;
+
       if (chosenChain.chainId == ACTIVE_NETWORK.chain.chainId) {
         // For the native chain 
         transactionResult = await cosmwasmClient.execute(account.bech32Address, ACTIVE_NETWORK.paiement, {
@@ -131,6 +142,13 @@ export const Chat = ({
         if (!ibcChain) {
           throw `Unknown chain when sending funds ${chosenChain.chainId}`
         }
+        if (ibcChain.type == IbcChainType.SKIP) {
+          const routeResult = await sendViaSkip();
+          console.log(routeResult)
+          throw `Unsupported skip IBC chain ${chosenChain.chainId}`
+        }
+
+
         // 10 minutes timeout
         const timeoutTimestamp = (Date.now() + 10 * 60 * 1000) * 1_000_000; // nanoseconds
         // We create a beautiful last memo
@@ -218,13 +236,12 @@ export const Chat = ({
             "forward": {
               "receiver": ACTIVE_NETWORK.paiement,
               "port": "transfer",
-              "channel": ACTIVE_NETWORK.ibcChains.find((c) => c.chain.chainId = mainnetChains.cosmoshub.chainId)?.sourceChannel,
+              "channel": ibcChain.intermediaryChain.sourceChannel,
               "timeout": "10m",
               "retries": 2,
               "next": neutronMemo
             }
           }
-
 
           const msg: MsgTransferEncodeObject = {
             typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
@@ -286,7 +303,7 @@ export const Chat = ({
               value: "transfer"
             }, {
               key: "recv_packet.packet_dst_channel",
-              value: ACTIVE_NETWORK.ibcChains.find((c) => c.chain.chainId == mainnetChains.cosmoshub.chainId)?.targetChannel ?? ""
+              value: ibcChain.intermediaryChain.targetChannel ?? ""
             }, {
 
               key: "recv_packet.packet_sequence",
@@ -636,7 +653,7 @@ export const Chat = ({
           </div>
         )
       }
-      {!gameState.gameStatus.isGameEnded && timeRemaining >= 0 && (
+      {/* TODO : re-enable once dev is done*/ (true || (!gameState.gameStatus.isGameEnded && timeRemaining >= 0)) && (
         <div className="p-4">
           {prompt && <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -769,8 +786,8 @@ export const Chat = ({
           </div>
         )
       }
-      {
-        !gameState.gameStatus.isGameEnded && timeRemaining < 0 && endGameDisplay && (
+      { /* TODO : re-enable once dev is done*/
+        false && !gameState.gameStatus.isGameEnded && timeRemaining < 0 && endGameDisplay && (
           <div className="mt-2 clg:mt-4">
             <div className="flex h-full flex-col items-center justify-center space-y-6 text-[#97979F]">
               <div className="relative">
