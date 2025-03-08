@@ -6,6 +6,7 @@ import { TGameState } from '@/actions'
 import { useState } from 'react'
 import { useAccount } from "graz"
 import { useScreenMediaQuery } from '@/lib/useMediaQuery'
+import { useChosenChainStore } from '@/components/wallet'
 
 const MobileMenu = ({ gameState, isOpen, onClose }: {
   gameState: TGameState;
@@ -15,7 +16,8 @@ const MobileMenu = ({ gameState, isOpen, onClose }: {
 }) => {
 
   const { isLargeDevice, isExtraLargeDevice } = useScreenMediaQuery();
-  const { data: account } = useAccount();
+  const { chain: chosenChain, } = useChosenChainStore();
+  const { data: account } = useAccount({ chainId: chosenChain.chainId });
   return (
     <>
       {/* Backdrop */}
