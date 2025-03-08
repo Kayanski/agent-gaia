@@ -1,14 +1,20 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { skipClient } from "./client";
 import { ACTIVE_NETWORK } from "@/actions/blockchain/chains";
 import { useCurrentPrice } from "@/actions/getCurrentPrice";
 import { MORE_FUNDS_FACTOR } from "../home/components/Chat/Chat";
 import { useAccount, useConnect } from "graz";
 import { PostHandler, RouteResponse, UserAddress } from "@skip-go/client";
+import { skip } from "node:test";
 
 export interface SkipRouteArgs {
     sourceAssetDenom: string,
     sourceAssetChainID: string,
+}
+
+export interface SkipTrackedTransaction {
+    chainID: string,
+    txHash: string
 }
 
 export function useSkipRoute(args: SkipRouteArgs) {
@@ -17,6 +23,8 @@ export function useSkipRoute(args: SkipRouteArgs) {
 
     const { data: account } = useAccount()
     const { connectAsync } = useConnect();
+
+    const [trackedTransaction, setTrackedTransaction] = useState<SkipTrackedTransaction | undefined>(undefined)
 
     const swapAndExecute = useCallback(async () => {
         if (!currentPrice) {
@@ -83,10 +91,21 @@ export function useSkipRoute(args: SkipRouteArgs) {
                 console.log(`Transaction broadcasted with tx hash: ${txHash}`);
             },
             onTransactionTracked: async ({ txHash, chainID }) => {
-                console.log(`Transaction tracked with tx hash: ${txHash}`);
+                setTrackedTransaction({
+                    chainID,
+                    txHash
+                })
             },
         });
-    }, [args.sourceAssetChainID, args.sourceAssetDenom, connectAsync, currentPrice])
+    }, [account, args.sourceAssetChainID, args.sourceAssetDenom, connectAsync, currentPrice])
 
-    return swapAndExecute
+    // await skipClient.transactionStatus({
+    //     ...trackedTransaction
+    // })
+
+
+    return {
+        sendViaSkip: swapAndExecute,
+        trackedTransaction,
+    }
 }
